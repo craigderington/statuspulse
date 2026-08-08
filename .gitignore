@@ -1,5 +1,11 @@
 # Ignore bundled gems
-/vendor/bundle
+/vendor/*
+/bin
+/test
+.kamal/
+tmp/
+log/
+script/
 
 # Ignore application log files and temp files
 /log/*
@@ -43,6 +49,7 @@ yarn-debug.log*
 yarn-error.log*
 npm-debug.log*
 .pnpm-debug.log*
+.bundle
 
 # Ignore System & OS files
 .DS_Store
