@@ -1,0 +1,52 @@
+<div style="max-width: 500px; margin: 3rem auto;">
+  <div class="form-card">
+    <div style="text-align: center; margin-bottom: 2rem;">
+      <div class="brand-icon" style="width: 44px; height: 44px; margin: 0 auto 1rem auto;">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+        </svg>
+      </div>
+      <h1 style="font-size: 1.65rem; font-weight: 700;">Create StatusPul.se Account</h1>
+      <p style="color: var(--text-secondary); font-size: 0.9rem; margin-top: 0.25rem;">
+        Setup your multi-tenant organization & team workspace
+      </p>
+    </div>
+
+    <%= form_with(model: @user, url: signup_path, local: true) do |f| %>
+      <div class="form-group">
+        <label class="form-label">Organization / Company Name</label>
+        <input type="text" name="organization_name" class="form-control" placeholder="Acme Corp" required value="<%= params[:organization_name] %>">
+      </div>
+
+      <div class="form-group">
+        <%= f.label :name, "Your Full Name", class: "form-label" %>
+        <%= f.text_field :name, class: "form-control", placeholder: "Jane Doe", required: true %>
+      </div>
+
+      <div class="form-group">
+        <%= f.label :email, "Work Email", class: "form-label" %>
+        <%= f.email_field :email, class: "form-control", placeholder: "jane@acmecorp.com", required: true %>
+      </div>
+
+      <div class="grid-2col">
+        <div class="form-group">
+          <%= f.label :password, "Password", class: "form-label" %>
+          <%= f.password_field :password, class: "form-control", placeholder: "••••••••", required: true %>
+        </div>
+
+        <div class="form-group">
+          <%= f.label :password_confirmation, "Confirm", class: "form-label" %>
+          <%= f.password_field :password_confirmation, class: "form-control", placeholder: "••••••••", required: true %>
+        </div>
+      </div>
+
+      <div style="margin-top: 2rem;">
+        <%= f.submit "Create Organization Workspace", class: "btn btn-primary", style: "width: 100%; justify-content: center;" %>
+      </div>
+    <% end %>
+
+    <div style="text-align: center; margin-top: 1.5rem; font-size: 0.9rem; color: var(--text-secondary);">
+      Already have an account? <%= link_to "Sign In", login_path, style: "color: var(--accent-cyan);" %>
+    </div>
+  </div>
+</div>

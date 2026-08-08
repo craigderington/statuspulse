@@ -1,0 +1,65 @@
+<div class="section-header" style="margin-bottom: 2rem;">
+  <div>
+    <h1 class="section-title">Incident Command Center</h1>
+    <p style="color: var(--text-secondary); font-size: 0.95rem; margin-top: 0.25rem;">
+      Track ongoing system degradation, active outages, and historical resolution logs.
+    </p>
+  </div>
+  <%= link_to new_incident_path, class: "btn btn-primary" do %>
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+    <span>Log Incident</span>
+  <% end %>
+</div>
+
+<h2 style="font-size: 1.25rem; margin-bottom: 1rem; color: var(--color-degraded);">Active & Unresolved Incidents (<%= @active_incidents.size %>)</h2>
+
+<% if @active_incidents.empty? %>
+  <div class="stat-card" style="text-align: center; padding: 2.5rem; margin-bottom: 2.5rem;">
+    <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="var(--color-operational)" stroke-width="2" style="margin-bottom: 0.75rem;"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <p style="font-weight: 600; color: var(--text-primary);">No Active Incidents</p>
+    <p style="color: var(--text-secondary); font-size: 0.9rem;">All monitored services and infrastructure endpoints are operational.</p>
+  </div>
+<% else %>
+  <div style="margin-bottom: 2.5rem;">
+    <% @active_incidents.each do |incident| %>
+      <div class="incident-card severity-<%= incident.severity %>">
+        <div class="incident-header">
+          <div>
+            <span class="service-status-badge badge-<%= incident.severity == 'major_outage' ? 'outage' : 'degraded' %>" style="margin-bottom: 0.5rem;">
+              <%= incident.severity.titleize %>
+            </span>
+            <a href="<%= incident_path(incident) %>" class="incident-title"><%= incident.title %></a>
+          </div>
+          <span class="service-status-badge badge-maintenance"><%= incident.status.titleize %></span>
+        </div>
+        <p style="color: var(--text-secondary); margin-bottom: 0.75rem;"><%= incident.description %></p>
+        <div style="font-size: 0.85rem; color: var(--text-muted);">
+          Opened <%= time_ago_in_words(incident.created_at) %> ago
+        </div>
+      </div>
+    <% end %>
+  </div>
+<% end %>
+
+<h2 style="font-size: 1.25rem; margin-bottom: 1rem;">Past Resolved Incidents (<%= @resolved_incidents.size %>)</h2>
+
+<% if @resolved_incidents.empty? %>
+  <div class="stat-card" style="text-align: center; padding: 2rem; color: var(--text-muted);">
+    No past incidents recorded.
+  </div>
+<% else %>
+  <% @resolved_incidents.each do |incident| %>
+    <div class="incident-card" style="border-left-color: var(--color-operational); opacity: 0.85;">
+      <div class="incident-header">
+        <div>
+          <a href="<%= incident_path(incident) %>" class="incident-title"><%= incident.title %></a>
+        </div>
+        <span class="service-status-badge badge-operational">Resolved</span>
+      </div>
+      <p style="color: var(--text-secondary); font-size: 0.9rem;"><%= incident.description %></p>
+      <div style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.5rem;">
+        Resolved on <%= incident.resolved_at&.strftime("%b %d, %Y at %H:%M") %>
+      </div>
+    </div>
+  <% end %>
+<% end %>

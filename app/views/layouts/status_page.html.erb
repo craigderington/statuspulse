@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>System Status — StatusPul.se</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="description" content="Live system uptime and incident status portal.">
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+    <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
+    <%= javascript_importmap_tags %>
+  </head>
+  <body>
+    <div class="status-page-layout">
+      <%= yield %>
+      <footer class="footer" style="border:none; margin-top: 3rem;">
+        <p>Powered by <strong style="color: var(--text-primary);">StatusPul.se</strong> Uptime Monitor</p>
+      </footer>
+    </div>
+  </body>
+</html>

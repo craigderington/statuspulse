@@ -1,0 +1,103 @@
+<%= turbo_stream_from "services_status" %>
+
+<div class="hero-status-banner">
+  <div class="status-indicator-huge">
+    <div class="pulse-dot pulse-<%= @overall_status %>"></div>
+    <div>
+      <h1 class="status-title">
+        <% case @overall_status %>
+        <% when 'operational' %>
+          All Core Services Operational
+        <% when 'degraded' %>
+          System Experiencing Degraded Performance
+        <% when 'outage' %>
+          Major Outage Detected
+        <% end %>
+      </h1>
+      <p class="status-subtitle">
+        Real-time telemetry and status monitoring active across <%= @services.size %> endpoints.
+      </p>
+    </div>
+  </div>
+
+  <div style="display: flex; gap: 0.75rem;">
+    <%= link_to new_service_path, class: "btn btn-primary" do %>
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+      <span>New Service</span>
+    <% end %>
+    <%= link_to new_incident_path, class: "btn btn-secondary" do %>
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+      <span>Log Incident</span>
+    <% end %>
+  </div>
+</div>
+
+<div class="stats-grid">
+  <div class="stat-card">
+    <div class="stat-label">30-Day Avg Uptime</div>
+    <div class="stat-value" style="color: var(--color-operational);"><%= @avg_uptime %>%</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-label">Average Response Time</div>
+    <div class="stat-value" style="color: var(--accent-cyan);"><%= @avg_response_time %> ms</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-label">Monitored Endpoints</div>
+    <div class="stat-value"><%= @services.size %></div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-label">Active Incidents</div>
+    <div class="stat-value" style="color: <%= @active_incidents.any? ? 'var(--color-outage)' : 'var(--text-primary)' %>;">
+      <%= @active_incidents.size %>
+    </div>
+  </div>
+</div>
+
+<% if @active_incidents.any? %>
+  <div style="margin-bottom: 2.5rem;">
+    <div class="section-header">
+      <h2 class="section-title" style="color: var(--color-degraded);">Active Incidents</h2>
+      <%= link_to "View All Incidents", incidents_path, class: "nav-link" %>
+    </div>
+
+    <% @active_incidents.each do |incident| %>
+      <div class="incident-card severity-<%= incident.severity %>">
+        <div class="incident-header">
+          <div>
+            <span class="service-status-badge badge-<%= incident.severity == 'major_outage' ? 'outage' : 'degraded' %>" style="margin-bottom: 0.5rem;">
+              <%= incident.severity.titleize %>
+            </span>
+            <a href="<%= incident_path(incident) %>" class="incident-title"><%= incident.title %></a>
+          </div>
+          <span class="service-status-badge badge-maintenance"><%= incident.status.titleize %></span>
+        </div>
+
+        <p style="color: var(--text-secondary); font-size: 0.95rem; margin-bottom: 0.75rem;">
+          <%= incident.description %>
+        </p>
+
+        <% if incident.services.any? %>
+          <div style="display: flex; gap: 0.5rem; align-items: center; font-size: 0.85rem; color: var(--text-muted);">
+            <span>Affected Services:</span>
+            <% incident.services.each do |s| %>
+              <span class="http-method-badge"><%= s.name %></span>
+            <% end %>
+          </div>
+        <% end %>
+      </div>
+    <% end %>
+  </div>
+<% end %>
+
+<div class="section-header">
+  <h2 class="section-title">Services Telemetry</h2>
+  <div>
+    <%= link_to "Manage Endpoints", services_path, class: "btn btn-secondary btn-sm" %>
+  </div>
+</div>
+
+<div class="services-list">
+  <% @services.each do |service| %>
+    <%= render "services/service_card", service: service %>
+  <% end %>
+</div>

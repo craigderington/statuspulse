@@ -1,0 +1,15 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  service: one
+  status_code: 1
+  response_time_ms: 1
+  success: false
+  error_message: MyString
+
+two:
+  service: two
+  status_code: 1
+  response_time_ms: 1
+  success: false
+  error_message: MyString

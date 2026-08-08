@@ -1,0 +1,76 @@
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: statuspulse-db
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: statuspulse_password
+      POSTGRES_DB: status_pulse_development
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d status_pulse_development"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    container_name: statuspulse-redis
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: statuspulse-web
+    command: ./bin/rails server -b 0.0.0.0 -p 3000
+    ports:
+      - "3001:3000"
+    environment:
+      RAILS_ENV: development
+      DATABASE_HOST: db
+      DATABASE_USERNAME: postgres
+      DATABASE_PASSWORD: statuspulse_password
+      DATABASE_NAME: status_pulse_development
+      REDIS_URL: redis://redis:6379/1
+      SECRET_KEY_BASE: 829f048d011f0a12e340c4987b1c3e109d9486c9d09a273bf1f08bf892d194c5029a
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    volumes:
+      - .:/rails
+
+  jobs:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: statuspulse-jobs
+    command: bundle exec solid_queue:start
+    environment:
+      RAILS_ENV: development
+      DATABASE_HOST: db
+      DATABASE_USERNAME: postgres
+      DATABASE_PASSWORD: statuspulse_password
+      DATABASE_NAME: status_pulse_development
+      REDIS_URL: redis://redis:6379/1
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    volumes:
+      - .:/rails
+
+volumes:
+  postgres_data:
+  redis_data:
+  gem_cache:

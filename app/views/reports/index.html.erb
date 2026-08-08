@@ -1,0 +1,70 @@
+<div class="section-header" style="margin-bottom: 2rem;">
+  <div>
+    <h1 class="section-title">SLA Analytics & Performance Reports</h1>
+    <p style="color: var(--text-secondary); font-size: 0.95rem; margin-top: 0.25rem;">
+      Detailed SLA compliance uptime, P90 response latency distribution, and failure analysis for <%= current_organization.name %>.
+    </p>
+  </div>
+
+  <div style="display: flex; gap: 0.75rem;">
+    <%= button_to send_test_email_reports_path, method: :post, class: "btn btn-primary" do %>
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+      <span>Dispatch Weekly Email Digest Now</span>
+    <% end %>
+  </div>
+</div>
+
+<div class="stats-grid" style="margin-bottom: 2.5rem;">
+  <div class="stat-card">
+    <div class="stat-label">Organization Uptime (<%= @period_days %> Days)</div>
+    <div class="stat-value" style="color: var(--color-operational);"><%= current_organization.average_uptime_percentage(@period_days.days) %>%</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-label">Avg Latency</div>
+    <div class="stat-value" style="color: var(--accent-cyan);"><%= current_organization.average_response_latency(24.hours) %> ms</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-label">Weekly Email Digest</div>
+    <div class="stat-value" style="color: var(--color-operational); font-size: 1.4rem;">
+      <%= current_organization.weekly_digest_enabled ? "Enabled (Every Mon 8 AM)" : "Disabled" %>
+    </div>
+  </div>
+</div>
+
+<div class="section-header">
+  <h2 class="section-title">Service-Level SLA Breakdown</h2>
+</div>
+
+<div class="stat-card" style="padding: 0; overflow: hidden; margin-bottom: 3rem;">
+  <table style="width: 100%; border-collapse: collapse; text-align: left;">
+    <thead>
+      <tr style="border-bottom: 1px solid var(--border-color); background: rgba(255,255,255,0.03); color: var(--text-secondary); font-size: 0.85rem; text-transform: uppercase;">
+        <th style="padding: 1rem;">Service Name</th>
+        <th style="padding: 1rem;">Checks Run</th>
+        <th style="padding: 1rem;">Successful</th>
+        <th style="padding: 1rem;">Failed</th>
+        <th style="padding: 1rem;">SLA Uptime %</th>
+        <th style="padding: 1rem;">Avg Latency</th>
+        <th style="padding: 1rem;">P90 Latency</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @reports_data.each do |data| %>
+        <tr style="border-bottom: 1px solid var(--border-color); font-size: 0.95rem;">
+          <td style="padding: 1rem;">
+            <a href="<%= service_path(data[:service]) %>" style="color: var(--text-primary); font-weight: 600; text-decoration: none;"><%= data[:service].name %></a>
+            <div style="font-size: 0.8rem; color: var(--text-secondary); font-family: 'Fira Code', monospace;"><%= data[:service].url %></div>
+          </td>
+          <td style="padding: 1rem;"><%= data[:total_checks] %></td>
+          <td style="padding: 1rem; color: var(--color-operational); font-weight: 600;"><%= data[:successful_checks] %></td>
+          <td style="padding: 1rem; color: <%= data[:failed_checks] > 0 ? 'var(--color-outage)' : 'var(--text-muted)' %>; font-weight: 600;"><%= data[:failed_checks] %></td>
+          <td style="padding: 1rem; font-weight: 700; color: <%= data[:uptime_percentage] >= 99.0 ? 'var(--color-operational)' : 'var(--color-degraded)' %>;">
+            <%= data[:uptime_percentage] %>%
+          </td>
+          <td style="padding: 1rem; font-family: 'Fira Code', monospace;"><%= data[:average_latency_ms] %> ms</td>
+          <td style="padding: 1rem; font-family: 'Fira Code', monospace; color: var(--accent-cyan);"><%= data[:p90_latency_ms] %> ms</td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>

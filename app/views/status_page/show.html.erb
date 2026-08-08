@@ -1,0 +1,132 @@
+<div style="text-align: center; margin-bottom: 3rem; padding-top: 1rem;">
+  <div style="display: inline-flex; align-items: center; gap: 0.75rem; margin-bottom: 1.5rem;">
+    <div class="brand-icon" style="width: 44px; height: 44px;">
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+      </svg>
+    </div>
+    <div>
+      <span class="brand-name" style="font-size: 2rem;">StatusPul.se</span>
+      <% if @organization %>
+        <div style="font-size: 1.05rem; font-weight: 600; color: var(--accent-cyan); margin-top: 0.15rem;"><%= @organization.name %> Status</div>
+      <% end %>
+    </div>
+  </div>
+
+  <div class="hero-status-banner" style="justify-content: center; text-align: center;">
+    <div class="status-indicator-huge">
+      <div class="pulse-dot pulse-<%= @overall_status %>"></div>
+      <div>
+        <h1 class="status-title" style="font-size: 1.85rem;">
+          <% case @overall_status %>
+          <% when 'operational' %>
+            All Systems Fully Operational
+          <% when 'degraded' %>
+            Partial System Degradation
+          <% when 'outage' %>
+            Major System Outage
+          <% end %>
+        </h1>
+        <p class="status-subtitle" style="margin-top: 0.25rem;">
+          Overall System Uptime (30 Days): <strong style="color: var(--color-operational);"><%= @overall_uptime %>%</strong>
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<% if @active_incidents.any? %>
+  <div style="margin-bottom: 3rem;">
+    <h2 class="section-title" style="color: var(--color-degraded); margin-bottom: 1rem;">Active Incidents & Advisory</h2>
+    <% @active_incidents.each do |incident| %>
+      <div class="incident-card severity-<%= incident.severity %>">
+        <div class="incident-header">
+          <div>
+            <span class="service-status-badge badge-<%= incident.severity == 'major_outage' ? 'outage' : 'degraded' %>">
+              <%= incident.severity.titleize %>
+            </span>
+            <h3 style="font-size: 1.2rem; display: inline; margin-left: 0.5rem;"><%= incident.title %></h3>
+          </div>
+          <span class="service-status-badge badge-maintenance"><%= incident.status.titleize %></span>
+        </div>
+
+        <div class="incident-timeline">
+          <% incident.incident_updates.order(created_at: :desc).each do |upd| %>
+            <div class="update-item">
+              <div class="update-meta">
+                <strong style="color: var(--text-primary);"><%= upd.status.titleize %></strong> — <%= upd.created_at.strftime("%b %d, %H:%M UTC") %>
+              </div>
+              <div class="update-body"><%= upd.body %></div>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    <% end %>
+  </div>
+<% end %>
+
+<div class="section-header" style="margin-bottom: 1.25rem;">
+  <h2 class="section-title">System Services Status</h2>
+  <span style="font-size: 0.85rem; color: var(--text-muted);">Updated in real-time</span>
+</div>
+
+<div class="services-list" style="margin-bottom: 3rem;">
+  <% @services.each do |service| %>
+    <div class="service-card">
+      <div class="service-main" style="margin-bottom: 0.75rem;">
+        <div>
+          <div style="font-size: 1.15rem; font-weight: 600;"><%= service.name %></div>
+          <% if service.description.present? %>
+            <div style="font-size: 0.85rem; color: var(--text-secondary);"><%= service.description %></div>
+          <% end %>
+        </div>
+        <div class="service-status-badge badge-<%= service.status %>">
+          <span style="width: 8px; height: 8px; border-radius: 50%; background: currentColor;"></span>
+          <%= service.status.titleize %>
+        </div>
+      </div>
+
+      <div class="timeline-container">
+        <div class="timeline-bars">
+          <% service.history_bars(45).each do |bar| %>
+            <% if bar[:success].nil? %>
+              <div class="timeline-bar bar-empty"></div>
+            <% elsif bar[:success] %>
+              <div class="timeline-bar <%= bar[:latency].to_i > 2500 ? 'bar-degraded' : 'bar-success' %>" 
+                   title="Operational — <%= bar[:latency] %>ms"></div>
+            <% else %>
+              <div class="timeline-bar bar-failed" 
+                   title="Service Disruption"></div>
+            <% end %>
+          <% end %>
+        </div>
+        <div class="timeline-labels">
+          <span>90 checks ago</span>
+          <span><%= service.uptime_percentage %>% 30-day uptime</span>
+          <span>Today</span>
+        </div>
+      </div>
+    </div>
+  <% end %>
+</div>
+
+<h2 class="section-title" style="margin-bottom: 1.25rem;">Past Incident History</h2>
+
+<% if @recent_incidents.select(&:resolved_at).empty? %>
+  <div class="stat-card" style="text-align: center; color: var(--text-muted); padding: 2rem;">
+    No incidents reported in the last 90 days.
+  </div>
+<% else %>
+  <% @recent_incidents.select(&:resolved_at).each do |incident| %>
+    <div class="incident-card" style="border-left-color: var(--color-operational);">
+      <div class="incident-header">
+        <strong style="font-size: 1.05rem;"><%= incident.title %></strong>
+        <span class="service-status-badge badge-operational">Resolved</span>
+      </div>
+      <p style="font-size: 0.9rem; color: var(--text-secondary); margin: 0.5rem 0;"><%= incident.description %></p>
+      <div style="font-size: 0.8rem; color: var(--text-muted);">
+        Resolved on <%= incident.resolved_at.strftime("%B %d, %Y") %>
+      </div>
+    </div>
+  <% end %>
+<% end %>

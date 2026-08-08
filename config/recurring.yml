@@ -1,0 +1,9 @@
+production:
+  weekly_digest_emails:
+    class: WeeklyDigestJob
+    schedule: "0 8 * * 1"
+
+development:
+  weekly_digest_emails:
+    class: WeeklyDigestJob
+    schedule: "0 8 * * 1"

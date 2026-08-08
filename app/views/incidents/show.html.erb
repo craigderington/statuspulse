@@ -1,0 +1,63 @@
+<div style="max-width: 900px; margin: 0 auto;">
+  <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1.5rem;">
+    <div>
+      <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem;">
+        <span class="service-status-badge badge-<%= @incident.severity == 'major_outage' ? 'outage' : 'degraded' %>">
+          <%= @incident.severity.titleize %>
+        </span>
+        <span class="service-status-badge badge-<%= @incident.status == 'resolved' ? 'operational' : 'maintenance' %>">
+          <%= @incident.status.titleize %>
+        </span>
+      </div>
+      <h1 style="font-size: 1.85rem; font-weight: 700;"><%= @incident.title %></h1>
+      <p style="color: var(--text-secondary); margin-top: 0.5rem;"><%= @incident.description %></p>
+    </div>
+
+    <div style="display: flex; gap: 0.75rem;">
+      <%= link_to "Edit Incident", edit_incident_path(@incident), class: "btn btn-secondary" %>
+      <%= button_to "Delete", incident_path(@incident), method: :delete, data: { turbo_confirm: "Delete this incident record?" }, class: "btn btn-danger" %>
+    </div>
+  </div>
+
+  <div class="stat-card" style="margin-bottom: 2rem;">
+    <h3 style="font-size: 1.1rem; margin-bottom: 1rem; color: var(--accent-cyan);">Post Progress / Resolution Update</h3>
+
+    <%= form_with(model: [@incident, @new_update], local: true) do |f| %>
+      <div class="grid-2col">
+        <div class="form-group">
+          <%= f.label :status, "Updated Incident Stage", class: "form-label" %>
+          <%= f.select :status, Incident::STATUSES.map { |s| [s.titleize, s] }, {}, class: "form-select" %>
+        </div>
+        <div class="form-group" style="display: flex; align-items: flex-end;">
+          <div style="font-size: 0.85rem; color: var(--text-secondary);">
+            Selecting <strong>Resolved</strong> will automatically mark the incident as closed.
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <%= f.label :body, "Update Message", class: "form-label" %>
+        <%= f.text_area :body, class: "form-textarea", style: "min-height: 90px;", placeholder: "Describe latest findings, mitigations, or resolution details..." %>
+      </div>
+
+      <div style="display: flex; justify-content: flex-end;">
+        <%= f.submit "Post Update", class: "btn btn-primary" %>
+      </div>
+    <% end %>
+  </div>
+
+  <h2 style="font-size: 1.35rem; margin-bottom: 1.25rem;">Incident Timeline Log</h2>
+
+  <div class="incident-timeline">
+    <% @incident_updates.each do |update| %>
+      <div class="update-item">
+        <div class="update-meta">
+          <strong style="color: var(--text-primary);"><%= update.status.titleize %></strong> — <%= update.created_at.strftime("%b %d, %Y at %H:%M") %>
+        </div>
+        <div class="update-body">
+          <%= update.body %>
+        </div>
+      </div>
+    <% end %>
+  </div>
+</div>

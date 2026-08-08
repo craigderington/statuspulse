@@ -1,0 +1,88 @@
+<%= form_with(model: service, local: true, class: "form-card") do |f| %>
+  <% if service.errors.any? %>
+    <div class="flash-message flash-alert" style="margin-bottom: 1.5rem;">
+      <div>
+        <strong><%= pluralize(service.errors.count, "error") %> prevented saving this service:</strong>
+        <ul style="margin-top: 0.5rem; padding-left: 1.25rem;">
+          <% service.errors.full_messages.each do |msg| %>
+            <li><%= msg %></li>
+          <% end %>
+        </ul>
+      </div>
+    </div>
+  <% end %>
+
+  <h2 style="margin-bottom: 1.5rem;"><%= service.new_record? ? "Add New Service Endpoint" : "Edit Service Endpoint" %></h2>
+
+  <div class="form-group">
+    <%= f.label :name, "Service Name", class: "form-label" %>
+    <%= f.text_field :name, class: "form-control", placeholder: "e.g., Payment Gateway API" %>
+  </div>
+
+  <div class="form-group">
+    <%= f.label :description, "Description", class: "form-label" %>
+    <%= f.text_area :description, class: "form-textarea", style: "min-height: 80px;", placeholder: "Brief summary of what this endpoint does..." %>
+  </div>
+
+  <div class="grid-2col">
+    <div class="form-group">
+      <%= f.label :http_method, "HTTP Method", class: "form-label" %>
+      <%= f.select :http_method, Service::HTTP_METHODS, {}, class: "form-select" %>
+      <div class="form-hint">Supports GET, POST, PUT, HEAD, PATCH, DELETE, OPTIONS</div>
+    </div>
+
+    <div class="form-group">
+      <%= f.label :expected_status_code, "Expected Status Code", class: "form-label" %>
+      <%= f.number_field :expected_status_code, class: "form-control", placeholder: "200" %>
+      <div class="form-hint">HTTP status code that marks health (default: 200)</div>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <%= f.label :url, "Endpoint URL", class: "form-label" %>
+    <%= f.url_field :url, class: "form-control form-control-code", placeholder: "https://api.yourdomain.com/v1/health" %>
+  </div>
+
+  <div class="form-group">
+    <%= f.label :headers, "HTTP Request Headers", class: "form-label" %>
+    <%= f.text_area :headers, class: "form-textarea form-control-code", placeholder: "{\n  \"Authorization\": \"Bearer token_xyz\",\n  \"Content-Type\": \"application/json\",\n  \"User-Agent\": \"StatusPulse-Custom/1.0\"\n}" %>
+    <div class="form-hint">Provide headers as valid JSON or line-by-line <code>Header-Name: Value</code></div>
+  </div>
+
+  <div class="form-group">
+    <%= f.label :request_body, "HTTP Request Payload / Body", class: "form-label" %>
+    <%= f.text_area :request_body, class: "form-textarea form-control-code", placeholder: "{\n  \"action\": \"ping\",\n  \"environment\": \"production\"\n}" %>
+    <div class="form-hint">Optional payload sent when method is POST, PUT, or PATCH</div>
+  </div>
+
+  <div class="grid-2col">
+    <div class="form-group">
+      <%= f.label :expected_body_match, "Expected Body Substring (Optional)", class: "form-label" %>
+      <%= f.text_field :expected_body_match, class: "form-control", placeholder: "e.g., \"status\":\"ok\"" %>
+      <div class="form-hint">Check passes only if response contains this string</div>
+    </div>
+
+    <div class="form-group">
+      <%= f.label :timeout_seconds, "Timeout (Seconds)", class: "form-label" %>
+      <%= f.number_field :timeout_seconds, class: "form-control", placeholder: "10" %>
+      <div class="form-hint">Request timeout threshold (default: 10s)</div>
+    </div>
+  </div>
+
+  <div class="grid-2col">
+    <div class="form-group">
+      <%= f.label :check_interval_seconds, "Check Interval (Seconds)", class: "form-label" %>
+      <%= f.number_field :check_interval_seconds, class: "form-control", placeholder: "60" %>
+    </div>
+
+    <div class="form-group">
+      <%= f.label :status, "Current Status Override", class: "form-label" %>
+      <%= f.select :status, Service::STATUSES.map { |s| [s.titleize, s] }, {}, class: "form-select" %>
+    </div>
+  </div>
+
+  <div style="display: flex; justify-content: flex-end; gap: 1rem; margin-top: 2rem;">
+    <%= link_to "Cancel", services_path, class: "btn btn-secondary" %>
+    <%= f.submit service.new_record? ? "Create Service" : "Save Changes", class: "btn btn-primary" %>
+  </div>
+<% end %>
