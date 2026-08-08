@@ -1,0 +1,56 @@
+# Ignore bundled gems
+/vendor/bundle
+
+# Ignore application log files and temp files
+/log/*
+!/log/.keep
+/tmp/*
+!/tmp/.keep
+/tmp/pids/*
+!/tmp/pids/.keep
+/tmp/cache/*
+!/tmp/cache/.keep
+/tmp/sockets/*
+!/tmp/sockets/.keep
+
+# Ignore storage files for Active Storage, SQLite databases, and Solid adapters
+/storage/*
+!/storage/.keep
+/db/*.sqlite3
+/db/*.sqlite3-journal
+/db/*.sqlite3-shm
+/db/*.sqlite3-wal
+
+# Ignore Master Key and credentials keys
+/config/master.key
+/config/credentials/*.key
+
+# Ignore secret environment files
+.env
+.env.*
+!.env.example
+
+# Ignore Public Assets compiled output
+/public/assets
+/public/packs
+/public/packs-test
+
+# Ignore Node / JavaScript dependencies
+/node_modules
+
+# Ignore YARN / NPM / System logs
+yarn-debug.log*
+yarn-error.log*
+npm-debug.log*
+.pnpm-debug.log*
+
+# Ignore System & OS files
+.DS_Store
+Thumbs.db
+
+# Ignore IDE / Editor folders
+.vscode/
+.idea/
+*.swp
+*~
+.ruby-lsp/

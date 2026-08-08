@@ -1,0 +1,13 @@
+.git
+.gitignore
+log/*
+tmp/*
+storage/*
+public/assets
+db/*.sqlite3
+db/*.sqlite3-*
+node_modules
+.bundle
+vendor/bundle
+Dockerfile
+docker-compose.yml
