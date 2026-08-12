@@ -177,6 +177,19 @@ class Service < ApplicationRecord
   # the "N checks ago" label cannot drift from the number of bars drawn.
   TIMELINE_BAR_COUNT = 45
 
+  # Timestamp of the oldest check the timeline strip actually shows.
+  #
+  # The strip is padded with blank bars when there is less history than it can
+  # hold, so labelling its left edge "45 checks ago" is wrong until 45 real
+  # checks exist. The age of the oldest real check is both accurate from the
+  # first check onward and more useful — how far back the strip reaches.
+  def oldest_history_check_at
+    # pluck.min rather than .minimum(:created_at): an aggregate ignores LIMIT and
+    # would return the oldest check in the entire table, including ones that
+    # scrolled off the strip long ago.
+    check_logs.recent.limit(TIMELINE_BAR_COUNT).pluck(:created_at).min
+  end
+
   def history_bars(count = TIMELINE_BAR_COUNT)
     # Returns last N days/checks status for timeline visualizer
     recent_logs = check_logs.recent.limit(count).to_a.reverse

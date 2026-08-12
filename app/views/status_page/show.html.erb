@@ -101,7 +101,8 @@
           <% end %>
         </div>
         <div class="timeline-labels">
-          <span><%= Service::TIMELINE_BAR_COUNT %> checks ago</span>
+          <% oldest = service.oldest_history_check_at %>
+          <span><%= oldest ? "#{time_ago_in_words(oldest)} ago" : "no checks yet" %></span>
           <span><%= service.uptime_percentage %>% 30-day uptime</span>
           <span>Latest</span>
         </div>
