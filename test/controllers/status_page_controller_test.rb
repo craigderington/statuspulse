@@ -5,9 +5,15 @@ class StatusPageControllerTest < ActionDispatch::IntegrationTest
     @org = Organization.create!(name: "Acme Cloud Services", slug: "acme-cloud")
   end
 
-  test "should get public status page" do
+  test "bare /status serves the configured platform organization" do
+    previous = ENV["PLATFORM_STATUS_SLUG"]
+    ENV["PLATFORM_STATUS_SLUG"] = @org.slug
+
     get public_status_url
+
     assert_response :success
+  ensure
+    ENV["PLATFORM_STATUS_SLUG"] = previous
   end
 
   test "should get organization-specific tenant public status page by slug" do

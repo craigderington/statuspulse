@@ -13,8 +13,10 @@ class ApplicationController < ActionController::Base
       end
     end
 
-    # Fallback to first organization for unauthenticated / public access if needed
-    Current.organization ||= Organization.first
+    # Deliberately no fallback. Assigning Organization.first to anonymous
+    # requests hands every unauthenticated visitor whichever tenant happens to
+    # be row #1, and any future public controller inherits it silently.
+    # Controllers that serve a specific tenant must resolve it explicitly.
   end
 
   def require_login
