@@ -1,0 +1,90 @@
+<% content_for :title, "Security — StatusPulse" %>
+
+<div class="section-header" style="margin-bottom: 2rem;">
+  <div>
+    <h1 class="section-title" style="font-size: 1.6rem;">Security</h1>
+    <p style="color: var(--text-secondary); font-size: 0.95rem; margin-top: 0.25rem;">
+      Settings for your own account, <%= @user.email %>.
+    </p>
+  </div>
+</div>
+
+<%# Shown once, immediately after regenerating. Never retrievable afterwards. %>
+<% if @fresh_codes.present? %>
+  <div class="form-card" style="max-width: 46rem; margin-bottom: 1.5rem;">
+    <h2 class="mk-h3" style="font-size: 1.05rem; margin-bottom: 0.5rem;">Your new recovery codes</h2>
+    <p class="form-hint" style="margin-bottom: 1rem;">
+      Save these now — they replace your previous codes, and they will not be shown again.
+    </p>
+
+    <div class="codes" data-controller="clipboard">
+      <ol class="codes__list" data-clipboard-target="source">
+        <% @fresh_codes.each do |code| %>
+          <li class="codes__code"><%= code %></li>
+        <% end %>
+      </ol>
+      <div class="codes__actions">
+        <button type="button" class="btn btn-secondary btn-sm"
+                data-action="clipboard#copy" data-clipboard-target="button">Copy all</button>
+        <%= link_to "Download", "data:text/plain;charset=utf-8,#{ERB::Util.url_encode(@fresh_codes.join("\n"))}",
+              download: "statuspulse-recovery-codes.txt", class: "btn btn-secondary btn-sm" %>
+      </div>
+    </div>
+  </div>
+<% end %>
+
+<div class="form-card" style="max-width: 46rem;">
+  <div class="security-row">
+    <div>
+      <h2 class="mk-h3" style="font-size: 1.05rem; margin-bottom: 0.35rem;">Two-factor authentication</h2>
+      <% if @user.totp_enabled? %>
+        <p class="form-hint">
+          On since <%= @user.totp_enabled_at.strftime("%d %b %Y") %>.
+          A code from your authenticator is required every time you sign in.
+        </p>
+      <% else %>
+        <p class="form-hint">
+          Off. Your password is currently the only thing protecting this account
+          and the client data in it.
+        </p>
+      <% end %>
+    </div>
+
+    <span class="service-status-badge <%= @user.totp_enabled? ? "badge-operational" : "badge-degraded" %>">
+      <%= @user.totp_enabled? ? "On" : "Off" %>
+    </span>
+  </div>
+
+  <% unless @user.totp_enabled? %>
+    <div style="margin-top: 1.5rem;">
+      <%= link_to "Set up two-factor authentication", two_factor_setup_path, class: "btn btn-primary" %>
+    </div>
+  <% end %>
+</div>
+
+<% if @user.totp_enabled? %>
+  <div class="form-card" style="max-width: 46rem; margin-top: 1.5rem;">
+    <h2 class="mk-h3" style="font-size: 1.05rem; margin-bottom: 0.35rem;">Recovery codes</h2>
+    <p class="form-hint" style="margin-bottom: 1.25rem;">
+      <% if @unused_recovery_codes.zero? %>
+        <strong style="color: var(--color-degraded);">You have no unused recovery codes.</strong>
+        If you lose your authenticator you will not be able to sign in without an
+        administrator resetting your account.
+      <% else %>
+        <%= pluralize(@unused_recovery_codes, "unused code") %> remaining. Generating a new
+        set immediately invalidates the old one.
+      <% end %>
+    </p>
+
+    <%= form_with url: regenerate_recovery_codes_path, method: :post do %>
+      <div class="form-group">
+        <%= label_tag :code, "Enter a code from your authenticator to confirm", class: "form-label" %>
+        <%= text_field_tag :code, nil, class: "form-control form-control-code",
+              inputmode: "numeric", autocomplete: "one-time-code", placeholder: "000000",
+              style: "max-width: 12rem;" %>
+        <p class="form-hint">Proving you still hold the authenticator stops a stolen session minting its own bypass codes.</p>
+      </div>
+      <button type="submit" class="btn btn-secondary">Generate new recovery codes</button>
+    <% end %>
+  </div>
+<% end %>

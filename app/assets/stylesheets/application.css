@@ -853,3 +853,10 @@ input[type="checkbox"] {
   .codes__code:nth-child(odd) { border-right: none; }
   .otp { gap: 0.35rem; }
 }
+
+.security-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1.5rem;
+}

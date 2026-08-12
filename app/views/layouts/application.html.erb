@@ -45,6 +45,7 @@
             <a href="<%= services_path %>" class="nav-link <%= 'active' if controller_name == 'services' %>">Services</a>
             <a href="<%= incidents_path %>" class="nav-link <%= 'active' if controller_name == 'incidents' %>">Incidents</a>
             <a href="<%= reports_path %>" class="nav-link <%= 'active' if controller_name == 'reports' %>">Reports</a>
+            <a href="<%= security_path %>" class="nav-link <%= 'active' if controller_name == 'security' %>">Security</a>
             <% if Current.user.admin? %>
               <a href="<%= edit_organization_path %>" class="nav-link <%= 'active' if controller_name == 'organizations' %>">Settings</a>
             <% end %>

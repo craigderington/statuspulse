@@ -32,6 +32,11 @@ Rails.application.routes.draw do
   # Singular: you edit your own workspace, so there is no id in the URL.
   resource :organization, only: [ :edit, :update ]
 
+  # Personal account security, available to every signed-in user — unlike
+  # workspace settings, which are admin-only.
+  get  "security", to: "security#show", as: :security
+  post "security/recovery-codes", to: "security#regenerate_recovery_codes", as: :regenerate_recovery_codes
+
   resources :services do
     member do
       post :check_now
