@@ -48,9 +48,10 @@
     </div>
   </div>
 
+  <% bar_count = Service::TIMELINE_BAR_COUNT %>
   <div class="timeline-container">
     <div class="timeline-bars">
-      <% service.history_bars(45).each do |bar| %>
+      <% service.history_bars(bar_count).each do |bar| %>
         <% if bar[:success].nil? %>
           <div class="timeline-bar bar-empty" title="No check data"></div>
         <% elsif bar[:success] %>
@@ -63,9 +64,9 @@
       <% end %>
     </div>
     <div class="timeline-labels">
-      <span>90 checks ago</span>
-      <span>99.9% Operational</span>
-      <span>Today</span>
+      <span><%= bar_count %> checks ago</span>
+      <span><%= number_with_precision(service.uptime_percentage, precision: 2) %>% 30-day uptime</span>
+      <span>Latest</span>
     </div>
   </div>
 </div>

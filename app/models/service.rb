@@ -173,7 +173,11 @@ class Service < ApplicationRecord
     logs.average(:response_time_ms).to_f.round
   end
 
-  def history_bars(count = 45)
+  # Number of checks rendered in the timeline bar. Referenced by the views so
+  # the "N checks ago" label cannot drift from the number of bars drawn.
+  TIMELINE_BAR_COUNT = 45
+
+  def history_bars(count = TIMELINE_BAR_COUNT)
     # Returns last N days/checks status for timeline visualizer
     recent_logs = check_logs.recent.limit(count).to_a.reverse
     if recent_logs.size < count

@@ -88,7 +88,7 @@
 
       <div class="timeline-container">
         <div class="timeline-bars">
-          <% service.history_bars(45).each do |bar| %>
+          <% service.history_bars(Service::TIMELINE_BAR_COUNT).each do |bar| %>
             <% if bar[:success].nil? %>
               <div class="timeline-bar bar-empty"></div>
             <% elsif bar[:success] %>
@@ -101,9 +101,9 @@
           <% end %>
         </div>
         <div class="timeline-labels">
-          <span>90 checks ago</span>
+          <span><%= Service::TIMELINE_BAR_COUNT %> checks ago</span>
           <span><%= service.uptime_percentage %>% 30-day uptime</span>
-          <span>Today</span>
+          <span>Latest</span>
         </div>
       </div>
     </div>
