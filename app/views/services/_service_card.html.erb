@@ -30,6 +30,11 @@
             Not checked yet
           <% end %>
         </div>
+        <div class="service-countdown"
+             data-controller="countdown"
+             data-countdown-seconds-value="<%= service.seconds_until_next_check %>"
+             data-countdown-checked-value="<%= service.last_checked_at.present? %>">
+        </div>
       </div>
 
       <%= button_to check_now_service_path(service), method: :post, class: "btn btn-secondary btn-sm", title: "Trigger HTTP Ping check now" do %>

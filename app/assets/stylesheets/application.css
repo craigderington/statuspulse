@@ -580,3 +580,13 @@ h1, h2, h3, h4, .brand-title {
   color: var(--text-muted);
   font-size: 0.85rem;
 }
+
+/* Countdown to a service's next scheduled health check. tabular-nums keeps the
+   digits from jittering as the seconds tick down. */
+.service-countdown {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  margin-top: 0.2rem;
+  font-variant-numeric: tabular-nums;
+  min-height: 1rem;
+}
