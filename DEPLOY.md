@@ -370,3 +370,14 @@ openssl s_client -connect statuspulse.org:443 -servername statuspulse.org -statu
 ```
 
 Confirm the apex response includes HSTS, `nosniff`, referrer, permissions, and frame protections; the `www` response is a permanent redirect to the apex; HTTP/2 is negotiated; and the certificate chain and OCSP response are valid. Note that OCSP stapling availability ultimately depends on the certificate authority's responder and certificate metadata.
+
+---
+
+## Backups
+
+Nightly `pg_dumpall`, 14 days local and 90 days offsite in S3 with write-only
+credentials. Setup, the IAM policy, and the restore procedure are in
+[`docs/BACKUPS.md`](docs/BACKUPS.md).
+
+**Do not restore a `pg_dumpall` into the running cluster** — it will apply rows
+to the live databases. The restore procedure uses an isolated throwaway cluster.
