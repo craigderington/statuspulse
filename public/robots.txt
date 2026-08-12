@@ -1,1 +1,18 @@
-# See https://www.robotstxt.org/robotstxt.html for documentation on how to use the robots.txt file
+# https://www.robotstxt.org/robotstxt.html
+#
+# The landing page and public status pages are meant to be found. Everything
+# behind a sign-in is not — those paths redirect to /login anyway, so crawling
+# them only wastes crawl budget on a login form.
+
+User-agent: *
+Allow: /$
+Allow: /status
+Disallow: /login
+Disallow: /signup
+Disallow: /dashboard
+Disallow: /services
+Disallow: /incidents
+Disallow: /reports
+Disallow: /up
+
+Sitemap: https://statuspulse.org/sitemap.xml

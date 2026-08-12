@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc><%= root_url %></loc>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+  </url>
+<%# /signup is intentionally absent: robots.txt disallows it, and listing a
+    disallowed URL in a sitemap is a contradiction Search Console reports as an
+    error. The landing page is the entry point; it links to sign-up. %>
+<% @organizations.each do |organization| %>
+  <url>
+    <loc><%= org_public_status_url(org_slug: organization.slug) %></loc>
+    <changefreq>hourly</changefreq>
+    <priority>0.8</priority>
+  </url>
+<% end %>
+</urlset>

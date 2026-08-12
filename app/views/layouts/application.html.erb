@@ -7,6 +7,11 @@
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
 
+    <%# Everything on this layout sits behind a sign-in. Keep it out of the
+        index regardless of what robots.txt says — a disallow is a request, a
+        noindex is a directive. %>
+    <meta name="robots" content="noindex, nofollow">
+
     <link rel="icon" href="/favicon.ico" sizes="any">
     <link rel="icon" href="/icon.svg" type="image/svg+xml">
     <link rel="apple-touch-icon" href="/apple-touch-icon.png">

@@ -24,7 +24,7 @@ class ApplicationController < ActionController::Base
   end
 
   def public_action?
-    %w[sessions registrations status_page marketing].include?(controller_name)
+    %w[sessions registrations status_page marketing sitemaps].include?(controller_name)
   end
 
   def current_organization

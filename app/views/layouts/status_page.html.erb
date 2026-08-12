@@ -7,6 +7,13 @@
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
 
+    <%# Status pages are indexable by default — a client's customers should be
+        able to find one when they suspect an outage. Tenants can opt out. %>
+    <% if @organization && !@organization.status_page_indexable? %>
+      <meta name="robots" content="noindex, nofollow">
+    <% end %>
+    <link rel="canonical" href="<%= request.original_url.split("?").first.sub("://www.", "://") %>">
+
     <link rel="icon" href="/favicon.ico" sizes="any">
     <link rel="icon" href="/icon.svg" type="image/svg+xml">
     <link rel="apple-touch-icon" href="/apple-touch-icon.png">

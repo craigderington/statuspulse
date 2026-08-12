@@ -40,6 +40,10 @@ Rails.application.routes.draw do
   # Health check route
   get "up" => "rails/health#show", as: :rails_health_check
 
+  # Rendered rather than static so opted-in client status pages are listed as
+  # soon as they exist.
+  get "sitemap", to: "sitemaps#show", as: :sitemap, defaults: { format: "xml" }
+
   # PWA manifest and service worker, rendered from app/views/pwa/. These views
   # shipped with the app but were never routed, so the manifest was dead code.
   get "manifest" => "rails/pwa#manifest", as: :pwa_manifest

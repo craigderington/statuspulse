@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_08_12_155332) do
+ActiveRecord::Schema[8.1].define(version: 2026_08_12_175944) do
   create_table "check_logs", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.string "error_message"
@@ -68,6 +68,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_12_155332) do
     t.datetime "created_at", null: false
     t.string "name"
     t.string "slug"
+    t.boolean "status_page_indexable", default: true, null: false
     t.datetime "updated_at", null: false
     t.boolean "weekly_digest_enabled"
   end
