@@ -590,3 +590,25 @@ h1, h2, h3, h4, .brand-title {
   font-variant-numeric: tabular-nums;
   min-height: 1rem;
 }
+
+/* Suspended monitoring. Amber rather than red: paused is a deliberate operator
+   action, not a failure, and must not read as an outage at a glance. */
+.paused-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: var(--color-degraded);
+  background: var(--color-degraded-bg);
+  border: 1px solid rgba(245, 158, 11, 0.35);
+  padding: 2px 8px;
+  border-radius: 999px;
+}
+
+/* Dim a paused card so the eye skips it when scanning for live problems. */
+.service-card:has(.paused-badge) .service-status-badge {
+  opacity: 0.55;
+}

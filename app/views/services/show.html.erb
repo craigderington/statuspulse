@@ -7,8 +7,18 @@
         <div class="service-status-badge badge-<%= @service.status %>">
           <%= @service.status.titleize %>
         </div>
+        <% if @service.paused? %>
+          <span class="paused-badge" title="Automatic checks suspended <%= time_ago_in_words(@service.paused_at) %> ago">Paused</span>
+        <% end %>
       </div>
       <div class="service-url" style="font-size: 1rem;"><%= @service.url %></div>
+      <div class="service-countdown"
+           style="margin-top: 0.4rem;"
+           data-controller="countdown"
+           data-countdown-seconds-value="<%= @service.seconds_until_next_check %>"
+           data-countdown-checked-value="<%= @service.last_checked_at.present? %>"
+           data-countdown-paused-value="<%= @service.paused? %>">
+      </div>
       <% if @service.description.present? %>
         <p style="color: var(--text-secondary); margin-top: 0.5rem;"><%= @service.description %></p>
       <% end %>
