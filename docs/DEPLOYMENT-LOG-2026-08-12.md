@@ -282,3 +282,78 @@ e77fa4a  fix            label the timeline by how far back it reaches, not bar c
 ```
 
 Operational procedures live in [`DEPLOY.md`](../DEPLOY.md).
+
+---
+
+## 10. After the deployment — same day
+
+### Public landing page
+
+The site had no marketing surface: `root` required a sign-in, so an anonymous
+visitor — and any crawler — received a login form. Nothing described what the
+product is.
+
+Positioned on **multi-tenancy and the MSP shape** rather than generic uptime
+monitoring. Competing head-on for "uptime monitoring" against incumbents with a
+decade of domain authority is not winnable; isolated workspaces and per-client
+status pages are a narrower position that is. The status pages are also the real
+SEO asset: nobody picks the 40th result for "uptime monitoring", but people do
+search a client's brand name during an outage.
+
+Design direction is **"instrument"** — a graticule grid, hairline rules,
+calibration ticks and tabular numerals. The first attempt was rejected as
+generic, correctly: it had blurred radial gradients, gradient-filled headline
+text, glassy rounded cards and an indigo→cyan palette, which is the house style
+of every developer-tool landing page of the last three years.
+
+The governing rule is **colour is reserved for signal**. The page is monochrome
+ink on near-black; the only saturated colour anywhere is green/amber/red where
+it means operational/degraded/outage. An operations product that spends colour
+on decoration advertises the opposite of the discipline it sells.
+
+The hero *shows* multi-tenancy rather than asserting it: several client
+workspaces checked in parallel, one degrading into an incident and recovering. A
+continuous uptime rail runs the page's full height as its spine. Both respect
+`prefers-reduced-motion`. Sample workspaces are fictional and labelled as such —
+no invented customers, testimonials or metrics.
+
+### Application rebranded to match
+
+The same palette, radii and typography now apply to the dashboard. The rule
+matters more here than on the landing page: the app spent indigo and cyan on
+chrome — brand chip, wordmark, primary buttons, focus rings, background washes —
+which competed with the status colours that carry meaning. Removing that
+competition makes a degraded service *more* visible.
+
+Uppercase was deliberately **not** carried over except on short labels. It suits
+a page read once; it is tiring on a dashboard watched all day.
+
+### SEO plumbing
+
+- `sitemap.xml` rendered dynamically, so opted-in client status pages appear automatically
+- `robots.txt` with a `Sitemap:` directive and the application paths disallowed
+- Canonical tags on the marketing and status layouts
+- Explicit `noindex` on signed-in pages — a robots.txt disallow is a request not to crawl, and does not prevent indexing of a URL discovered elsewhere
+- `Organization#status_page_indexable`, **default true**: status pages are meant to be found; tenants can opt out
+
+### Additional findings
+
+- **Sitemap was behind authentication.** `SitemapsController` inherited `require_login`, so Googlebot would have been redirected to `/login`. Caught by a test, not by inspection.
+- **Orphaned services are monitored but invisible.** `Service belongs_to :organization, optional: true` permits `organization_id: nil`. Such services are excluded from every tenant-scoped view but are still checked by `ServiceCheckJob`, which sweeps with an unscoped `find_each`. Five seeded development services were in this state. Worth deciding whether the association should be required.
+- **`/reports` rendered the digest setting in the operational green**, though a setting being enabled is not a service state, and still claimed 8 AM after the schedule moved to Eastern. Both fixed.
+
+### Commits
+
+```
+ed7a199  feat           public landing page positioned on multi-tenancy
+b0e687e  feat           rebrand the application to the instrument theme
+9d43a47  feat(seo)      sitemap, robots, canonicals and per-tenant indexing control
+```
+
+### Still outstanding
+
+Everything in section 8, plus:
+
+- **Landing and rebrand are not yet deployed.** They are pushed to `master`; the instance still runs the pre-landing build. `git pull && docker compose -f docker-compose.prod.yml up -d --build`, then `bin/rails db:migrate` for `status_page_indexable`.
+- **No per-tenant UI for the indexing opt-out.** The column exists and is respected, but nothing in the interface toggles it yet.
+- **Search Console has not been submitted.** Worth doing once the landing page is live, not before — otherwise the first crawl records a login form.
