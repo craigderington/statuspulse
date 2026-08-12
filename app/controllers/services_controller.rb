@@ -5,8 +5,19 @@ class ServicesController < ApplicationController
     @services = scope_services.ordered
   end
 
+  CHECKS_PER_PAGE = 50
+
   def show
-    @check_logs = @service.check_logs.recent.limit(50)
+    scope = @service.check_logs.recent
+
+    @checks_total = scope.count
+    @checks_pages = [ (@checks_total / CHECKS_PER_PAGE.to_f).ceil, 1 ].max
+    # Clamp rather than 404: a stale link to page 90 after a purge should land
+    # on the last page, not an error.
+    @checks_page = params[:page].to_i.clamp(1, @checks_pages)
+
+    @checks_offset = (@checks_page - 1) * CHECKS_PER_PAGE
+    @check_logs = scope.offset(@checks_offset).limit(CHECKS_PER_PAGE)
   end
 
   def new

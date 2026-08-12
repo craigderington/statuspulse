@@ -142,4 +142,33 @@
       <% end %>
     </tbody>
   </table>
+
+  <% if @checks_total.positive? %>
+    <nav class="pager" aria-label="Check history pages">
+      <p class="pager__count">
+        <%# Say the range and the total: the old page showed 50 rows with no
+            indication that any others existed. %>
+        <%= number_with_delimiter(@checks_offset + 1) %>–<%= number_with_delimiter(@checks_offset + @check_logs.size) %>
+        of <%= number_with_delimiter(@checks_total) %> checks
+      </p>
+
+      <% if @checks_pages > 1 %>
+        <div class="pager__controls">
+          <% if @checks_page > 1 %>
+            <%= link_to "Newer", service_path(@service, page: @checks_page - 1), class: "btn btn-secondary btn-sm", rel: "prev" %>
+          <% else %>
+            <span class="btn btn-secondary btn-sm pager__disabled" aria-disabled="true">Newer</span>
+          <% end %>
+
+          <span class="pager__position">Page <%= @checks_page %> of <%= number_with_delimiter(@checks_pages) %></span>
+
+          <% if @checks_page < @checks_pages %>
+            <%= link_to "Older", service_path(@service, page: @checks_page + 1), class: "btn btn-secondary btn-sm", rel: "next" %>
+          <% else %>
+            <span class="btn btn-secondary btn-sm pager__disabled" aria-disabled="true">Older</span>
+          <% end %>
+        </div>
+      <% end %>
+    </nav>
+  <% end %>
 </div>

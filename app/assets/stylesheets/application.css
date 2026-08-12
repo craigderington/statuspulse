@@ -682,3 +682,35 @@ input[type="checkbox"] {
   vertical-align: -2px;
   margin-right: 0.35rem;
 }
+
+/* Pager for the check history. Labels read "Newer"/"Older" rather than
+   "Previous"/"Next": the list is reverse-chronological, and direction in time
+   is what the reader is actually navigating. */
+.pager {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+  padding: 1rem;
+  border-top: 1px solid var(--border-color);
+}
+
+.pager__count,
+.pager__position {
+  font-family: var(--font-data);
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.pager__controls {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.pager__disabled {
+  opacity: 0.35;
+  pointer-events: none;
+}
