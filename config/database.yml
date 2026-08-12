@@ -65,18 +65,22 @@ test:
 production:
   primary: &primary_production
     <<: *default
-    database: rails_project_1_production
-    username: rails_project_1
-    password: <%= ENV["RAILS_PROJECT_1_DATABASE_PASSWORD"] %>
+    # Pinned explicitly: the `default` adapter above falls back to sqlite3 when
+    # DATABASE_HOST is unset, which in production fails silently and confusingly.
+    adapter: postgresql
+    database: <%= ENV.fetch("DATABASE_NAME", "statuspulse_production") %>
+    # Production-specific password var, falling back to DATABASE_PASSWORD so a
+    # single value can drive every environment if you prefer.
+    password: <%= ENV.fetch("STATUSPULSE_DATABASE_PASSWORD") { ENV["DATABASE_PASSWORD"] } %>
   cache:
     <<: *primary_production
-    database: rails_project_1_production_cache
+    database: <%= ENV.fetch("DATABASE_NAME", "statuspulse_production") %>_cache
     migrations_paths: db/cache_migrate
   queue:
     <<: *primary_production
-    database: rails_project_1_production_queue
+    database: <%= ENV.fetch("DATABASE_NAME", "statuspulse_production") %>_queue
     migrations_paths: db/queue_migrate
   cable:
     <<: *primary_production
-    database: rails_project_1_production_cable
+    database: <%= ENV.fetch("DATABASE_NAME", "statuspulse_production") %>_cable
     migrations_paths: db/cable_migrate

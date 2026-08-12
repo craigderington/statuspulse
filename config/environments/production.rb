@@ -25,13 +25,17 @@ Rails.application.configure do
   config.active_storage.service = :local
 
   # Assume all access to the app is happening through a SSL-terminating reverse proxy.
-  # config.assume_ssl = true
+  # Host Apache2 terminates TLS and forwards X-Forwarded-Proto: https. Without this,
+  # Rails believes requests are http and ActionCable rejects the WebSocket handshake
+  # because the Origin (https://statuspulse.org) fails its same-origin check.
+  config.assume_ssl = true
 
   # Force all access to the app over SSL, use Strict-Transport-Security, and use secure cookies.
-  # config.force_ssl = true
+  config.force_ssl = true
 
-  # Skip http-to-https redirect for the default health check endpoint.
-  # config.ssl_options = { redirect: { exclude: ->(request) { request.path == "/up" } } }
+  # Skip http-to-https redirect for the default health check endpoint, so the container
+  # healthcheck and Apache's probe aren't 301'd.
+  config.ssl_options = { redirect: { exclude: ->(request) { request.path == "/up" } } }
 
   # Log to STDOUT with the current request id as a default log tag.
   config.log_tags = [ :request_id ]
@@ -58,16 +62,18 @@ Rails.application.configure do
   # config.action_mailer.raise_delivery_errors = false
 
   # Set host to be used by links generated in mailer templates.
-  config.action_mailer.default_url_options = { host: "example.com" }
+  config.action_mailer.default_url_options = { host: "statuspulse.org", protocol: "https" }
 
-  # Specify outgoing SMTP server. Remember to add smtp/* credentials via bin/rails credentials:edit.
-  # config.action_mailer.smtp_settings = {
-  #   user_name: Rails.application.credentials.dig(:smtp, :user_name),
-  #   password: Rails.application.credentials.dig(:smtp, :password),
-  #   address: "smtp.example.com",
-  #   port: 587,
-  #   authentication: :plain
-  # }
+  # Outgoing mail via the Mailgun HTTP API (see lib/mailgun_api_delivery.rb).
+  # The API is used rather than SMTP because AWS restricts outbound SMTP on
+  # Lightsail/EC2 by default, whereas this is ordinary HTTPS on 443.
+  #
+  # delivery_method must be set explicitly — the default resolves to localhost:25,
+  # and since raise_delivery_errors defaults to true in production, the weekly
+  # digest job would raise Errno::ECONNREFUSED on every run.
+  # Credentials are registered in config/initializers/mailgun.rb — see the note
+  # there about load-hook ordering.
+  config.action_mailer.delivery_method = :mailgun_api
 
   # Enable locale fallbacks for I18n (makes lookups for any locale fall back to
   # the I18n.default_locale when a translation cannot be found).
@@ -80,11 +86,12 @@ Rails.application.configure do
   config.active_record.attributes_for_inspect = [ :id ]
 
   # Enable DNS rebinding protection and other `Host` header attacks.
-  # config.hosts = [
-  #   "example.com",     # Allow requests from example.com
-  #   /.*\.example\.com/ # Allow requests from subdomains like `www.example.com`
-  # ]
-  #
-  # Skip DNS rebinding protection for the default health check endpoint.
-  # config.host_authorization = { exclude: ->(request) { request.path == "/up" } }
+  config.hosts = [
+    "statuspulse.org",
+    "www.statuspulse.org"
+  ]
+
+  # Skip DNS rebinding protection for the default health check endpoint. Required:
+  # the container healthcheck hits localhost/up, which is not in the allowlist above.
+  config.host_authorization = { exclude: ->(request) { request.path == "/up" } }
 end
