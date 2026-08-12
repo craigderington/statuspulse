@@ -22,6 +22,23 @@ class Service < ApplicationRecord
 
   scope :ordered, -> { order(position: :asc, name: :asc) }
 
+  # True when this service has never been checked, or its configured interval
+  # has elapsed since the last check. Evaluated in Ruby rather than SQL so the
+  # comparison against the per-row interval stays portable across adapters.
+  def due_for_check?
+    return true if last_checked_at.blank?
+
+    last_checked_at <= check_interval_seconds.to_i.seconds.ago
+  end
+
+  # Seconds remaining until the next scheduled check; 0 when already due.
+  def seconds_until_next_check
+    return 0 if last_checked_at.blank?
+
+    remaining = (last_checked_at + check_interval_seconds.to_i.seconds) - Time.current
+    remaining.negative? ? 0 : remaining.round
+  end
+
   # Parses HTTP headers from either JSON or line-by-line format "Header-Name: Value"
   def parsed_headers
     return {} if headers.blank?

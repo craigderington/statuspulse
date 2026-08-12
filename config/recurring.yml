@@ -1,9 +1,15 @@
 production:
+  service_health_checks:
+    class: ServiceCheckJob
+    schedule: "* * * * *"
   weekly_digest_emails:
     class: WeeklyDigestJob
     schedule: "0 8 * * 1"
 
 development:
+  service_health_checks:
+    class: ServiceCheckJob
+    schedule: "* * * * *"
   weekly_digest_emails:
     class: WeeklyDigestJob
     schedule: "0 8 * * 1"
