@@ -40,7 +40,7 @@ class TwoFactorEnrolmentsController < ApplicationController
       # the database because only digests are ever persisted. Its presence is
       # also the proof that this session completed enrolment — see
       # require_fresh_enrolment.
-      session[:fresh_recovery_codes] = RecoveryCode.regenerate_for!(@user)
+      store_fresh_recovery_codes(@user, RecoveryCode.regenerate_for!(@user))
       return redirect_to two_factor_recovery_codes_path
     end
 
@@ -56,7 +56,7 @@ class TwoFactorEnrolmentsController < ApplicationController
   # Acknowledging the codes completes sign-in — but only for a session that
   # actually just enrolled, which require_fresh_enrolment has established.
   def confirm_recovery_codes
-    session.delete(:fresh_recovery_codes)
+    discard_fresh_recovery_codes
 
     if pending_user
       complete_authentication(@user)
@@ -106,7 +106,9 @@ class TwoFactorEnrolmentsController < ApplicationController
     @user = pending_user || Current.user
     return redirect_to login_path, alert: "Your sign-in timed out. Please start again." if @user.nil?
 
-    @codes = session[:fresh_recovery_codes]
+    # Bound to this user, so codes minted while acting as another account are
+    # not accepted as proof that *this* one enrolled.
+    @codes = fresh_recovery_codes_for(@user)
     return if @codes.present?
 
     if pending_user

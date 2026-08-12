@@ -19,6 +19,11 @@ class RegistrationsController < ApplicationController
     @user.role = "admin"
 
     if @user.save
+      # Rotate the session before granting an identity. Without this, signing up
+      # inherits whatever the session already held — including a pending
+      # sign-in for a *different* account, which let one identity's proof be
+      # attributed to another. It also closes session fixation at signup.
+      reset_session
       session[:user_id] = @user.id
       redirect_to dashboard_path, notice: "Account created! Welcome to StatusPulse."
     else

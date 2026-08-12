@@ -47,6 +47,29 @@ module Authentication
     @pending_user = nil
   end
 
+  # The freshly-generated recovery codes are held in the session between
+  # enrolment and acknowledgement, and their presence is what proves the session
+  # completed enrolment.
+  #
+  # They are stored WITH the id of the account they belong to. A bare array is
+  # an identity-less capability: codes minted while acting as one account were
+  # accepted as proof for another, which was a full authentication bypass.
+  def store_fresh_recovery_codes(user, codes)
+    session[:fresh_recovery_codes] = { "user_id" => user.id, "codes" => codes }
+  end
+
+  def fresh_recovery_codes_for(user)
+    stored = session[:fresh_recovery_codes]
+    return nil if stored.blank? || user.nil?
+    return nil unless stored["user_id"] == user.id
+
+    stored["codes"].presence
+  end
+
+  def discard_fresh_recovery_codes
+    session.delete(:fresh_recovery_codes)
+  end
+
   def two_factor_required?
     Rails.configuration.x.require_two_factor
   end

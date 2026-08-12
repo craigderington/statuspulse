@@ -12,7 +12,8 @@ class SecurityController < ApplicationController
   def show
     @user = Current.user
     @unused_recovery_codes = @user.recovery_codes.unused.count
-    @fresh_codes = session.delete(:fresh_recovery_codes)
+    @fresh_codes = fresh_recovery_codes_for(@user)
+    discard_fresh_recovery_codes
   end
 
   # Requires a current code. A hijacked session should not be able to mint
@@ -30,7 +31,7 @@ class SecurityController < ApplicationController
         alert: "That code was not valid, so your recovery codes are unchanged."
     end
 
-    session[:fresh_recovery_codes] = RecoveryCode.regenerate_for!(@user)
+    store_fresh_recovery_codes(@user, RecoveryCode.regenerate_for!(@user))
     redirect_to security_path,
       notice: "New recovery codes generated. Your previous codes no longer work."
   end

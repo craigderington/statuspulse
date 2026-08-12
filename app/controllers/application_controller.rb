@@ -1,10 +1,20 @@
 class ApplicationController < ActionController::Base
   include Authentication
 
+  before_action :discard_conflicting_pending_session
   before_action :set_current_context
   before_action :require_login
 
   private
+
+  # A session cannot simultaneously be signed in and mid-sign-in as somebody
+  # else. Holding both is the precondition for grafting one identity's proof
+  # onto another's authentication, so the half-finished one is discarded.
+  def discard_conflicting_pending_session
+    return if session[:user_id].blank? || session[:pending_user_id].blank?
+
+    abandon_pending_authentication
+  end
 
   def set_current_context
     if session[:user_id]
