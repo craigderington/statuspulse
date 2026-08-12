@@ -1,5 +1,5 @@
 class WeeklyDigestMailer < ApplicationMailer
-  default from: "reports@statuspulse.org"
+  default from: ENV.fetch("MAIL_FROM_DIGEST") { ENV.fetch("MAIL_FROM", "reports@statuspulse.org") }
 
   def digest_email(organization)
     @organization = organization
