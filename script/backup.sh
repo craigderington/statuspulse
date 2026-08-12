@@ -44,8 +44,15 @@ docker compose -f "$COMPOSE_FILE" exec -T db \
 gzip -t "$ARCHIVE" || fail "archive is not valid gzip: $ARCHIVE"
 SIZE=$(stat -c %s "$ARCHIVE")
 [ "$SIZE" -gt 1000 ] || fail "archive is implausibly small (${SIZE} bytes): $ARCHIVE"
-gunzip -c "$ARCHIVE" | grep -q "PostgreSQL database cluster dump" \
+# pipefail is disabled for this check only. `grep -q` exits at the first match
+# and closes the pipe, so gunzip dies of SIGPIPE (141) — and under pipefail that
+# reads as failure. The header is on line 2, so the more valid the archive the
+# faster it "failed". Reading a bounded head also avoids decompressing the whole
+# file just to inspect its first line.
+set +o pipefail
+gunzip -c "$ARCHIVE" 2>/dev/null | head -c 65536 | grep -q "PostgreSQL database cluster dump" \
   || fail "archive does not look like a pg_dumpall: $ARCHIVE"
+set -o pipefail
 
 log "dumped $(numfmt --to=iec "$SIZE" 2>/dev/null || echo "${SIZE}B") to $ARCHIVE"
 
