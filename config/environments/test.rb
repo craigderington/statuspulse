@@ -25,6 +25,12 @@ Rails.application.configure do
   # tests would pass while proving nothing.
   config.cache_store = :memory_store
 
+  # Two-factor enforcement is off by default here so that tests of unrelated
+  # features can sign a user in without enrolling an authenticator first. The
+  # enforcement itself is covered explicitly by the two-factor tests, which turn
+  # it on via `with_two_factor_required`.
+  config.x.require_two_factor = false
+
   # Render exception templates for rescuable exceptions and raise for other exceptions.
   config.action_dispatch.show_exceptions = :rescuable
 

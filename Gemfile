@@ -21,6 +21,14 @@ gem "jbuilder"
 # Use Active Model has_secure_password [https://guides.rubyonrails.org/active_model_basics.html#securepassword]
 gem "bcrypt", "~> 3.1.7"
 
+# Two-factor authentication. RFC 6238 is short enough to hand-roll and exactly
+# the kind of thing that should not be: rotp is pure Ruby, dependency-free, and
+# handles the drift window and timestep arithmetic correctly.
+gem "rotp", "~> 6.3"
+# Renders the enrolment QR as inline SVG — no image libraries, nothing written
+# to disk, and the secret never leaves the response.
+gem "rqrcode", "~> 3.0"
+
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem "tzinfo-data", platforms: %i[ windows jruby ]
 

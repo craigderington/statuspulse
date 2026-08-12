@@ -1,0 +1,59 @@
+<% content_for :title, "Set up two-factor authentication — StatusPulse" %>
+
+<div class="auth-card auth-card--wide" data-controller="otp">
+  <p class="auth-card__eyebrow">Two-factor authentication</p>
+  <h1 class="auth-card__title">Set up your authenticator</h1>
+  <p class="auth-card__lede">
+    StatusPulse can change monitoring and publish status to your clients, so a
+    password alone isn&rsquo;t enough. This takes about a minute.
+  </p>
+
+  <ol class="enrol">
+    <li class="enrol__step">
+      <span class="enrol__num">1</span>
+      <div>
+        <h2 class="enrol__title">Scan this with your authenticator app</h2>
+        <p class="enrol__hint">1Password, Bitwarden, Authy, Google Authenticator — any of them.</p>
+        <div class="enrol__qr"><%= @qr_svg %></div>
+
+        <details class="enrol__manual">
+          <summary>Can&rsquo;t scan it?</summary>
+          <p>Enter this key manually. It&rsquo;s case-insensitive and spaces don&rsquo;t matter.</p>
+          <code class="enrol__secret"><%= @user.totp_secret.scan(/.{1,4}/).join(" ") %></code>
+        </details>
+      </div>
+    </li>
+
+    <li class="enrol__step">
+      <span class="enrol__num">2</span>
+      <div>
+        <h2 class="enrol__title">Enter the code it shows</h2>
+        <p class="enrol__hint">Six digits, changing every 30 seconds.</p>
+
+        <%= form_with url: two_factor_setup_path, method: :post, data: { otp_target: "form" } do %>
+          <div class="otp" data-otp-target="group">
+            <% 6.times do |i| %>
+              <input type="text"
+                     class="otp__box"
+                     inputmode="numeric"
+                     autocomplete="off"
+                     maxlength="1"
+                     aria-label="Digit <%= i + 1 %> of 6"
+                     data-otp-target="box"
+                     data-action="input->otp#onInput keydown->otp#onKeydown paste->otp#onPaste focus->otp#onFocus"
+                     <%= "autofocus" if i.zero? %>>
+            <% end %>
+          </div>
+
+          <input type="hidden" name="code" data-otp-target="value">
+
+          <noscript>
+            <input type="text" name="code" class="form-control form-control-code" inputmode="numeric" placeholder="6-digit code">
+          </noscript>
+
+          <button type="submit" class="btn btn-primary auth-card__submit">Turn on two-factor</button>
+        <% end %>
+      </div>
+    </li>
+  </ol>
+</div>

@@ -11,6 +11,13 @@ module RailsProject1
     # Initialize configuration defaults for originally generated Rails version.
     config.load_defaults 8.1
 
+    # Whether every account must hold a second factor. Shipped as a switch
+    # rather than a constant so it can be turned on only once an operator has
+    # enrolled successfully — a bug in enrolment with this hard-coded true locks
+    # out every user, including the one who would fix it. Defaults on; set
+    # REQUIRE_2FA=false to disable.
+    config.x.require_two_factor = ENV.fetch("REQUIRE_2FA", "true") != "false"
+
     # Please, add to the `ignore` list any other `lib` subdirectories that do
     # not contain `.rb` files, or that should not be reloaded or eager loaded.
     # Common ones are `templates`, `generators`, or `middleware`, for example.

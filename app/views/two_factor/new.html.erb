@@ -1,0 +1,51 @@
+<% content_for :title, "Verify it's you — StatusPulse" %>
+
+<div class="auth-card" data-controller="otp">
+  <p class="auth-card__eyebrow">Two-factor authentication</p>
+  <h1 class="auth-card__title">Verify it&rsquo;s you</h1>
+  <p class="auth-card__lede">
+    Open your authenticator app and enter the current code for
+    <strong><%= @user.email %></strong>.
+  </p>
+
+  <%= form_with url: two_factor_path, method: :post, data: { otp_target: "form" } do %>
+    <div class="otp" data-otp-target="group">
+      <% 6.times do |i| %>
+        <input type="text"
+               class="otp__box"
+               inputmode="numeric"
+               autocomplete="<%= i.zero? ? "one-time-code" : "off" %>"
+               maxlength="1"
+               aria-label="Digit <%= i + 1 %> of 6"
+               data-otp-target="box"
+               data-action="input->otp#onInput keydown->otp#onKeydown paste->otp#onPaste focus->otp#onFocus"
+               <%= "autofocus" if i.zero? %>>
+      <% end %>
+    </div>
+
+    <%# The boxes are presentation; this carries the value. %>
+    <input type="hidden" name="code" data-otp-target="value">
+
+    <noscript>
+      <input type="text" name="code" class="form-control form-control-code" inputmode="numeric" placeholder="6-digit code" autocomplete="one-time-code">
+    </noscript>
+
+    <button type="submit" class="btn btn-primary auth-card__submit">Verify</button>
+  <% end %>
+
+  <details class="auth-card__aside">
+    <summary>Lost your phone?</summary>
+    <p>
+      Enter one of the recovery codes you saved when you set this up. Each code
+      works once.
+    </p>
+    <%= form_with url: two_factor_path, method: :post do %>
+      <%= text_field_tag :code, nil, class: "form-control form-control-code", placeholder: "XXXXX-XXXXX", autocomplete: "off", spellcheck: false %>
+      <button type="submit" class="btn btn-secondary auth-card__submit">Use recovery code</button>
+    <% end %>
+  </details>
+
+  <p class="auth-card__foot">
+    <%= button_to "Sign in as someone else", logout_path, method: :delete, class: "linkish" %>
+  </p>
+</div>

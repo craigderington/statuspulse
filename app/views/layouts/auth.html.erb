@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title><%= content_for(:title) || "StatusPulse" %></title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+
+    <meta name="robots" content="noindex, nofollow">
+
+    <link rel="icon" href="/favicon.ico" sizes="any">
+    <link rel="icon" href="/icon.svg" type="image/svg+xml">
+    <meta name="theme-color" content="#07090c">
+
+    <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
+    <%= javascript_importmap_tags %>
+  </head>
+
+  <body class="auth-body">
+    <main class="auth">
+      <a href="<%= root_path %>" class="auth__brand">
+        <span class="auth__mark">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+          </svg>
+        </span>
+        <span class="auth__word">StatusPulse</span>
+      </a>
+
+      <% if notice %>
+        <div class="flash-message flash-notice"><%= notice %></div>
+      <% end %>
+      <% if alert %>
+        <div class="flash-message flash-alert"><%= alert %></div>
+      <% end %>
+
+      <%= yield %>
+    </main>
+  </body>
+</html>

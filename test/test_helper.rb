@@ -17,6 +17,23 @@ module ActiveSupport
     # or broken anything else, rather than a throttle.
     setup { Rails.cache.clear }
 
-    # Add more helper methods to be used by all tests here...
+    # Two-factor enforcement is off by default in test (see
+    # config/environments/test.rb). Wrap an example in this to exercise the
+    # mandatory path.
+    def with_two_factor_required
+      previous = Rails.configuration.x.require_two_factor
+      Rails.configuration.x.require_two_factor = true
+      yield
+    ensure
+      Rails.configuration.x.require_two_factor = previous
+    end
+
+    # Enrols a user and returns them, for tests that need an account already
+    # holding a second factor.
+    def enrol_totp!(user)
+      user.begin_totp_enrolment!
+      user.confirm_totp!(user.totp.now)
+      user
+    end
   end
 end

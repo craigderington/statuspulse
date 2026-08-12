@@ -714,3 +714,142 @@ input[type="checkbox"] {
   opacity: 0.35;
   pointer-events: none;
 }
+
+/* ==========================================================================
+   Authentication surfaces: sign-in, two-factor challenge, enrolment.
+   ========================================================================== */
+
+.auth-body { display: grid; place-items: center; min-height: 100vh; padding: 2rem 1.25rem; }
+
+.auth { width: 100%; max-width: 30rem; }
+.auth__brand {
+  display: inline-flex; align-items: center; gap: 0.6rem;
+  text-decoration: none; color: var(--text-primary); margin-bottom: 1.75rem;
+}
+.auth__mark {
+  width: 30px; height: 30px; display: grid; place-items: center;
+  border: 1px solid var(--border-color); border-radius: var(--radius-md);
+}
+.auth__word {
+  font-family: var(--font-display); font-variation-settings: 'wdth' 110, 'wght' 720;
+  font-size: 1.05rem; text-transform: uppercase; letter-spacing: 0.02em;
+}
+
+.auth-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 2rem;
+}
+.auth-card--wide { max-width: none; }
+
+.auth-card__eyebrow {
+  font-family: var(--font-data); font-size: 0.66rem; letter-spacing: 0.2em;
+  text-transform: uppercase; color: var(--text-muted); margin-bottom: 0.9rem;
+}
+.auth-card__title { font-size: 1.5rem; margin-bottom: 0.6rem; }
+.auth-card__lede { color: var(--text-secondary); font-size: 0.93rem; line-height: 1.65; margin-bottom: 1.75rem; }
+.auth-card__submit { width: 100%; justify-content: center; margin-top: 1.25rem; }
+.auth-card__foot { margin-top: 1.5rem; text-align: center; }
+.auth-card__warn {
+  font-size: 0.85rem; line-height: 1.6; color: var(--color-degraded);
+  background: var(--color-degraded-bg);
+  border: 1px solid rgba(229, 161, 58, 0.3);
+  border-radius: var(--radius-md); padding: 0.85rem 1rem; margin: 1.25rem 0;
+}
+.auth-card__aside { margin-top: 1.75rem; border-top: 1px solid var(--border-soft); padding-top: 1.25rem; }
+.auth-card__aside summary { cursor: pointer; font-size: 0.88rem; color: var(--text-secondary); }
+.auth-card__aside summary:hover { color: var(--text-primary); }
+.auth-card__aside p { font-size: 0.85rem; color: var(--text-muted); line-height: 1.6; margin: 0.75rem 0; }
+
+.linkish {
+  background: none; border: none; padding: 0; cursor: pointer;
+  font-size: 0.85rem; color: var(--text-muted); text-decoration: underline;
+}
+.linkish:hover { color: var(--text-primary); }
+
+/* ---- six-box one-time code ---- */
+
+.otp { display: flex; gap: 0.5rem; justify-content: space-between; }
+
+.otp__box {
+  flex: 1; min-width: 0; aspect-ratio: 3 / 4; max-height: 4rem;
+  text-align: center;
+  font-family: var(--font-data);
+  font-size: 1.5rem;
+  font-variant-numeric: tabular-nums;
+  color: var(--text-primary);
+  background: rgba(232, 236, 242, 0.03);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  transition: border-color 0.12s ease, background 0.12s ease;
+}
+.otp__box:focus {
+  outline: none;
+  border-color: var(--text-primary);
+  background: rgba(232, 236, 242, 0.07);
+}
+/* A filled box reads as done without shouting. */
+.otp__box:not(:placeholder-shown) { border-color: var(--border-focus); }
+
+.otp[data-complete="true"] .otp__box { border-color: var(--color-operational); }
+
+/* ---- enrolment ---- */
+
+.enrol { list-style: none; display: grid; gap: 2rem; }
+.enrol__step { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 1rem; align-items: start; }
+.enrol__num {
+  width: 26px; height: 26px; display: grid; place-items: center;
+  border: 1px solid var(--border-color); border-radius: 50%;
+  font-family: var(--font-data); font-size: 0.78rem; color: var(--text-secondary);
+}
+.enrol__title { font-size: 1rem; margin-bottom: 0.25rem; }
+.enrol__hint { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1rem; }
+
+/* White plate for the QR: scanners expect dark modules on light, and the
+   padding preserves the quiet zone the spec requires. */
+.enrol__qr {
+  width: 190px; padding: 0.75rem; background: #ffffff;
+  border-radius: var(--radius-md);
+}
+.enrol__qr svg { display: block; width: 100%; height: auto; }
+
+.enrol__manual { margin-top: 1rem; }
+.enrol__manual summary { cursor: pointer; font-size: 0.85rem; color: var(--text-secondary); }
+.enrol__manual p { font-size: 0.82rem; color: var(--text-muted); margin: 0.6rem 0; }
+.enrol__secret {
+  display: inline-block; font-family: var(--font-data); font-size: 0.95rem;
+  letter-spacing: 0.12em; color: var(--text-primary);
+  background: rgba(232, 236, 242, 0.05);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md); padding: 0.5rem 0.75rem;
+  user-select: all;
+}
+
+/* ---- recovery codes ---- */
+
+.codes { border: 1px solid var(--border-color); border-radius: var(--radius-md); overflow: hidden; }
+.codes__list {
+  list-style: none; display: grid; grid-template-columns: repeat(2, 1fr);
+  font-family: var(--font-data); font-size: 0.95rem; letter-spacing: 0.06em;
+}
+.codes__code {
+  padding: 0.7rem 1rem;
+  border-bottom: 1px solid var(--border-soft);
+  user-select: all;
+}
+.codes__code:nth-child(odd) { border-right: 1px solid var(--border-soft); }
+.codes__actions {
+  display: flex; gap: 0.6rem; padding: 0.85rem 1rem;
+  background: rgba(232, 236, 242, 0.02);
+}
+.codes__ack {
+  display: flex; align-items: center; gap: 0.5rem;
+  font-size: 0.9rem; color: var(--text-secondary); cursor: pointer;
+}
+
+@media (max-width: 560px) {
+  .codes__list { grid-template-columns: 1fr; }
+  .codes__code:nth-child(odd) { border-right: none; }
+  .otp { gap: 0.35rem; }
+}

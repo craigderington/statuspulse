@@ -1,0 +1,39 @@
+<% content_for :title, "Save your recovery codes — StatusPulse" %>
+
+<div class="auth-card auth-card--wide">
+  <p class="auth-card__eyebrow">Two-factor authentication</p>
+  <h1 class="auth-card__title">Save your recovery codes</h1>
+  <p class="auth-card__lede">
+    These are the only way back in if you lose your phone. Each one works once.
+    <strong>They will not be shown again.</strong>
+  </p>
+
+  <div class="codes" data-controller="clipboard">
+    <ol class="codes__list" data-clipboard-target="source">
+      <% @codes.each do |code| %>
+        <li class="codes__code"><%= code %></li>
+      <% end %>
+    </ol>
+
+    <div class="codes__actions">
+      <button type="button" class="btn btn-secondary btn-sm"
+              data-action="clipboard#copy" data-clipboard-target="button">Copy all</button>
+      <%= link_to "Download", "data:text/plain;charset=utf-8,#{ERB::Util.url_encode(@codes.join("\n"))}",
+            download: "statuspulse-recovery-codes.txt", class: "btn btn-secondary btn-sm" %>
+    </div>
+  </div>
+
+  <p class="auth-card__warn">
+    Store them in your password manager, not in the same place as your
+    authenticator. If you lose both, an administrator has to reset your account
+    from the server.
+  </p>
+
+  <%= form_with url: confirm_two_factor_recovery_codes_path, method: :post do %>
+    <label class="codes__ack">
+      <%= check_box_tag :acknowledged, "1", false, required: true %>
+      I&rsquo;ve saved these somewhere safe
+    </label>
+    <button type="submit" class="btn btn-primary auth-card__submit">Continue</button>
+  <% end %>
+</div>

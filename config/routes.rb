@@ -12,6 +12,16 @@ Rails.application.routes.draw do
   get "signup", to: "registrations#new", as: :signup
   post "signup", to: "registrations#create"
 
+  # Two-factor authentication. The challenge and the enrolment flow are both
+  # reachable while only half-authenticated, so they sit outside require_login.
+  get  "two-factor", to: "two_factor#new", as: :two_factor
+  post "two-factor", to: "two_factor#create"
+
+  get  "two-factor/setup", to: "two_factor_enrolments#new", as: :two_factor_setup
+  post "two-factor/setup", to: "two_factor_enrolments#create"
+  get  "two-factor/recovery-codes", to: "two_factor_enrolments#recovery_codes", as: :two_factor_recovery_codes
+  post "two-factor/recovery-codes", to: "two_factor_enrolments#confirm_recovery_codes", as: :confirm_two_factor_recovery_codes
+
   # SLA & Analytics Reports
   resources :reports, only: [:index] do
     collection do

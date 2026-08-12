@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_08_12_185611) do
+ActiveRecord::Schema[8.1].define(version: 2026_08_12_193855) do
   create_table "check_logs", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.string "error_message"
@@ -73,6 +73,16 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_12_185611) do
     t.boolean "weekly_digest_enabled"
   end
 
+  create_table "recovery_codes", force: :cascade do |t|
+    t.string "code_digest", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.datetime "used_at"
+    t.integer "user_id", null: false
+    t.index ["user_id", "used_at"], name: "index_recovery_codes_on_user_id_and_used_at"
+    t.index ["user_id"], name: "index_recovery_codes_on_user_id"
+  end
+
   create_table "services", force: :cascade do |t|
     t.integer "check_interval_seconds", default: 60, null: false
     t.datetime "created_at", null: false
@@ -104,6 +114,9 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_12_185611) do
     t.integer "organization_id", null: false
     t.string "password_digest"
     t.string "role", default: "member", null: false
+    t.datetime "totp_enabled_at"
+    t.bigint "totp_last_timestep"
+    t.text "totp_secret"
     t.datetime "updated_at", null: false
     t.index ["organization_id"], name: "index_users_on_organization_id"
   end
@@ -114,6 +127,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_12_185611) do
   add_foreign_key "incident_updates", "incidents"
   add_foreign_key "incidents", "organizations"
   add_foreign_key "maintenance_windows", "organizations"
+  add_foreign_key "recovery_codes", "users"
   add_foreign_key "services", "organizations"
   add_foreign_key "users", "organizations"
 end

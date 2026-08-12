@@ -19,17 +19,28 @@ class SessionsController < ApplicationController
 
   def create
     user = User.find_by(email: params[:email]&.downcase&.strip)
-    if user && user.authenticate(params[:password])
-      session[:user_id] = user.id
-      redirect_to dashboard_path, notice: "Welcome back, #{user.name}!"
-    else
+
+    unless user&.authenticate(params[:password])
       flash.now[:alert] = "Invalid email or password."
-      render :new, status: :unprocessable_entity
+      return render :new, status: :unprocessable_entity
+    end
+
+    # The password is proved but the session is not yet authenticated. Which
+    # step comes next depends on whether this account has a second factor.
+    begin_pending_authentication(user)
+
+    if user.totp_enabled?
+      redirect_to two_factor_path
+    elsif two_factor_required?
+      redirect_to two_factor_setup_path, notice: "One more step: set up two-factor authentication to continue."
+    else
+      complete_authentication(user)
+      redirect_to dashboard_path, notice: "Welcome back, #{user.name}!"
     end
   end
 
   def destroy
-    session[:user_id] = nil
+    reset_session
     redirect_to login_path, notice: "Signed out successfully."
   end
 end

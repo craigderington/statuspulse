@@ -1,4 +1,6 @@
 class ApplicationController < ActionController::Base
+  include Authentication
+
   before_action :set_current_context
   before_action :require_login
 
@@ -22,11 +24,19 @@ class ApplicationController < ActionController::Base
   def require_login
     return if Current.user.present? || public_action?
 
+    # A visitor mid-sign-in is sent back to the step they were on rather than
+    # to the password form, which would discard a password they already proved.
+    return redirect_to two_factor_path if pending_user&.totp_enabled?
+    return redirect_to two_factor_setup_path if pending_user
+
     redirect_to login_path, alert: "Please sign in to access StatusPulse dashboard."
   end
 
   def public_action?
-    %w[sessions registrations status_page marketing sitemaps].include?(controller_name)
+    %w[
+      sessions registrations status_page marketing sitemaps
+      two_factor two_factor_enrolments
+    ].include?(controller_name)
   end
 
   def current_organization
