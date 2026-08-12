@@ -1,0 +1,83 @@
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: statuspulse-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      # Primary database only. Rails 8 also needs _cache, _queue and _cable;
+      # bin/docker-entrypoint's db:prepare creates those on first boot, which
+      # works because DATABASE_USERNAME below is the postgres superuser.
+      POSTGRES_DB: ${DATABASE_NAME:-statuspulse_production}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d ${DATABASE_NAME:-statuspulse_production}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: statuspulse-web
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:3000:80"
+    env_file:
+      - .env
+    environment:
+      RAILS_ENV: production
+      DATABASE_HOST: db
+      DATABASE_USERNAME: postgres
+      DATABASE_NAME: ${DATABASE_NAME:-statuspulse_production}
+      DATABASE_PASSWORD: ${POSTGRES_PASSWORD}
+      STATUSPULSE_DATABASE_PASSWORD: ${POSTGRES_PASSWORD}
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - rails_storage:/rails/storage
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  jobs:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: statuspulse-jobs
+    restart: unless-stopped
+    command: bin/jobs
+    env_file:
+      - .env
+    environment:
+      RAILS_ENV: production
+      DATABASE_HOST: db
+      DATABASE_USERNAME: postgres
+      DATABASE_NAME: ${DATABASE_NAME:-statuspulse_production}
+      DATABASE_PASSWORD: ${POSTGRES_PASSWORD}
+      STATUSPULSE_DATABASE_PASSWORD: ${POSTGRES_PASSWORD}
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - rails_storage:/rails/storage
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+volumes:
+  postgres_data:
+  rails_storage:
