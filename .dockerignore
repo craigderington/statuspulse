@@ -11,3 +11,18 @@ node_modules
 vendor/bundle
 Dockerfile
 docker-compose.yml
+
+# Never bake secrets into an image layer
+.env
+.env.*
+!.env.example
+config/master.key
+config/credentials/*.key
+
+# Deploy tooling and docs not needed at runtime
+.github
+.kamal
+config/deploy.yml
+deploy/
+README.md
+DEPLOY.md
