@@ -19,6 +19,8 @@ Rails.application.routes.draw do
   resources :services do
     member do
       post :check_now
+      post :pause
+      post :resume
     end
   end
 
@@ -34,4 +36,9 @@ Rails.application.routes.draw do
 
   # Health check route
   get "up" => "rails/health#show", as: :rails_health_check
+
+  # PWA manifest and service worker, rendered from app/views/pwa/. These views
+  # shipped with the app but were never routed, so the manifest was dead code.
+  get "manifest" => "rails/pwa#manifest", as: :pwa_manifest
+  get "service-worker" => "rails/pwa#service_worker", as: :pwa_service_worker
 end

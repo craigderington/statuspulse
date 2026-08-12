@@ -33,7 +33,8 @@
         <div class="service-countdown"
              data-controller="countdown"
              data-countdown-seconds-value="<%= service.seconds_until_next_check %>"
-             data-countdown-checked-value="<%= service.last_checked_at.present? %>">
+             data-countdown-checked-value="<%= service.last_checked_at.present? %>"
+             data-countdown-paused-value="<%= service.paused? %>">
         </div>
       </div>
 

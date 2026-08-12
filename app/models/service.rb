@@ -18,14 +18,42 @@ class Service < ApplicationRecord
   validates :timeout_seconds, numericality: { only_integer: true, greater_than: 0, less_than_or_equal_to: 60 }
   validates :status, inclusion: { in: STATUSES }
 
-  after_update_commit -> { broadcast_replace_to "services_status", target: "service_#{id}", partial: "services/service_card", locals: { service: self } }
+  # Streams are scoped per organization. A single global stream name would
+  # broadcast every tenant's service telemetry — names, URLs, latency, status —
+  # to every other tenant's dashboard in real time.
+  after_create_commit -> { broadcast_prepend_to organization_stream, target: "services_list", partial: "services/service_card", locals: { service: self } }
+  after_update_commit -> { broadcast_replace_to organization_stream, target: "service_#{id}", partial: "services/service_card", locals: { service: self } }
+  after_destroy_commit -> { broadcast_remove_to organization_stream, target: "service_#{id}" }
+
+  def organization_stream
+    [ organization, "services_status" ]
+  end
 
   scope :ordered, -> { order(position: :asc, name: :asc) }
+
+  scope :paused, -> { where.not(paused_at: nil) }
+  scope :monitored, -> { where(paused_at: nil) }
+
+  def paused?
+    paused_at.present?
+  end
+
+  # Suspends automatic checks. The last known status is deliberately left
+  # untouched so the card still shows the health reading from before the pause
+  # rather than resetting to an unknown state.
+  def pause!
+    update!(paused_at: Time.current)
+  end
+
+  def resume!
+    update!(paused_at: nil)
+  end
 
   # True when this service has never been checked, or its configured interval
   # has elapsed since the last check. Evaluated in Ruby rather than SQL so the
   # comparison against the per-row interval stays portable across adapters.
   def due_for_check?
+    return false if paused?
     return true if last_checked_at.blank?
 
     last_checked_at <= check_interval_seconds.to_i.seconds.ago
@@ -33,7 +61,7 @@ class Service < ApplicationRecord
 
   # Seconds remaining until the next scheduled check; 0 when already due.
   def seconds_until_next_check
-    return 0 if last_checked_at.blank?
+    return 0 if paused? || last_checked_at.blank?
 
     remaining = (last_checked_at + check_interval_seconds.to_i.seconds) - Time.current
     remaining.negative? ? 0 : remaining.round

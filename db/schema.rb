@@ -10,10 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_08_08_134319) do
-  # These are extensions that must be enabled in order to support this database
-  enable_extension "pg_catalog.plpgsql"
-
+ActiveRecord::Schema[8.1].define(version: 2026_08_12_155332) do
   create_table "check_logs", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.string "error_message"
@@ -46,7 +43,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_08_134319) do
   create_table "incidents", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.text "description"
-    t.bigint "organization_id"
+    t.integer "organization_id"
     t.datetime "resolved_at"
     t.string "severity"
     t.string "status"
@@ -59,7 +56,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_08_134319) do
     t.datetime "created_at", null: false
     t.text "description"
     t.datetime "ends_at"
-    t.bigint "organization_id"
+    t.integer "organization_id"
     t.datetime "starts_at"
     t.string "status"
     t.string "title"
@@ -87,7 +84,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_08_134319) do
     t.integer "last_response_time_ms"
     t.integer "last_status_code"
     t.string "name", null: false
-    t.bigint "organization_id"
+    t.integer "organization_id"
+    t.datetime "paused_at"
     t.integer "position", default: 0
     t.text "request_body"
     t.string "status", default: "operational", null: false
@@ -95,13 +93,14 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_08_134319) do
     t.datetime "updated_at", null: false
     t.string "url", null: false
     t.index ["organization_id"], name: "index_services_on_organization_id"
+    t.index ["paused_at"], name: "index_services_on_paused_at"
   end
 
   create_table "users", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.string "email"
     t.string "name"
-    t.bigint "organization_id", null: false
+    t.integer "organization_id", null: false
     t.string "password_digest"
     t.string "role"
     t.datetime "updated_at", null: false

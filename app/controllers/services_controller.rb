@@ -1,5 +1,5 @@
 class ServicesController < ApplicationController
-  before_action :set_service, only: [:show, :edit, :update, :destroy, :check_now]
+  before_action :set_service, only: [:show, :edit, :update, :destroy, :check_now, :pause, :resume]
 
   def index
     @services = scope_services.ordered
@@ -51,6 +51,16 @@ class ServicesController < ApplicationController
       format.html { redirect_to @service, notice: "Manual check triggered for #{@service.name}." }
       format.turbo_stream
     end
+  end
+
+  def pause
+    @service.pause!
+    redirect_to @service, notice: "Monitoring suspended for #{@service.name}. Paused time is excluded from SLA."
+  end
+
+  def resume
+    @service.resume!
+    redirect_to @service, notice: "Monitoring resumed for #{@service.name}."
   end
 
   private

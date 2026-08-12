@@ -9,12 +9,17 @@ import { Controller } from "@hotwired/stimulus"
 export default class extends Controller {
   static values = {
     seconds: Number,
-    checked: Boolean
+    checked: Boolean,
+    paused: Boolean
   }
 
   connect() {
     this.remaining = this.secondsValue
     this.render()
+
+    // A paused service has no next check to count toward, so don't burn a timer.
+    if (this.pausedValue) return
+
     this.timer = setInterval(() => this.tick(), 1000)
   }
 
@@ -42,6 +47,11 @@ export default class extends Controller {
   }
 
   render() {
+    if (this.pausedValue) {
+      this.element.textContent = "monitoring paused"
+      return
+    }
+
     if (!this.checkedValue) {
       this.element.textContent = "awaiting first check"
       return

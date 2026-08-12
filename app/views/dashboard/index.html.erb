@@ -1,4 +1,4 @@
-<%= turbo_stream_from "services_status" %>
+<%= turbo_stream_from [current_organization, "services_status"] %>
 
 <div class="hero-status-banner">
   <div class="status-indicator-huge">
@@ -96,7 +96,7 @@
   </div>
 </div>
 
-<div class="services-list">
+<div class="services-list" id="services_list">
   <% @services.each do |service| %>
     <%= render "services/service_card", service: service %>
   <% end %>
