@@ -1,3 +1,24 @@
-<svg width="512" height="512" xmlns="http://www.w3.org/2000/svg">
-  <circle cx="256" cy="256" r="256" fill="red"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512" role="img" aria-label="StatusPulse">
+  <title>StatusPulse</title>
+  <defs>
+    <linearGradient id="sp-tile" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#6366f1"/>
+      <stop offset="1" stop-color="#06b6d4"/>
+    </linearGradient>
+    <radialGradient id="sp-gloss" cx="0.3" cy="0.24" r="0.85">
+      <stop offset="0" stop-color="#ffffff" stop-opacity="0.26"/>
+      <stop offset="1" stop-color="#ffffff" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <rect width="512" height="512" rx="112" fill="url(#sp-tile)"/>
+  <rect width="512" height="512" rx="112" fill="url(#sp-gloss)"/>
+
+  <!-- The same pulse waveform used as the in-app brand mark. Heavy stroke and
+       round joins keep it legible when rasterised down to 16px. -->
+  <g transform="translate(256 256) scale(15.5) translate(-12 -12)"
+     fill="none" stroke="#ffffff" stroke-width="2.6"
+     stroke-linecap="round" stroke-linejoin="round">
+    <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+  </g>
 </svg>
