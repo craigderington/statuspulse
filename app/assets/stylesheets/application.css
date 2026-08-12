@@ -860,3 +860,101 @@ input[type="checkbox"] {
   justify-content: space-between;
   gap: 1.5rem;
 }
+
+/* ---- account dropdown ---- */
+
+.account {
+  position: relative;
+  margin-left: 0.5rem;
+  padding-left: 1rem;
+  border-left: 1px solid var(--border-color);
+}
+
+.account__trigger {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  background: none;
+  border: 1px solid transparent;
+  border-radius: var(--radius-md);
+  padding: 0.4rem 0.6rem;
+  cursor: pointer;
+  color: var(--text-secondary);
+  font-family: inherit;
+  font-size: 0.85rem;
+}
+
+.account__trigger:hover,
+.account__trigger[aria-expanded="true"] {
+  color: var(--text-primary);
+  border-color: var(--border-color);
+}
+
+.account__trigger svg { transition: transform 0.15s ease; }
+.account__trigger[aria-expanded="true"] svg { transform: rotate(180deg); }
+
+.account__menu {
+  position: absolute;
+  top: calc(100% + 0.5rem);
+  right: 0;
+  min-width: 14rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 0.35rem;
+  z-index: 60;
+  /* Hidden rather than merely transparent, so its contents stay out of the tab
+     order while closed. */
+  display: none;
+}
+
+.account__menu[data-open="true"] { display: block; }
+
+.account__who {
+  padding: 0.6rem 0.65rem 0.7rem;
+  border-bottom: 1px solid var(--border-soft);
+  margin-bottom: 0.35rem;
+}
+
+.account__email {
+  display: block;
+  font-size: 0.82rem;
+  color: var(--text-primary);
+  word-break: break-all;
+}
+
+.account__role {
+  display: block;
+  font-family: var(--font-data);
+  font-size: 0.65rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-top: 0.2rem;
+}
+
+.account__item {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  width: 100%;
+  padding: 0.55rem 0.65rem;
+  border-radius: var(--radius-sm);
+  font-size: 0.88rem;
+  color: var(--text-secondary);
+  text-decoration: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+  text-align: left;
+}
+
+.account__item:hover {
+  background: rgba(232, 236, 242, 0.05);
+  color: var(--text-primary);
+}
+
+/* button_to wraps its button in a form, which would otherwise break the
+   vertical rhythm of the menu. */
+.account__menu form { margin: 0; }

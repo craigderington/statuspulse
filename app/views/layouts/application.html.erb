@@ -45,21 +45,42 @@
             <a href="<%= services_path %>" class="nav-link <%= 'active' if controller_name == 'services' %>">Services</a>
             <a href="<%= incidents_path %>" class="nav-link <%= 'active' if controller_name == 'incidents' %>">Incidents</a>
             <a href="<%= reports_path %>" class="nav-link <%= 'active' if controller_name == 'reports' %>">Reports</a>
-            <a href="<%= security_path %>" class="nav-link <%= 'active' if controller_name == 'security' %>">Security</a>
-            <% if Current.user.admin? %>
-              <a href="<%= edit_organization_path %>" class="nav-link <%= 'active' if controller_name == 'organizations' %>">Settings</a>
-            <% end %>
             
             <a href="<%= org_public_status_path(org_slug: current_organization.slug) %>" target="_blank" class="btn btn-secondary btn-sm">
               <span>Public Page</span>
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
             </a>
 
-            <div style="display: flex; align-items: center; gap: 0.5rem; margin-left: 0.5rem; border-left: 1px solid var(--border-color); padding-left: 1rem;">
-              <span style="font-size: 0.85rem; color: var(--text-secondary);"><%= Current.user.name %></span>
-              <%= button_to logout_path, method: :delete, class: "btn btn-secondary btn-sm", style: "padding: 0.25rem 0.6rem;" do %>
-                <span>Sign Out</span>
-              <% end %>
+            <%# Account actions hang off the person, not the workspace nav:
+                Security is per-user, while Settings is org-scoped and admin-only. %>
+            <div class="account" data-controller="menu">
+              <button type="button" class="account__trigger"
+                      data-menu-target="trigger" data-action="menu#toggle"
+                      aria-haspopup="true" aria-expanded="false">
+                <span class="account__name"><%= Current.user.name %></span>
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"></polyline></svg>
+              </button>
+
+              <div class="account__menu" data-menu-target="menu" data-open="false" role="menu">
+                <div class="account__who">
+                  <span class="account__email"><%= Current.user.email %></span>
+                  <span class="account__role"><%= Current.user.role.titleize %></span>
+                </div>
+                <% if Current.user.admin? %>
+                  <a href="<%= edit_organization_path %>" class="account__item" role="menuitem">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.6a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+                    Workspace settings
+                  </a>
+                <% end %>
+                <a href="<%= security_path %>" class="account__item" role="menuitem">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+                  Security
+                </a>
+                <%= button_to logout_path, method: :delete, class: "account__item account__item--button", role: "menuitem" do %>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+                  Sign out
+                <% end %>
+              </div>
             </div>
           <% else %>
             <a href="<%= public_status_path %>" target="_blank" class="nav-link">Public Page</a>
