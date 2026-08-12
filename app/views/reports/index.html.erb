@@ -25,9 +25,14 @@
   </div>
   <div class="stat-card">
     <div class="stat-label">Weekly Email Digest</div>
-    <div class="stat-value" style="color: var(--color-operational); font-size: 1.4rem;">
-      <%= current_organization.weekly_digest_enabled ? "Enabled (Every Mon 8 AM)" : "Disabled" %>
+    <%# Deliberately ink, not green: a setting being on is not a service status,
+        and colour here competes with the SLA figures that carry meaning. %>
+    <div class="stat-value" style="font-size: 1.4rem;">
+      <%= current_organization.weekly_digest_enabled ? "Enabled" : "Disabled" %>
     </div>
+    <% if current_organization.weekly_digest_enabled %>
+      <div style="font-family: var(--font-data); font-size: 0.72rem; color: var(--text-muted); margin-top: 0.35rem;">Mondays 08:00 ET</div>
+    <% end %>
   </div>
 </div>
 

@@ -1,36 +1,51 @@
-@import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Inter:wght@300;400;500;600;700&family=Outfit:wght@500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@100..125,400..800&family=Fira+Code:wght@400;500;600&family=Inter:wght@300;400;500;600;700&display=swap');
 
+/* Instrument palette — shared with the marketing surface (marketing.css).
+   Governing rule: COLOUR IS RESERVED FOR SIGNAL. Chrome is ink, hairline and
+   graticule; saturated colour appears only where it means a service state.
+   This matters more here than on the landing page: indigo and cyan chrome used
+   to compete with the green/amber/red that actually carries meaning, which is
+   precisely what makes a dashboard hard to read at a glance. */
 :root {
-  --bg-dark: #090d16;
-  --bg-card: rgba(18, 24, 38, 0.75);
-  --bg-card-hover: rgba(26, 35, 54, 0.85);
-  --border-color: rgba(255, 255, 255, 0.08);
-  --border-focus: rgba(99, 102, 241, 0.5);
+  --bg-dark: #07090c;
+  --bg-card: #0b0e13;
+  --bg-card-hover: #0e1219;
+  --border-color: rgba(232, 236, 242, 0.13);
+  --border-soft: rgba(232, 236, 242, 0.07);
+  --border-focus: rgba(232, 236, 242, 0.55);
+  --graticule: rgba(232, 236, 242, 0.04);
 
-  --text-primary: #f3f4f6;
-  --text-secondary: #9ca3af;
-  --text-muted: #6b7280;
+  --text-primary: #e8ecf2;
+  --text-secondary: #8f98a6;
+  --text-muted: #5b6472;
 
-  --accent-primary: #6366f1;
-  --accent-cyan: #06b6d4;
+  /* Retained as variables because components reference them, but both now
+     resolve to ink: chrome no longer competes with status colour. */
+  --accent-primary: #e8ecf2;
+  --accent-cyan: #8f98a6;
 
-  --color-operational: #10b981;
-  --color-operational-bg: rgba(16, 185, 129, 0.12);
-  --color-degraded: #f59e0b;
-  --color-degraded-bg: rgba(245, 158, 11, 0.12);
-  --color-outage: #ef4444;
-  --color-outage-bg: rgba(239, 68, 68, 0.12);
-  --color-maintenance: #3b82f6;
-  --color-maintenance-bg: rgba(59, 130, 246, 0.12);
+  --color-operational: #2ec27e;
+  --color-operational-bg: rgba(46, 194, 126, 0.11);
+  --color-degraded: #e5a13a;
+  --color-degraded-bg: rgba(229, 161, 58, 0.11);
+  --color-outage: #e5484d;
+  --color-outage-bg: rgba(229, 72, 77, 0.11);
+  --color-maintenance: #5b8cb0;
+  --color-maintenance-bg: rgba(91, 140, 176, 0.11);
 
-  --radius-sm: 6px;
-  --radius-md: 12px;
-  --radius-lg: 18px;
+  --font-display: 'Archivo', system-ui, sans-serif;
+  --font-body: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-data: 'Fira Code', ui-monospace, monospace;
 
-  --shadow-glow-green: 0 0 20px rgba(16, 185, 129, 0.2);
-  --shadow-glow-amber: 0 0 20px rgba(245, 158, 11, 0.2);
-  --shadow-glow-red: 0 0 20px rgba(239, 68, 68, 0.2);
-  --shadow-card: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+  --radius-sm: 2px;
+  --radius-md: 3px;
+  --radius-lg: 4px;
+
+  /* Instruments do not glow. Kept as no-ops so component rules stay valid. */
+  --shadow-glow-green: none;
+  --shadow-glow-amber: none;
+  --shadow-glow-red: none;
+  --shadow-card: none;
 }
 
 * {
@@ -41,27 +56,40 @@
 
 body {
   background-color: var(--bg-dark);
-  background-image: 
-    radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.15) 0px, transparent 50%),
-    radial-gradient(at 100% 100%, rgba(6, 182, 212, 0.12) 0px, transparent 50%);
-  background-attachment: fixed;
+  /* Graticule: measurement paper, drawn precisely, replacing the blurred
+     indigo/cyan radial washes. */
+  background-image:
+    linear-gradient(to right, var(--graticule) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--graticule) 1px, transparent 1px);
+  background-size: 46px 46px;
   color: var(--text-primary);
-  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  font-family: var(--font-body);
   min-height: 100vh;
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
 }
 
 h1, h2, h3, h4, .brand-title {
-  font-family: 'Outfit', sans-serif;
-  letter-spacing: -0.02em;
+  font-family: var(--font-display);
+  font-variation-settings: 'wdth' 108, 'wght' 700;
+  letter-spacing: -0.022em;
+}
+
+/* Sentence case is kept for content — service names, incident titles, body
+   copy. The marketing page is uppercase throughout, which suits a page read
+   once but is tiring on a dashboard someone watches all day. Uppercase here is
+   reserved for short labels. */
+.stat-label,
+.mono,
+.timeline-labels {
+  font-family: var(--font-data);
+  font-variant-numeric: tabular-nums;
 }
 
 /* Layout Elements */
 .app-header {
   border-bottom: 1px solid var(--border-color);
-  background: rgba(9, 13, 22, 0.85);
-  backdrop-filter: blur(16px);
+  background: rgba(7, 9, 12, 0.92);
   position: sticky;
   top: 0;
   z-index: 50;
@@ -88,20 +116,20 @@ h1, h2, h3, h4, .brand-title {
 .brand-icon {
   width: 38px;
   height: 38px;
-  background: linear-gradient(135deg, #6366f1, #06b6d4);
+  background: transparent;
+  border: 1px solid var(--border-color);
   border-radius: var(--radius-md);
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 4px 14px rgba(99, 102, 241, 0.4);
+  color: var(--text-primary);
 }
 
 .brand-name {
   font-size: 1.35rem;
   font-weight: 700;
-  background: linear-gradient(to right, #ffffff, #9ca3af);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+  color: var(--text-primary);
+  letter-spacing: -0.01em;
 }
 
 .nav-links {
@@ -122,7 +150,7 @@ h1, h2, h3, h4, .brand-title {
 
 .nav-link:hover, .nav-link.active {
   color: var(--text-primary);
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(232, 236, 242, 0.05);
 }
 
 .container {
@@ -143,15 +171,15 @@ h1, h2, h3, h4, .brand-title {
 }
 
 .flash-notice {
-  background: rgba(16, 185, 129, 0.15);
-  border: 1px solid rgba(16, 185, 129, 0.3);
-  color: #34d399;
+  background: var(--color-operational-bg);
+  border: 1px solid rgba(46, 194, 126, 0.32);
+  color: var(--color-operational);
 }
 
 .flash-alert {
-  background: rgba(239, 68, 68, 0.15);
-  border: 1px solid rgba(239, 68, 68, 0.3);
-  color: #f87171;
+  background: var(--color-outage-bg);
+  border: 1px solid rgba(229, 72, 77, 0.32);
+  color: var(--color-outage);
 }
 
 /* Hero Banner & Overall Status */
@@ -161,7 +189,6 @@ h1, h2, h3, h4, .brand-title {
   border-radius: var(--radius-lg);
   padding: 2rem;
   margin-bottom: 2rem;
-  backdrop-filter: blur(12px);
   box-shadow: var(--shadow-card);
   display: flex;
   justify-content: space-between;
@@ -198,19 +225,19 @@ h1, h2, h3, h4, .brand-title {
   background-color: var(--color-operational);
   box-shadow: var(--shadow-glow-green);
 }
-.pulse-operational::after { background-color: rgba(16, 185, 129, 0.4); }
+.pulse-operational::after { background-color: rgba(46, 194, 126, 0.4); }
 
 .pulse-degraded {
   background-color: var(--color-degraded);
   box-shadow: var(--shadow-glow-amber);
 }
-.pulse-degraded::after { background-color: rgba(245, 158, 11, 0.4); }
+.pulse-degraded::after { background-color: rgba(229, 161, 58, 0.4); }
 
 .pulse-outage {
   background-color: var(--color-outage);
   box-shadow: var(--shadow-glow-red);
 }
-.pulse-outage::after { background-color: rgba(239, 68, 68, 0.4); }
+.pulse-outage::after { background-color: rgba(229, 72, 77, 0.4); }
 
 @keyframes pulse-ring {
   0% { transform: scale(0.95); opacity: 0.8; }
@@ -241,7 +268,6 @@ h1, h2, h3, h4, .brand-title {
   border: 1px solid var(--border-color);
   border-radius: var(--radius-md);
   padding: 1.25rem 1.5rem;
-  backdrop-filter: blur(8px);
 }
 
 .stat-label {
@@ -255,8 +281,10 @@ h1, h2, h3, h4, .brand-title {
 
 .stat-value {
   font-size: 1.85rem;
-  font-weight: 700;
-  font-family: 'Outfit', sans-serif;
+  font-family: var(--font-display);
+  font-variation-settings: 'wdth' 100, 'wght' 740;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.025em;
 }
 
 /* Services Grid & Cards */
@@ -284,13 +312,12 @@ h1, h2, h3, h4, .brand-title {
   border: 1px solid var(--border-color);
   border-radius: var(--radius-md);
   padding: 1.5rem;
-  backdrop-filter: blur(12px);
   transition: all 0.25 ease;
 }
 
 .service-card:hover {
   background: var(--bg-card-hover);
-  border-color: rgba(255, 255, 255, 0.15);
+  border-color: rgba(232, 236, 242, 0.2);
 }
 
 .service-main {
@@ -328,6 +355,7 @@ h1, h2, h3, h4, .brand-title {
   color: var(--accent-cyan);
 }
 
+.service-countdown,
 .service-url {
   font-size: 0.85rem;
   color: var(--text-secondary);
@@ -346,9 +374,9 @@ h1, h2, h3, h4, .brand-title {
   text-transform: capitalize;
 }
 
-.badge-operational { background: var(--color-operational-bg); color: var(--color-operational); border: 1px solid rgba(16, 185, 129, 0.3); }
+.badge-operational { background: var(--color-operational-bg); color: var(--color-operational); border: 1px solid rgba(46, 194, 126, 0.32); }
 .badge-degraded { background: var(--color-degraded-bg); color: var(--color-degraded); border: 1px solid rgba(245, 158, 11, 0.3); }
-.badge-outage { background: var(--color-outage-bg); color: var(--color-outage); border: 1px solid rgba(239, 68, 68, 0.3); }
+.badge-outage { background: var(--color-outage-bg); color: var(--color-outage); border: 1px solid rgba(229, 72, 77, 0.32); }
 .badge-maintenance { background: var(--color-maintenance-bg); color: var(--color-maintenance); border: 1px solid rgba(59, 130, 246, 0.3); }
 
 /* Timeline Bar Visualization */
@@ -358,29 +386,30 @@ h1, h2, h3, h4, .brand-title {
 
 .timeline-bars {
   display: flex;
-  gap: 3px;
-  height: 28px;
+  gap: 2px;
+  height: 26px;
   align-items: flex-end;
 }
 
+/* Square-ish and tight: this is a measurement strip, not a bar chart. Rounded,
+   widely-spaced blocks read as decoration and cost horizontal resolution. */
 .timeline-bar {
   flex: 1;
-  height: 24px;
-  border-radius: 3px;
-  transition: all 0.2s ease;
+  height: 22px;
+  border-radius: 1px;
+  transition: height 0.15s ease, filter 0.15s ease;
   position: relative;
 }
 
 .timeline-bar:hover {
-  height: 28px;
-  transform: scaleY(1.1);
-  filter: brightness(1.2);
+  height: 26px;
+  filter: brightness(1.25);
 }
 
 .bar-success { background-color: var(--color-operational); }
 .bar-degraded { background-color: var(--color-degraded); }
 .bar-failed { background-color: var(--color-outage); }
-.bar-empty { background-color: rgba(255, 255, 255, 0.05); }
+.bar-empty { background-color: rgba(232, 236, 242, 0.05); }
 
 .timeline-labels {
   display: flex;
@@ -495,7 +524,7 @@ h1, h2, h3, h4, .brand-title {
 .form-control:focus, .form-select:focus, .form-textarea:focus {
   outline: none;
   border-color: var(--accent-primary);
-  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+  box-shadow: 0 0 0 2px rgba(232, 236, 242, 0.18);
 }
 
 .form-textarea {
@@ -530,14 +559,14 @@ h1, h2, h3, h4, .brand-title {
 }
 
 .btn-primary {
-  background: linear-gradient(135deg, var(--accent-primary), #4f46e5);
-  color: white;
-  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+  background: var(--text-primary);
+  color: var(--bg-dark);
+  border: 1px solid var(--text-primary);
 }
 
 .btn-primary:hover {
-  filter: brightness(1.1);
-  transform: translateY(-1px);
+  background: transparent;
+  color: var(--text-primary);
 }
 
 .btn-secondary {
@@ -547,17 +576,17 @@ h1, h2, h3, h4, .brand-title {
 }
 
 .btn-secondary:hover {
-  background: rgba(255, 255, 255, 0.15);
+  background: rgba(232, 236, 242, 0.2);
 }
 
 .btn-danger {
-  background: rgba(239, 68, 68, 0.15);
-  color: #f87171;
-  border: 1px solid rgba(239, 68, 68, 0.3);
+  background: var(--color-outage-bg);
+  color: var(--color-outage);
+  border: 1px solid rgba(229, 72, 77, 0.32);
 }
 
 .btn-danger:hover {
-  background: rgba(239, 68, 68, 0.3);
+  background: rgba(229, 72, 77, 0.32);
 }
 
 .btn-sm {
