@@ -1,6 +1,6 @@
-# ⚡ StatusPul.se
+# ⚡ StatusPulse
 
-> **Real-Time Multi-Tenant Uptime Monitoring, SLA Telemetry & Incident Command Center** built with Ruby on Rails 8, Hotwire Turbo Streams, PostgreSQL, Redis, and Solid Queue.
+> **Real-Time Multi-Tenant Uptime Monitoring, SLA Telemetry & Incident Command Center** built with Ruby on Rails 8.1, Hotwire Turbo Streams, PostgreSQL, and Solid Queue.
 
 ---
 
@@ -46,16 +46,16 @@
 | **Framework** | Ruby on Rails 8.1 |
 | **Language** | Ruby 3.4.1 |
 | **Database** | PostgreSQL 16 / SQLite3 (Fallback) |
-| **Cache & WebSockets** | Redis 7 & ActionCable |
-| **Background Queue** | Solid Queue & Solid Cable |
+| **Cache & WebSockets** | Solid Cache & Solid Cable |
+| **Background Queue** | Solid Queue |
 | **Frontend** | Hotwire (Turbo & Stimulus), Vanilla CSS Dark Theme |
 | **Containerization** | Docker & Docker Compose |
 
 ---
 
-## 🚀 Quick Start with Docker Compose
+## 🚀 Quick Start with Docker Compose (Development)
 
-The entire stack (Rails App, PostgreSQL, Redis, and Solid Queue Worker) runs out of the box via Docker Compose:
+The entire stack (Rails App, PostgreSQL, and Solid Queue Worker) runs out of the box via Docker Compose:
 
 ### 1. Launch Containers
 ```bash
@@ -97,6 +97,17 @@ bin/rails server -p 3030
 ```
 
 Access at `http://localhost:3030`.
+
+---
+
+## 🚢 Production Deployment
+
+For production infrastructure deployments on AWS Lightsail or standalone Ubuntu Linux servers, refer to [DEPLOY.md](DEPLOY.md).
+
+- **Container Topology**: Multi-container Docker Compose setup (`docker-compose.prod.yml`) running `web`, `jobs` (Solid Queue), and `db` (PostgreSQL 16).
+- **Web Server Front-End**: High-performance [Thruster](https://github.com/basecamp/thruster) HTTP/2 proxy built into the Rails production container.
+- **Host Reverse Proxy**: Host Apache2 reverse-proxies incoming traffic from `https://statuspulse.org` to `127.0.0.1:3000`.
+- **TLS / SSL Security**: Let's Encrypt automated TLS certificates managed by Certbot on the host.
 
 ---
 
@@ -145,7 +156,8 @@ Expected Output:
 ├── config/
 │   ├── recurring.yml                   # Solid Queue cron schedule
 │   └── routes.rb                       # RESTful & vanity tenant routes
-├── docker-compose.yml                  # Postgres, Redis, Rails Web, Worker compose
+├── docker-compose.yml                  # Postgres, Rails Web, Worker dev compose
+├── docker-compose.prod.yml             # Production Docker Compose stack
 └── Dockerfile                          # Multi-stage Docker production image
 ```
 

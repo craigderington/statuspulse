@@ -1,5 +1,5 @@
 class WeeklyDigestMailer < ApplicationMailer
-  default from: "reports@statuspulse.local"
+  default from: "reports@statuspulse.org"
 
   def digest_email(organization)
     @organization = organization
@@ -14,7 +14,7 @@ class WeeklyDigestMailer < ApplicationMailer
 
     mail(
       to: @recipients,
-      subject: "📊 StatusPul.se Weekly Uptime Digest — #{organization.name} (#{@avg_uptime}% Uptime)"
+      subject: "📊 StatusPulse Weekly Uptime Digest — #{organization.name} (#{@avg_uptime}% Uptime)"
     )
   end
 end

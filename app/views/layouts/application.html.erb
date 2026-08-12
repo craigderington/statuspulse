@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <title><%= content_for(:title) || "StatusPul.se — Uptime & Incident Command Center" %></title>
+    <title><%= content_for(:title) || "StatusPulse — Uptime & Incident Command Center" %></title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="description" content="Real-time multi-tenant uptime monitoring, response latency analytics, and incident management platform.">
     <%= csrf_meta_tags %>
@@ -21,7 +21,7 @@
             </svg>
           </div>
           <div>
-            <span class="brand-name">StatusPul.se</span>
+            <span class="brand-name">StatusPulse</span>
             <% if current_organization %>
               <div style="font-size: 0.7rem; color: var(--accent-cyan); line-height: 1;"><%= current_organization.name %></div>
             <% end %>

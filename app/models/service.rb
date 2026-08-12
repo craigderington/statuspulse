@@ -54,7 +54,7 @@ class Service < ApplicationRecord
     request = request_class.new(uri.request_uri)
 
     # Apply default User-Agent if not provided
-    request["User-Agent"] = "StatusPulse-Monitor/1.0 (+https://statuspulse.local)"
+    request["User-Agent"] = "StatusPulse-Monitor/1.0 (+https://statuspulse.org)"
     parsed_headers.each do |k, v|
       request[k] = v
     end
