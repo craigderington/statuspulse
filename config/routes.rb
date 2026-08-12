@@ -19,6 +19,9 @@ Rails.application.routes.draw do
     end
   end
 
+  # Singular: you edit your own workspace, so there is no id in the URL.
+  resource :organization, only: [ :edit, :update ]
+
   resources :services do
     member do
       post :check_now

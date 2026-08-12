@@ -641,3 +641,44 @@ h1, h2, h3, h4, .brand-title {
 .service-card:has(.paused-badge) .service-status-badge {
   opacity: 0.55;
 }
+
+/* Settings form helpers */
+.form-hint a { color: var(--text-secondary); }
+
+.slug-field {
+  display: flex;
+  align-items: stretch;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  background: rgba(232, 236, 242, 0.03);
+}
+
+.slug-field__prefix {
+  display: flex;
+  align-items: center;
+  padding: 0 0.7rem;
+  font-family: var(--font-data);
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  border-right: 1px solid var(--border-color);
+  white-space: nowrap;
+}
+
+.slug-field .form-control {
+  border: none;
+  border-radius: 0;
+  background: transparent;
+  flex: 1;
+  min-width: 0;
+}
+
+/* Checkboxes render in the browser's accent blue by default, which is the one
+   colour on a settings page that means nothing. Ink instead. */
+input[type="checkbox"] {
+  accent-color: var(--text-primary);
+  width: 15px;
+  height: 15px;
+  vertical-align: -2px;
+  margin-right: 0.35rem;
+}

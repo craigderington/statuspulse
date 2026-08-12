@@ -29,3 +29,17 @@
 
 en:
   hello: "Hello world"
+
+  activerecord:
+    attributes:
+      organization:
+        # "Slug" is how the column is named, not how the setting is labelled in
+        # the interface. Error messages should use the words on the screen.
+        slug: "Public address"
+        status_page_indexable: "Search engine indexing"
+        weekly_digest_enabled: "Weekly digest"
+      service:
+        check_interval_seconds: "Check interval"
+        expected_body_match: "Expected response body"
+        expected_status_code: "Expected status code"
+        timeout_seconds: "Timeout"

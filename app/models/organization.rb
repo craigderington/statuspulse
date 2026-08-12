@@ -5,7 +5,8 @@ class Organization < ApplicationRecord
   has_many :maintenance_windows, dependent: :destroy
 
   validates :name, presence: true
-  validates :slug, presence: true, uniqueness: true, format: { with: /\A[a-z0-9\-]+\z/, message: "only lowercase letters, numbers and hyphens allowed" }
+  validates :slug, presence: true, uniqueness: true,
+            format: { with: /\A[a-z0-9\-]+\z/, message: "can use only lowercase letters, numbers and hyphens" }
 
   before_validation :generate_slug, on: :create
 

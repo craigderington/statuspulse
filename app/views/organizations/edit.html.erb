@@ -1,0 +1,74 @@
+<% content_for :title, "Workspace settings — StatusPulse" %>
+
+<%# Errors render here, in the same position as the success flash, so feedback
+    always appears in one place rather than moving depending on the outcome. %>
+<% if @organization.errors.any? %>
+  <div class="flash-message flash-alert">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+    <div>
+      <% @organization.errors.full_messages.each do |message| %>
+        <div><%= message %></div>
+      <% end %>
+    </div>
+  </div>
+<% end %>
+
+<div class="section-header" style="margin-bottom: 2rem;">
+  <div>
+    <h1 class="section-title" style="font-size: 1.6rem;">Workspace settings</h1>
+    <p style="color: var(--text-secondary); font-size: 0.95rem; margin-top: 0.25rem;">
+      Name, public address, and what this workspace publishes.
+    </p>
+  </div>
+</div>
+
+<div class="form-card" style="max-width: 46rem;">
+  <%= form_with model: @organization, url: organization_path, method: :patch do |f| %>
+    <div class="form-group">
+      <%= f.label :name, "Workspace name", class: "form-label" %>
+      <%= f.text_field :name, class: "form-control" %>
+      <p class="form-hint">Shown on the dashboard and at the top of your public status page.</p>
+    </div>
+
+    <div class="form-group">
+      <%= f.label :slug, "Public address", class: "form-label" %>
+      <div class="slug-field">
+        <span class="slug-field__prefix">/status/</span>
+        <%= f.text_field :slug, class: "form-control form-control-code" %>
+      </div>
+      <p class="form-hint">
+        <%# slug_in_database, not slug: after a rejected save the object still
+            holds the invalid value, and linking to it would advertise an
+            address that was never saved. %>
+        Lowercase letters, numbers and hyphens. Currently
+        <%= link_to "/status/#{@organization.slug_in_database}", org_public_status_path(org_slug: @organization.slug_in_database), target: "_blank", rel: "noopener" %>.
+        <strong style="color: var(--color-degraded);">Changing this breaks the old link</strong> — anyone who bookmarked it, and any
+        search engine that indexed it, will get a 404.
+      </p>
+    </div>
+
+    <div class="form-group">
+      <%= f.label :status_page_indexable, class: "form-label" do %>
+        <%= f.check_box :status_page_indexable %>
+        Let search engines index this status page
+      <% end %>
+      <p class="form-hint">
+        On by default, so customers who search for your status during an outage can find it.
+        Turn it off and the page stays reachable by link but is excluded from search results and the sitemap.
+      </p>
+    </div>
+
+    <div class="form-group">
+      <%= f.label :weekly_digest_enabled, class: "form-label" do %>
+        <%= f.check_box :weekly_digest_enabled %>
+        Send the weekly uptime digest
+      <% end %>
+      <p class="form-hint">Emailed to everyone in this workspace on Mondays at 08:00 ET.</p>
+    </div>
+
+    <div style="display: flex; gap: 0.75rem; margin-top: 1.75rem;">
+      <%= f.submit "Save settings", class: "btn btn-primary" %>
+      <%= link_to "Cancel", dashboard_path, class: "btn btn-secondary" %>
+    </div>
+  <% end %>
+</div>

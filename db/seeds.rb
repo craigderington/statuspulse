@@ -23,8 +23,13 @@ if Rails.env.production?
           "at least #{MIN_ADMIN_PASSWORD_LENGTH} are required in production."
   end
 
-  org = Organization.find_or_create_by!(slug: ENV.fetch("SEED_ORG_SLUG", "default")) do |o|
-    o.name = ENV.fetch("SEED_ORG_NAME", "StatusPulse")
+  # Keyed on name, not slug. Keying on slug set it explicitly before validation,
+  # which pre-empted Organization#generate_slug's `slug ||=` — so passing only
+  # SEED_ORG_NAME produced the right name against a slug of "default", and the
+  # public URL did not match the organization. Leaving slug nil lets it derive
+  # from the name; SEED_ORG_SLUG still overrides when you want them to differ.
+  org = Organization.find_or_create_by!(name: ENV.fetch("SEED_ORG_NAME", "StatusPulse")) do |o|
+    o.slug = ENV["SEED_ORG_SLUG"].presence
     o.weekly_digest_enabled = true
   end
 

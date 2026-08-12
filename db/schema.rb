@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_08_12_175944) do
+ActiveRecord::Schema[8.1].define(version: 2026_08_12_182451) do
   create_table "check_logs", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.string "error_message"
@@ -103,7 +103,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_12_175944) do
     t.string "name"
     t.integer "organization_id", null: false
     t.string "password_digest"
-    t.string "role"
+    t.string "role", default: "member", null: false
     t.datetime "updated_at", null: false
     t.index ["organization_id"], name: "index_users_on_organization_id"
   end
