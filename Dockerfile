@@ -1,9 +1,10 @@
 # syntax=docker/dockerfile:1
 # check=error=true
 
-# This Dockerfile is designed for production, not development. Use with Kamal or build'n'run by hand:
-# docker build -t rails_project_1 .
-# docker run -d -p 80:80 -e RAILS_MASTER_KEY=<value from config/master.key> --name rails_project_1 rails_project_1
+# This Dockerfile is designed for production, not development. Built on the Lightsail
+# instance via docker-compose.prod.yml; see DEPLOY.md. To build by hand:
+# docker build -t statuspulse .
+# docker run -d -p 80:80 -e RAILS_MASTER_KEY=<value from config/master.key> --name statuspulse statuspulse
 
 # For a containerized dev environment, see Dev Containers: https://guides.rubyonrails.org/getting_started_with_devcontainer.html
 
@@ -24,8 +25,13 @@ RUN apt-get update -qq && \
 ENV RAILS_ENV="production" \
     BUNDLE_DEPLOYMENT="1" \
     BUNDLE_PATH="/usr/local/bundle" \
-    BUNDLE_WITHOUT="development" \
+    BUNDLE_WITHOUT="development:test" \
     LD_PRELOAD="/usr/local/lib/libjemalloc.so"
+
+# Match the Bundler version in Gemfile.lock's "BUNDLED WITH". The ruby:slim image ships
+# Bundler 2.x, which refuses to read a Bundler 4 lockfile under BUNDLE_DEPLOYMENT=1.
+ARG BUNDLER_VERSION=4.0.18
+RUN gem install bundler -v "${BUNDLER_VERSION}" --no-document
 
 # Throw-away build stage to reduce size of final image
 FROM base AS build
