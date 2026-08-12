@@ -4,7 +4,10 @@ production:
     schedule: "* * * * *"
   weekly_digest_emails:
     class: WeeklyDigestJob
-    schedule: "0 8 * * 1"
+    # Trailing timezone is parsed by Fugit and tracks DST on its own: 08:00
+    # Eastern is 12:00 UTC in summer and 13:00 UTC in winter. A bare "0 8 * * 1"
+    # would fire at 08:00 UTC, which is the middle of the night Eastern.
+    schedule: "0 8 * * 1 America/New_York"
 
 development:
   service_health_checks:
@@ -12,4 +15,7 @@ development:
     schedule: "* * * * *"
   weekly_digest_emails:
     class: WeeklyDigestJob
-    schedule: "0 8 * * 1"
+    # Trailing timezone is parsed by Fugit and tracks DST on its own: 08:00
+    # Eastern is 12:00 UTC in summer and 13:00 UTC in winter. A bare "0 8 * * 1"
+    # would fire at 08:00 UTC, which is the middle of the night Eastern.
+    schedule: "0 8 * * 1 America/New_York"

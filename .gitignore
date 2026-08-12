@@ -58,3 +58,7 @@ Thumbs.db
 *.swp
 *~
 .ruby-lsp/
+
+# Ignore key files for decrypting credentials and more.
+/config/*.key
+
