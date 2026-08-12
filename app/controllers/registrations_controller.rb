@@ -20,7 +20,7 @@ class RegistrationsController < ApplicationController
 
     if @user.save
       session[:user_id] = @user.id
-      redirect_to root_path, notice: "Account created! Welcome to StatusPulse."
+      redirect_to dashboard_path, notice: "Account created! Welcome to StatusPulse."
     else
       organization.destroy rescue nil
       render :new, status: :unprocessable_entity

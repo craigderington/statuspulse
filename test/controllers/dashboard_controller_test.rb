@@ -8,7 +8,15 @@ class DashboardControllerTest < ActionDispatch::IntegrationTest
 
   test "should get index when logged in" do
     post login_url, params: { email: @user.email, password: "password123" }
-    get root_url
+    get dashboard_url
     assert_response :success
+  end
+
+  test "root sends a signed-in operator to the dashboard, not the landing page" do
+    post login_url, params: { email: @user.email, password: "password123" }
+
+    get root_url
+
+    assert_redirected_to dashboard_path
   end
 end

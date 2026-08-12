@@ -24,7 +24,7 @@ class ApplicationController < ActionController::Base
   end
 
   def public_action?
-    controller_name == "sessions" || controller_name == "registrations" || controller_name == "status_page"
+    %w[sessions registrations status_page marketing].include?(controller_name)
   end
 
   def current_organization

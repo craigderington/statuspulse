@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title><%= content_for(:title) || "StatusPulse — Multi-tenant uptime monitoring for agencies and MSPs" %></title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="description" content="<%= content_for(:description) || "Give every client an isolated workspace, its own endpoints and incident history, and a public status page at its own address — while you watch all of them from one dashboard." %>">
+    <link rel="canonical" href="<%= request.original_url.split("?").first.sub("://www.", "://") %>">
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="StatusPulse">
+    <meta property="og:title" content="<%= content_for(:title) || "StatusPulse — Multi-tenant uptime monitoring for agencies and MSPs" %>">
+    <meta property="og:description" content="One console for every client's uptime. Isolated workspaces, per-client status pages, SLA and P90 reporting.">
+    <meta property="og:url" content="<%= request.original_url.split("?").first %>">
+    <meta property="og:image" content="<%= request.base_url %>/icon.png">
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="StatusPulse — uptime monitoring for agencies and MSPs">
+    <meta name="twitter:description" content="One console for every client's uptime.">
+    <meta name="twitter:image" content="<%= request.base_url %>/icon.png">
+
+    <link rel="icon" href="/favicon.ico" sizes="any">
+    <link rel="icon" href="/icon.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+    <link rel="manifest" href="<%= pwa_manifest_path %>">
+    <meta name="theme-color" content="#090d16">
+
+    <%= stylesheet_link_tag "application", "marketing", "data-turbo-track": "reload" %>
+    <%= javascript_importmap_tags %>
+  </head>
+
+  <body class="mk-body">
+    <%= yield %>
+  </body>
+</html>

@@ -1,0 +1,231 @@
+<aside class="mk-railstrip" aria-hidden="true" data-controller="rail">
+  <span class="mk-railstrip__mark">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+      <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+    </svg>
+  </span>
+  <div class="mk-railstrip__bars" data-rail-target="bars"></div>
+  <span class="mk-railstrip__label">Continuously checked</span>
+</aside>
+
+<div class="mk-shell">
+<header class="mk-nav mk-wrap">
+  <a href="<%= root_path %>" class="mk-nav__brand">
+    <span class="mk-nav__mark">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+      </svg>
+    </span>
+    <span class="mk-nav__word">StatusPulse</span>
+  </a>
+  <nav class="mk-nav__links">
+    <a href="#workspaces">Workspaces</a>
+    <a href="#checks">Checks</a>
+    <a href="#reporting">Reporting</a>
+    <a href="<%= login_path %>" class="mk-nav__signin">Sign in</a>
+    <a href="<%= signup_path %>" class="mk-btn mk-btn--sm">Create workspace</a>
+  </nav>
+</header>
+
+<main>
+  <section class="mk-hero mk-wrap">
+    <div class="mk-hero__copy">
+      <p class="mk-eyebrow">Multi-tenant uptime monitoring</p>
+      <h1 class="mk-h1">Every client&rsquo;s uptime.<br><span class="mk-h1__outline">One console.</span></h1>
+      <p class="mk-lede">
+        Each client gets an isolated workspace, its own endpoints and incident history,
+        and a public status page at its own address. You watch all of them from a single
+        dashboard.
+      </p>
+      <div class="mk-hero__actions">
+        <a href="<%= signup_path %>" class="mk-btn">Create a workspace</a>
+        <a href="<%= public_status_path %>" class="mk-btn mk-btn--ghost">See a live status page</a>
+      </div>
+      <p class="mk-hero__note">Self-hostable. Runs on Postgres. No agent to install on anything.</p>
+    </div>
+
+    <div class="mk-hero__wall">
+      <div class="mk-wall" data-controller="ops-wall">
+        <div class="mk-wall__chrome">
+          <span class="mk-wall__label">Operations wall</span>
+          <span class="mk-wall__meta"><%= @sample_workspaces.size %> workspaces &middot; <span data-ops-wall-target="clock">live</span></span>
+        </div>
+
+        <div class="mk-wall__rows">
+          <% @sample_workspaces.each_with_index do |workspace, index| %>
+            <div class="mk-row" data-ops-wall-target="row" data-index="<%= index %>">
+              <div class="mk-row__id">
+                <span class="mk-row__dot" data-ops-wall-target="dot"></span>
+                <span class="mk-row__name"><%= workspace[:name] %></span>
+                <span class="mk-row__slug">/status/<%= workspace[:slug] %></span>
+              </div>
+              <div class="mk-row__strip" data-ops-wall-target="strip"></div>
+              <div class="mk-row__latency"><span data-ops-wall-target="latency"><%= workspace[:latency] %></span><i>ms</i></div>
+            </div>
+          <% end %>
+        </div>
+
+        <div class="mk-wall__incident" data-ops-wall-target="incident" aria-live="polite"></div>
+      </div>
+      <p class="mk-wall__caption">Illustrative workspaces. Names and figures are examples, not customers.</p>
+    </div>
+  </section>
+
+  <section class="mk-section mk-wrap" id="workspaces">
+    <div class="mk-section__head">
+      <div class="mk-ticks" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
+      <p class="mk-eyebrow">Org-isolated</p>
+      <h2 class="mk-h2">One workspace per client. Nothing bleeds across.</h2>
+      <p class="mk-body">
+        Endpoints, incidents, maintenance windows, users and reports all belong to an
+        organization. A client&rsquo;s data is scoped to their workspace at the query
+        level, not hidden in the interface.
+      </p>
+    </div>
+
+    <div class="mk-grid mk-grid--3">
+      <article class="mk-card">
+        <h3 class="mk-h3">Roles that match how agencies work</h3>
+        <p class="mk-body">Admins configure endpoints and triage incidents. Members watch and report. Membership is per workspace.</p>
+      </article>
+      <article class="mk-card">
+        <h3 class="mk-h3">Its own address</h3>
+        <p class="mk-body">Every workspace publishes to <code class="mk-code">/status/&lt;client&gt;</code> — a page you can hand a client without exposing anything else.</p>
+      </article>
+      <article class="mk-card">
+        <h3 class="mk-h3">Onboarding is one form</h3>
+        <p class="mk-body">Creating an account creates the workspace with it. No provisioning step, no seats to allocate before you can start watching something.</p>
+      </article>
+    </div>
+  </section>
+
+  <section class="mk-section mk-wrap" id="checks">
+    <div class="mk-section__head">
+      <div class="mk-ticks" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
+      <p class="mk-eyebrow">GET &middot; POST &middot; PUT &middot; PATCH &middot; DELETE &middot; HEAD &middot; OPTIONS</p>
+      <h2 class="mk-h2">Check what your clients actually run.</h2>
+      <p class="mk-body">
+        Real systems need more than a GET against the homepage. Authenticate the check,
+        send a body, and assert on what comes back.
+      </p>
+    </div>
+
+    <div class="mk-split">
+      <div class="mk-split__list">
+        <div class="mk-feature">
+          <span class="mk-feature__key">Headers</span>
+          <p class="mk-body">Bearer tokens and API keys per endpoint, as JSON or plain <code class="mk-code">Header: Value</code> lines.</p>
+        </div>
+        <div class="mk-feature">
+          <span class="mk-feature__key">Body</span>
+          <p class="mk-body">Send a payload with POST, PUT and PATCH checks — exercise the endpoint the way a client does.</p>
+        </div>
+        <div class="mk-feature">
+          <span class="mk-feature__key">Assertions</span>
+          <p class="mk-body">Match an expected status code, and require a string in the response body. A 200 that returns the wrong thing is still an outage.</p>
+        </div>
+        <div class="mk-feature">
+          <span class="mk-feature__key">Cadence</span>
+          <p class="mk-body">Per-endpoint intervals and timeouts. A payments API can run every 30s while a marketing site runs every 5 minutes.</p>
+        </div>
+      </div>
+
+      <div class="mk-console" aria-hidden="true">
+        <div class="mk-console__bar"><span></span><span></span><span></span></div>
+<pre class="mk-console__code">POST /v1/tokens            <b>every 30s</b>
+Authorization: Bearer •••••••••••
+Content-Type: application/json
+
+{ "grant_type": "client_credentials" }
+
+<u>expect</u>  200
+<u>expect</u>  body contains "access_token"
+<u>timeout</u> 10s</pre>
+      </div>
+    </div>
+  </section>
+
+  <section class="mk-section mk-wrap" id="reporting">
+    <div class="mk-section__head">
+      <div class="mk-ticks" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
+      <p class="mk-eyebrow">SLA &middot; P90 &middot; 7 / 30 / 90 days</p>
+      <h2 class="mk-h2">Reporting a client will actually read.</h2>
+      <p class="mk-body">
+        Uptime against the windows that appear in service agreements, and latency
+        measured at the percentile that shows the problem. Averages hide the bad tail;
+        P90 is where a client&rsquo;s complaint lives.
+      </p>
+    </div>
+
+    <div class="mk-report" aria-hidden="true">
+      <div class="mk-report__head">
+        <span class="mk-report__client">Northwind Logistics</span>
+        <span class="mk-report__range">Example report</span>
+      </div>
+      <div class="mk-report__tiles">
+        <div class="mk-tile">
+          <span class="mk-tile__label">Uptime · 7d</span>
+          <span class="mk-tile__value">99.98<i>%</i></span>
+        </div>
+        <div class="mk-tile">
+          <span class="mk-tile__label">Uptime · 30d</span>
+          <span class="mk-tile__value">99.91<i>%</i></span>
+        </div>
+        <div class="mk-tile">
+          <span class="mk-tile__label">Uptime · 90d</span>
+          <span class="mk-tile__value">99.86<i>%</i></span>
+        </div>
+        <div class="mk-tile mk-tile--accent">
+          <span class="mk-tile__label">P90 latency</span>
+          <span class="mk-tile__value">312<i>ms</i></span>
+        </div>
+        <div class="mk-tile">
+          <span class="mk-tile__label">Average</span>
+          <span class="mk-tile__value">128<i>ms</i></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="mk-grid mk-grid--2">
+      <article class="mk-card">
+        <h3 class="mk-h3">A digest that lands before the client asks</h3>
+        <p class="mk-body">Every workspace can send its team a weekly SLA summary on Monday morning. Send it early and the uptime conversation is already had.</p>
+      </article>
+      <article class="mk-card">
+        <h3 class="mk-h3">Incidents with a paper trail</h3>
+        <p class="mk-body">Investigating, identified, monitoring, resolved — each with timestamped updates and the services it touched, kept against the workspace.</p>
+      </article>
+    </div>
+  </section>
+
+  <section class="mk-section mk-wrap mk-section--status">
+    <div class="mk-section__head">
+      <div class="mk-ticks" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
+      <p class="mk-eyebrow">Public &middot; per client</p>
+      <h2 class="mk-h2">A status page for each client, at its own address.</h2>
+      <p class="mk-body">
+        When something breaks, a client&rsquo;s customers go looking. Give them a page to
+        find: current state per service, the check history, and the incident timeline —
+        updating live, without a refresh.
+      </p>
+      <a href="<%= public_status_path %>" class="mk-btn mk-btn--ghost">Open a live status page</a>
+    </div>
+  </section>
+
+  <section class="mk-cta mk-wrap">
+    <h2 class="mk-h2">Start with one client. Add the rest.</h2>
+    <p class="mk-body">Create a workspace, point it at an endpoint, and watch the first check land.</p>
+    <a href="<%= signup_path %>" class="mk-btn mk-btn--lg">Create a workspace</a>
+  </section>
+</main>
+
+<footer class="mk-footer mk-wrap">
+  <span class="mk-footer__word">StatusPulse</span>
+  <nav class="mk-footer__links">
+    <a href="<%= public_status_path %>">Status</a>
+    <a href="<%= login_path %>">Sign in</a>
+    <a href="<%= signup_path %>">Create workspace</a>
+    <a href="https://github.com/craigderington/statuspulse" rel="noopener">Source</a>
+  </nav>
+</footer>
+</div>

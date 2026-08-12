@@ -1,5 +1,8 @@
 Rails.application.routes.draw do
-  root "dashboard#index"
+  # The landing page is the public face; signed-in operators are redirected
+  # straight to the dashboard by MarketingController.
+  root "marketing#index"
+  get "dashboard", to: "dashboard#index", as: :dashboard
 
   # Authentication
   get "login", to: "sessions#new", as: :login
