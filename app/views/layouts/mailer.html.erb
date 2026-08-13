@@ -1,13 +1,14 @@
+<% email_bg = content_for?(:email_bg) ? content_for(:email_bg).to_s.strip : "#07090c" %>
 <!DOCTYPE html>
 <html>
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <style>
-      /* Email styles need to be inline */
-    </style>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <%# Styles must be inline in the templates: Gmail and Outlook.com strip
+        <style> blocks in forwarded and some mobile views. %>
   </head>
 
-  <body>
+  <body bgcolor="<%= email_bg %>" style="margin: 0; padding: 0; background-color: <%= email_bg %>;">
     <%= yield %>
   </body>
 </html>
