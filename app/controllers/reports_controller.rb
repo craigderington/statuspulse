@@ -4,7 +4,12 @@ class ReportsController < ApplicationController
     @services = @organization.services.ordered
     @incidents = @organization.incidents.recent.limit(10)
 
-    @period_days = (params[:days].presence || 30).to_i
+    # Clamped to the retention window. Beyond it the logs have been purged, and
+    # computing a "365-day uptime" from whatever survived would report a figure
+    # flattered by the failures that were deleted.
+    requested = (params[:days].presence || 30).to_i.clamp(1, CheckLog.retention_days)
+    @period_truncated = requested != (params[:days].presence || 30).to_i
+    @period_days = requested
     @start_date = @period_days.days.ago
 
     @reports_data = @services.map do |service|
@@ -32,7 +37,13 @@ class ReportsController < ApplicationController
   end
 
   def send_test_email
-    WeeklyDigestMailer.digest_email(current_organization).deliver_now rescue nil
-    redirect_to reports_path, notice: "Weekly digest report email dispatched to organization team members!"
+    # Previously `deliver_now rescue nil`, which reported success whatever
+    # happened — including an outright rejection from Mailgun.
+    WeeklyDigestMailer.digest_email(current_organization).deliver_now
+    redirect_to reports_path, notice: "Weekly digest sent to everyone in this workspace."
+  rescue StandardError => e
+    Rails.logger.error("Weekly digest dispatch failed: #{e.class}: #{e.message}")
+    redirect_to reports_path,
+      alert: "The digest could not be sent: #{e.message}"
   end
 end

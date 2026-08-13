@@ -958,3 +958,11 @@ input[type="checkbox"] {
 /* button_to wraps its button in a form, which would otherwise break the
    vertical rhythm of the menu. */
 .account__menu form { margin: 0; }
+
+.report-clamped {
+  font-family: var(--font-data);
+  font-size: 0.78rem;
+  line-height: 1.6;
+  color: var(--color-degraded);
+  margin-top: 0.6rem;
+}

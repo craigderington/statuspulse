@@ -2,6 +2,11 @@ production:
   service_health_checks:
     class: ServiceCheckJob
     schedule: "* * * * *"
+  purge_check_logs:
+    class: PurgeCheckLogsJob
+    # 03:40 UTC — after the 03:17 backup, so a purge is never the last thing to
+    # touch the data before it is captured.
+    schedule: "40 3 * * *"
   weekly_digest_emails:
     class: WeeklyDigestJob
     # Trailing timezone is parsed by Fugit and tracks DST on its own: 08:00
@@ -13,6 +18,11 @@ development:
   service_health_checks:
     class: ServiceCheckJob
     schedule: "* * * * *"
+  purge_check_logs:
+    class: PurgeCheckLogsJob
+    # 03:40 UTC — after the 03:17 backup, so a purge is never the last thing to
+    # touch the data before it is captured.
+    schedule: "40 3 * * *"
   weekly_digest_emails:
     class: WeeklyDigestJob
     # Trailing timezone is parsed by Fugit and tracks DST on its own: 08:00

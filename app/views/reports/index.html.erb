@@ -4,6 +4,15 @@
     <p style="color: var(--text-secondary); font-size: 0.95rem; margin-top: 0.25rem;">
       Detailed SLA compliance uptime, P90 response latency distribution, and failure analysis for <%= current_organization.name %>.
     </p>
+    <%# Say so rather than silently answering a different question than the one
+        asked: beyond retention the logs are gone, and a figure computed from
+        what survived would be flattered by the failures that were purged. %>
+    <% if @period_truncated %>
+      <p class="report-clamped" data-period-clamped>
+        Showing the last <%= @period_days %> days — the longest window with complete
+        check history. Older logs are removed after <%= CheckLog.retention_days %> days.
+      </p>
+    <% end %>
   </div>
 
   <div style="display: flex; gap: 0.75rem;">
