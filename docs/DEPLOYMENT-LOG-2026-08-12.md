@@ -1,5 +1,10 @@
 # Deployment Log — 12 August 2026
 
+> This records the initial production deployment and the same-day work that
+> followed it. For everything after that — 2FA, backups to S3, alerting,
+> certificate monitoring — and for the consolidated list of security findings,
+> see [`ENGINEERING-LOG.md`](ENGINEERING-LOG.md).
+
 StatusPulse went from a local development repository to a live production
 deployment at **https://statuspulse.org** on AWS Lightsail.
 

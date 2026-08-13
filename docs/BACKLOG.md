@@ -5,7 +5,17 @@ living in conversation.
 
 ---
 
-## 1. Alert on failure
+## ~~1. Alert on failure~~ — done (`6508a63`)
+
+Shipped: email and signed webhook, after two consecutive failures, one message
+per incident plus one on recovery. Settings live on the Alerts & email page.
+
+**Still unproven:** no alert has actually been delivered in production. The
+trigger logic is covered by tests; Mailgun delivery for `ServiceAlertMailer` and
+an actual webhook POST have never happened. Pointing a throwaway service at
+`https://httpbin.org/status/500` exercises both in about two minutes.
+
+<details><summary>Original note</summary>
 
 **StatusPulse currently tells nobody when something breaks.**
 
@@ -35,16 +45,19 @@ Note that the existing `Incident` model already has the vocabulary
 opened automatically on a sustained failure rather than inventing a parallel
 concept.
 
+</details>
+
 ## 2. More check types
 
-Currently every check is an HTTP request. Worth adding:
+~~**TLS certificate expiry**~~ — done (`971f75a`). Observed during the existing
+HTTPS check rather than as a separate check type: every request already
+completes a handshake, so the certificate is in hand. Degrades at 14 days,
+outage once expired, one warning per certificate, and renewing re-arms it. This
+also fixed a worse problem found on the way — certificates were not being
+validated at all.
 
-- **TLS certificate expiry** — arguably the highest-value addition after
-  alerting, because it is the outage everyone sees coming and still gets hit by.
-  Would warn at a configurable threshold (30/14/7 days) rather than only failing
-  once expired. Note this needs a different failure model: a certificate 20 days
-  from expiry is not "down", so it does not fit the operational / degraded /
-  outage states cleanly. Probably a separate check type with its own severity.
+Still worth adding:
+
 - **Domain expiry** — same shape, via WHOIS/RDAP. Same cause of embarrassing,
   entirely preventable outages.
 - **DNS resolution** — a record resolving to an expected value.
