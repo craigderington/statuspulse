@@ -32,6 +32,12 @@ Rails.application.routes.draw do
   # Singular: you edit your own workspace, so there is no id in the URL.
   resource :organization, only: [ :edit, :update ]
 
+  # Alert and email settings for the workspace. Admin-only, like workspace
+  # settings: turning alerts off or repointing the webhook affects everyone.
+  get   "alerts", to: "alert_settings#edit", as: :alert_settings
+  patch "alerts", to: "alert_settings#update"
+  post  "alerts/test", to: "alert_settings#test_webhook", as: :test_alert_webhook
+
   # Personal account security, available to every signed-in user — unlike
   # workspace settings, which are admin-only.
   get  "security", to: "security#show", as: :security

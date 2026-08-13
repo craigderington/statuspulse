@@ -966,3 +966,58 @@ input[type="checkbox"] {
   color: var(--color-degraded);
   margin-top: 0.6rem;
 }
+
+/* ---- alert settings ---- */
+
+.alert-recipients {
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 0.9rem 1rem;
+  margin-top: 0.5rem;
+}
+
+.alert-recipients__label {
+  display: block;
+  font-family: var(--font-data);
+  font-size: 0.66rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 0.6rem;
+}
+
+.alert-recipients__list {
+  list-style: none;
+  display: grid;
+  gap: 0.35rem;
+  font-size: 0.88rem;
+  color: var(--text-secondary);
+}
+
+.alert-recipients__role {
+  font-family: var(--font-data);
+  font-size: 0.62rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  border: 1px solid var(--border-color);
+  border-radius: 999px;
+  padding: 1px 6px;
+  margin-left: 0.3rem;
+}
+
+.webhook-headers {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.82rem;
+}
+
+.webhook-headers td {
+  padding: 0.5rem 0;
+  border-bottom: 1px solid var(--border-soft);
+  color: var(--text-secondary);
+  vertical-align: top;
+}
+
+.webhook-headers td:first-child { width: 42%; padding-right: 1rem; }
+.webhook-headers code { font-family: var(--font-data); font-size: 0.95em; color: var(--text-primary); }

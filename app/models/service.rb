@@ -29,7 +29,17 @@ class Service < ApplicationRecord
     [ organization, "services_status" ]
   end
 
+  # Two consecutive failures, not one. A single failed check is usually a blip —
+  # a dropped packet, a slow DNS lookup, a container restarting mid-deploy — and
+  # alerting on every one is how alerting gets muted. At a 60s interval this
+  # costs about two minutes of delay.
+  ALERT_AFTER_CONSECUTIVE_FAILURES = 2
+
   scope :ordered, -> { order(position: :asc, name: :asc) }
+
+  def alerting?
+    alerted_at.present?
+  end
 
   scope :paused, -> { where.not(paused_at: nil) }
   scope :monitored, -> { where(paused_at: nil) }
@@ -139,6 +149,8 @@ class Service < ApplicationRecord
       success: is_success,
       error_message: error_msg
     )
+
+    evaluate_alerting!(is_success, error_msg)
   rescue StandardError => e
     duration_ms = ((Process.clock_gettime(Process::CLOCK_MONOTONIC) - start_time) * 1000).round rescue 0
 
@@ -155,6 +167,10 @@ class Service < ApplicationRecord
       success: false,
       error_message: e.message
     )
+
+    # A refused connection or a timeout is the most clear-cut failure there is —
+    # it must alert like any other.
+    evaluate_alerting!(false, e.message)
   end
 
   def uptime_percentage(period = 30.days)
@@ -201,7 +217,53 @@ class Service < ApplicationRecord
     end
   end
 
+  # Decides whether this check changes anything anyone needs to be told about.
+  #
+  # Deliberately separate from the check itself: a check records what happened,
+  # this decides whether it is news. Counters are written with update_columns to
+  # avoid a second Turbo broadcast — perform_check!'s own update! has already
+  # refreshed the card.
+  def evaluate_alerting!(success, error_message = nil)
+    if success
+      recover_from_alert! if alerting?
+      update_columns(consecutive_failures: 0) if consecutive_failures.positive?
+      return
+    end
+
+    failures = consecutive_failures + 1
+    update_columns(consecutive_failures: failures)
+
+    return if alerting?
+    return if failures < ALERT_AFTER_CONSECUTIVE_FAILURES
+
+    raise_alert!(error_message)
+  end
+
   private
+
+  def raise_alert!(error_message)
+    return unless alertable?
+
+    # Recorded before dispatch, so a failure to deliver cannot cause the same
+    # alert to be raised again on the next check.
+    update_columns(alerted_at: Time.current)
+    ServiceAlertJob.perform_later(id, "down", error_message)
+  end
+
+  def recover_from_alert!
+    downtime_started = alerted_at
+    update_columns(alerted_at: nil)
+
+    return unless alertable?
+
+    ServiceAlertJob.perform_later(id, "recovered", nil, downtime_started&.iso8601)
+  end
+
+  # An orphaned service has no workspace to notify, and a workspace can turn
+  # alerting off entirely.
+  def alertable?
+    organization.present? && organization.alerts_enabled?
+  end
 
   def determine_new_status(is_success, duration_ms)
     return "outage" unless is_success

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_08_12_193855) do
+ActiveRecord::Schema[8.1].define(version: 2026_08_13_130551) do
   create_table "check_logs", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.string "error_message"
@@ -65,6 +65,9 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_12_193855) do
   end
 
   create_table "organizations", force: :cascade do |t|
+    t.string "alert_webhook_secret"
+    t.string "alert_webhook_url"
+    t.boolean "alerts_enabled", default: true, null: false
     t.datetime "created_at", null: false
     t.string "name"
     t.string "slug"
@@ -84,7 +87,9 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_12_193855) do
   end
 
   create_table "services", force: :cascade do |t|
+    t.datetime "alerted_at"
     t.integer "check_interval_seconds", default: 60, null: false
+    t.integer "consecutive_failures", default: 0, null: false
     t.datetime "created_at", null: false
     t.text "description"
     t.string "expected_body_match"

@@ -1,0 +1,93 @@
+<% content_for :title, "Alerts & email — StatusPulse" %>
+
+<% if @organization.errors.any? %>
+  <div class="flash-message flash-alert">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+    <div>
+      <% @organization.errors.full_messages.each do |message| %>
+        <div><%= message %></div>
+      <% end %>
+    </div>
+  </div>
+<% end %>
+
+<div class="section-header" style="margin-bottom: 2rem;">
+  <div>
+    <h1 class="section-title" style="font-size: 1.6rem;">Alerts &amp; email</h1>
+    <p style="color: var(--text-secondary); font-size: 0.95rem; margin-top: 0.25rem;">
+      What <%= @organization.name %> is told when a service goes down, and where it is sent.
+    </p>
+  </div>
+</div>
+
+<div class="form-card" style="max-width: 46rem;">
+  <%= form_with model: @organization, url: alert_settings_path, method: :patch do |f| %>
+
+    <div class="form-group">
+      <%= f.label :alerts_enabled, class: "form-label" do %>
+        <%= f.check_box :alerts_enabled %>
+        Send alerts when a service goes down
+      <% end %>
+      <p class="form-hint">
+        An alert is sent after <strong><%= Service::ALERT_AFTER_CONSECUTIVE_FAILURES %> consecutive failed checks</strong>,
+        not the first — a single failure is usually a blip, and alerting on every one is
+        how people learn to ignore the alerts. You get one message when it breaks and one
+        when it recovers, never one per failed check.
+      </p>
+    </div>
+
+    <div class="form-group">
+      <%= f.label :weekly_digest_enabled, class: "form-label" do %>
+        <%= f.check_box :weekly_digest_enabled %>
+        Send the weekly uptime digest
+      <% end %>
+      <p class="form-hint">A summary every Monday at 08:00 ET, separate from outage alerts.</p>
+    </div>
+
+    <div class="alert-recipients">
+      <span class="alert-recipients__label">Alerts go to everyone in this workspace</span>
+      <ul class="alert-recipients__list">
+        <% @organization.users.order(:email).each do |user| %>
+          <li><%= user.email %><% if user.admin? %> <span class="alert-recipients__role">admin</span><% end %></li>
+        <% end %>
+      </ul>
+    </div>
+
+    <div class="form-group" style="margin-top: 1.75rem;">
+      <%= f.label :alert_webhook_url, "Webhook URL", class: "form-label" %>
+      <%= f.text_field :alert_webhook_url, class: "form-control form-control-code",
+            placeholder: "https://hooks.example.com/statuspulse", autocomplete: "off", spellcheck: false %>
+      <p class="form-hint">
+        Optional. A JSON payload is POSTed here on every down and recovery event, so alerts
+        can be routed into PagerDuty, Slack or your own tooling. Must be <code class="mk-code">https</code>,
+        and must not resolve to a private or internal address.
+      </p>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Save alert settings</button>
+  <% end %>
+</div>
+
+<% if @organization.alert_webhook_configured? %>
+  <div class="form-card" style="max-width: 46rem; margin-top: 1.5rem;">
+    <h2 class="mk-h3" style="font-size: 1.05rem; margin-bottom: 0.35rem;">Verifying webhook deliveries</h2>
+    <p class="form-hint" style="margin-bottom: 1.25rem;">
+      Every request carries an HMAC-SHA256 signature over the timestamp and body, so your
+      endpoint can prove a payload came from StatusPulse and has not been replayed.
+    </p>
+
+    <table class="webhook-headers">
+      <tr><td><code>X-StatusPulse-Event</code></td><td><code>service.down</code> or <code>service.recovered</code></td></tr>
+      <tr><td><code>X-StatusPulse-Timestamp</code></td><td>Unix seconds, signed alongside the body</td></tr>
+      <tr><td><code>X-StatusPulse-Signature</code></td><td><code>v1=&lt;hex hmac of "&lt;timestamp&gt;.&lt;body&gt;"&gt;</code></td></tr>
+    </table>
+
+    <div class="form-group" style="margin-top: 1.5rem;">
+      <span class="form-label">Signing secret</span>
+      <code class="enrol__secret" style="display: block; word-break: break-all;"><%= @organization.alert_webhook_secret %></code>
+      <p class="form-hint">Compute the HMAC with this and compare in constant time. Anyone with it can forge alerts to your endpoint.</p>
+    </div>
+
+    <%= button_to "Send a test alert", test_alert_webhook_path, method: :post, class: "btn btn-secondary" %>
+  </div>
+<% end %>
