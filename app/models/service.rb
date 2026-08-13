@@ -35,10 +35,37 @@ class Service < ApplicationRecord
   # costs about two minutes of delay.
   ALERT_AFTER_CONSECUTIVE_FAILURES = 2
 
+  # A certificate this close to expiry is a problem you still have time to fix.
+  # Fourteen days covers even a manual renewal with a purchase in it.
+  TLS_EXPIRY_WARNING_DAYS = 14
+
   scope :ordered, -> { order(position: :asc, name: :asc) }
 
   def alerting?
     alerted_at.present?
+  end
+
+  # ---- TLS certificate ----
+
+  def tls_monitored?
+    tls_expires_at.present?
+  end
+
+  def tls_expired?
+    tls_expires_at.present? && tls_expires_at <= Time.current
+  end
+
+  def tls_expiring_soon?
+    tls_expires_at.present? && !tls_expired? &&
+      tls_expires_at <= TLS_EXPIRY_WARNING_DAYS.days.from_now
+  end
+
+  # Whole days remaining, floored: "expires in 0 days" on the last day is more
+  # honest than rounding up to 1.
+  def tls_days_remaining
+    return nil if tls_expires_at.blank?
+
+    ((tls_expires_at - Time.current) / 1.day).floor
   end
 
   scope :paused, -> { where.not(paused_at: nil) }
@@ -103,7 +130,11 @@ class Service < ApplicationRecord
     http.use_ssl = (uri.scheme == "https")
     http.open_timeout = timeout_seconds
     http.read_timeout = timeout_seconds
-    http.verify_mode = OpenSSL::SSL::VERIFY_NONE # Flexible for local dev/self-signed endpoints
+    # Verified by default. Not verifying meant an expired or mismatched
+    # certificate passed silently while a browser would refuse the connection —
+    # the monitor reporting healthy for a site nobody can reach. The per-service
+    # opt-out covers internal endpoints and self-signed certificates.
+    http.verify_mode = verify_tls? ? OpenSSL::SSL::VERIFY_PEER : OpenSSL::SSL::VERIFY_NONE
 
     request_class = Net::HTTP.const_get(http_method.capitalize) rescue Net::HTTP::Get
     request = request_class.new(uri.request_uri)
@@ -118,7 +149,17 @@ class Service < ApplicationRecord
       request.body = request_body
     end
 
-    response = http.request(request)
+    # Started explicitly so the peer certificate can be read from the live
+    # connection; #request on its own opens and closes it, leaving nothing to
+    # inspect.
+    http.start
+    begin
+      response = http.request(request)
+      record_certificate!(http.peer_cert) if http.use_ssl?
+    ensure
+      http.finish if http.started?
+    end
+
     duration_ms = ((Process.clock_gettime(Process::CLOCK_MONOTONIC) - start_time) * 1000).round
 
     code_match = (response.code.to_i == expected_status_code)
@@ -239,6 +280,41 @@ class Service < ApplicationRecord
     raise_alert!(error_message)
   end
 
+  # Records what the handshake already revealed. Cheap: the certificate is a
+  # property of a connection we were making anyway.
+  def record_certificate!(certificate)
+    return if certificate.nil?
+
+    expires_at = certificate.not_after
+    issuer = certificate.issuer.to_a.find { |name, _, _| name == "CN" }&.at(1) ||
+             certificate.issuer.to_s
+
+    # A changed expiry means a different certificate, so a renewal re-arms the
+    # warning rather than staying silent through the next expiry cycle.
+    renewed = tls_expires_at.present? && expires_at.present? && tls_expires_at.to_i != expires_at.to_i
+
+    update_columns(
+      tls_expires_at: expires_at,
+      tls_issuer: issuer.to_s.truncate(120),
+      tls_alerted_at: renewed ? nil : tls_alerted_at
+    )
+
+    evaluate_tls_alerting!
+  rescue StandardError => e
+    Rails.logger.warn("Could not record certificate for service #{id}: #{e.class}: #{e.message}")
+  end
+
+  # One warning per certificate. Fires once when the window is entered and stays
+  # quiet until the certificate is replaced.
+  def evaluate_tls_alerting!
+    return unless tls_expiring_soon? || tls_expired?
+    return if tls_alerted_at.present?
+    return unless alertable?
+
+    update_columns(tls_alerted_at: Time.current)
+    ServiceAlertJob.perform_later(id, "tls_expiring", nil, nil)
+  end
+
   private
 
   def raise_alert!(error_message)
@@ -267,6 +343,10 @@ class Service < ApplicationRecord
 
   def determine_new_status(is_success, duration_ms)
     return "outage" unless is_success
+    # Only reachable with verification off; with it on the handshake already
+    # failed and the check is not a success.
+    return "outage" if tls_expired?
+    return "degraded" if tls_expiring_soon?
     return "degraded" if duration_ms > 2500 # High latency threshold
     "operational"
   end

@@ -43,7 +43,19 @@
     <%= f.url_field :url, class: "form-control form-control-code", placeholder: "https://api.yourdomain.com/v1/health" %>
   </div>
 
-  <div class="form-group">
+    <div class="form-group">
+    <%= f.label :verify_tls, class: "form-label" do %>
+      <%= f.check_box :verify_tls %>
+      Verify the TLS certificate
+    <% end %>
+    <p class="form-hint">
+      On by default. Turning it off lets the check succeed against a self-signed or
+      expired certificate — useful for an internal endpoint, but it also means this
+      check will pass for a site a browser would refuse to open.
+    </p>
+  </div>
+
+<div class="form-group">
     <%= f.label :headers, "HTTP Request Headers", class: "form-label" %>
     <%= f.text_area :headers, class: "form-textarea form-control-code", placeholder: "{\n  \"Authorization\": \"Bearer token_xyz\",\n  \"Content-Type\": \"application/json\",\n  \"User-Agent\": \"StatusPulse-Custom/1.0\"\n}" %>
     <div class="form-hint">Provide headers as valid JSON or line-by-line <code>Header-Name: Value</code></div>

@@ -1,0 +1,60 @@
+<div style="font-family: -apple-system, Segoe UI, Roboto, sans-serif; background: #07090c; color: #e8ecf2; padding: 28px;">
+  <div style="max-width: 560px; margin: 0 auto; border: 1px solid rgba(232,236,242,0.13); border-radius: 3px; background: #0b0e13;">
+
+    <div style="padding: 18px 22px; border-bottom: 1px solid rgba(232,236,242,0.13);">
+      <% expired = @service.tls_expired? %>
+      <span style="display: inline-block; font-family: ui-monospace, monospace; font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; color: <%= expired ? '#e5484d' : '#e5a13a' %>; border: 1px solid <%= expired ? '#e5484d' : '#e5a13a' %>; border-radius: 2px; padding: 3px 8px;">
+        <%= expired ? "Certificate expired" : "Certificate expiring" %>
+      </span>
+      <span style="font-family: ui-monospace, monospace; font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: #5b6472; margin-left: 10px;"><%= @organization.name %></span>
+    </div>
+
+    <div style="padding: 24px 22px;">
+      <h1 style="margin: 0 0 8px; font-size: 21px; line-height: 1.2;">
+        <% if @service.tls_expired? %>
+          <%= @service.name %>&rsquo;s certificate has expired
+        <% else %>
+          <%= @service.name %>&rsquo;s certificate expires in <%= pluralize(@days_remaining, "day") %>
+        <% end %>
+      </h1>
+      <p style="margin: 0 0 20px; font-size: 14px; line-height: 1.6; color: #8f98a6;">
+        <% if @service.tls_expired? %>
+          Visitors are seeing a browser security warning and most will not get past it.
+          This needs renewing now.
+        <% else %>
+          Nothing is down. Renewing before the date below avoids an outage that would
+          otherwise arrive without warning.
+        <% end %>
+      </p>
+
+      <table style="width: 100%; border-collapse: collapse; font-size: 13px;">
+        <tr>
+          <td style="padding: 8px 0; color: #5b6472; width: 34%;">Endpoint</td>
+          <td style="padding: 8px 0; font-family: ui-monospace, monospace; word-break: break-all;"><%= @service.url %></td>
+        </tr>
+        <tr>
+          <td style="padding: 8px 0; color: #5b6472;">Expires</td>
+          <td style="padding: 8px 0; font-family: ui-monospace, monospace; color: <%= @service.tls_expired? ? '#e5484d' : '#e5a13a' %>;">
+            <%= @service.tls_expires_at&.strftime("%d %b %Y %H:%M UTC") %>
+          </td>
+        </tr>
+        <% if @service.tls_issuer.present? %>
+          <tr>
+            <td style="padding: 8px 0; color: #5b6472;">Issued by</td>
+            <td style="padding: 8px 0;"><%= @service.tls_issuer %></td>
+          </tr>
+        <% end %>
+      </table>
+
+      <% if @status_url.present? %>
+        <p style="margin: 24px 0 0;">
+          <a href="<%= @status_url %>" style="display: inline-block; border: 1px solid rgba(232,236,242,0.2); color: #e8ecf2; text-decoration: none; font-family: ui-monospace, monospace; font-size: 12px; letter-spacing: 0.11em; text-transform: uppercase; padding: 11px 18px; border-radius: 2px;">View status page</a>
+        </p>
+      <% end %>
+    </div>
+
+    <div style="padding: 14px 22px; border-top: 1px solid rgba(232,236,242,0.13); font-family: ui-monospace, monospace; font-size: 11px; color: #5b6472;">
+      Sent once per certificate. Renewing re-arms the warning for the next one.
+    </div>
+  </div>
+</div>

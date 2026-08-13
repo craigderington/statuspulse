@@ -97,6 +97,38 @@
   </div>
 </div>
 
+<% if @service.tls_monitored? %>
+  <div class="stat-card" style="margin-bottom: 2rem;">
+    <h3 style="font-size: 1.1rem; margin-bottom: 1rem;">TLS Certificate</h3>
+
+    <div class="tls-row">
+      <span class="tls-row__label">Expires</span>
+      <span class="tls-row__value" style="color: <%= @service.tls_expired? ? 'var(--color-outage)' : (@service.tls_expiring_soon? ? 'var(--color-degraded)' : 'var(--text-primary)') %>;">
+        <%= @service.tls_expires_at.strftime("%d %b %Y %H:%M UTC") %>
+        &middot;
+        <%= @service.tls_expired? ? "expired" : "#{pluralize(@service.tls_days_remaining, 'day')} left" %>
+      </span>
+    </div>
+
+    <% if @service.tls_issuer.present? %>
+      <div class="tls-row">
+        <span class="tls-row__label">Issued by</span>
+        <span class="tls-row__value"><%= @service.tls_issuer %></span>
+      </div>
+    <% end %>
+
+    <div class="tls-row">
+      <span class="tls-row__label">Verification</span>
+      <span class="tls-row__value"><%= @service.verify_tls? ? "Enforced" : "Skipped" %></span>
+    </div>
+
+    <p class="form-hint" style="margin-top: 0.85rem;">
+      Read from the certificate presented during the normal check &mdash; nothing extra is requested.
+      One warning is sent <%= Service::TLS_EXPIRY_WARNING_DAYS %> days before expiry, and renewing re-arms it.
+    </p>
+  </div>
+<% end %>
+
 <div class="section-header">
   <h2 class="section-title">Recent Telemetry Check Logs</h2>
 </div>

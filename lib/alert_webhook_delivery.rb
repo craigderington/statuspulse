@@ -71,7 +71,7 @@ class AlertWebhookDelivery
     request = Net::HTTP::Post.new(uri)
     request["Content-Type"] = "application/json"
     request["User-Agent"] = "StatusPulse-Alerts/1.0 (+https://statuspulse.org)"
-    request["X-StatusPulse-Event"] = kind == "down" ? "service.down" : "service.recovered"
+    request["X-StatusPulse-Event"] = event_name(kind)
     request["X-StatusPulse-Timestamp"] = timestamp.to_s
     request["X-StatusPulse-Signature"] = signature(timestamp, body)
     request.body = body
@@ -152,9 +152,17 @@ class AlertWebhookDelivery
     address
   end
 
+  def event_name(kind)
+    case kind
+    when "down"         then "service.down"
+    when "tls_expiring" then "service.certificate_expiring"
+    else                     "service.recovered"
+    end
+  end
+
   def payload(kind, service, error_message, downtime_started_at)
     {
-      event: kind == "down" ? "service.down" : "service.recovered",
+      event: event_name(kind),
       occurred_at: Time.current.iso8601,
       organization: { name: @organization.name, slug: @organization.slug },
       service: {
@@ -168,8 +176,19 @@ class AlertWebhookDelivery
         last_response_time_ms: service.last_response_time_ms,
         check_interval_seconds: service.check_interval_seconds
       },
+      certificate: certificate_payload(service),
       error_message: error_message,
       downtime_started_at: downtime_started_at&.iso8601
     }.compact
+  end
+
+  def certificate_payload(service)
+    return nil if service.tls_expires_at.blank?
+
+    {
+      expires_at: service.tls_expires_at.iso8601,
+      days_remaining: service.tls_days_remaining,
+      issuer: service.tls_issuer
+    }
   end
 end

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_08_13_130551) do
+ActiveRecord::Schema[8.1].define(version: 2026_08_13_165130) do
   create_table "check_logs", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.string "error_message"
@@ -106,8 +106,12 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_13_130551) do
     t.text "request_body"
     t.string "status", default: "operational", null: false
     t.integer "timeout_seconds", default: 10, null: false
+    t.datetime "tls_alerted_at"
+    t.datetime "tls_expires_at"
+    t.string "tls_issuer"
     t.datetime "updated_at", null: false
     t.string "url", null: false
+    t.boolean "verify_tls", default: true, null: false
     t.index ["organization_id"], name: "index_services_on_organization_id"
     t.index ["paused_at"], name: "index_services_on_paused_at"
   end

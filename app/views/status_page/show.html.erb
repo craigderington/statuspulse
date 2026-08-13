@@ -79,6 +79,14 @@
           <% if service.description.present? %>
             <div style="font-size: 0.85rem; color: var(--text-secondary);"><%= service.description %></div>
           <% end %>
+          <%# A certificate about to lapse is something a customer of this
+              service has a legitimate interest in knowing about. %>
+          <% if service.tls_expired? || service.tls_expiring_soon? %>
+            <span class="tls-badge <%= service.tls_expired? ? "tls-badge--expired" : "" %>" style="margin-top: 0.4rem;">
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+              <%= service.tls_expired? ? "Certificate expired" : "Certificate expires in #{pluralize(service.tls_days_remaining, 'day')}" %>
+            </span>
+          <% end %>
         </div>
         <div class="service-status-badge badge-<%= service.status %>">
           <span style="width: 8px; height: 8px; border-radius: 50%; background: currentColor;"></span>

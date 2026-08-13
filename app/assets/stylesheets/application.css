@@ -1021,3 +1021,39 @@ input[type="checkbox"] {
 
 .webhook-headers td:first-child { width: 42%; padding-right: 1rem; }
 .webhook-headers code { font-family: var(--font-data); font-size: 0.95em; color: var(--text-primary); }
+
+/* Certificate expiry. Amber, not red, until it has actually expired: a
+   certificate with days left is a deadline, not an outage. */
+.tls-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.28rem;
+  font-family: var(--font-data);
+  font-size: 0.68rem;
+  letter-spacing: 0.04em;
+  color: var(--color-degraded);
+  background: var(--color-degraded-bg);
+  border: 1px solid rgba(229, 161, 58, 0.35);
+  padding: 2px 7px;
+  border-radius: 999px;
+}
+
+.tls-badge--expired {
+  color: var(--color-outage);
+  background: var(--color-outage-bg);
+  border-color: rgba(229, 72, 77, 0.35);
+}
+
+.tls-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.7rem 0;
+  border-bottom: 1px solid var(--border-soft);
+  font-size: 0.88rem;
+}
+
+.tls-row:last-child { border-bottom: none; }
+.tls-row__label { color: var(--text-muted); font-family: var(--font-data); font-size: 0.72rem; letter-spacing: 0.12em; text-transform: uppercase; }
+.tls-row__value { font-family: var(--font-data); font-variant-numeric: tabular-nums; }

@@ -26,6 +26,23 @@ class ServiceAlertMailer < ApplicationMailer
     )
   end
 
+  # Deliberately not phrased as an outage: nothing is down yet, and the whole
+  # point is arriving early enough to act.
+  def certificate_expiring(service, recipients)
+    @service = service
+    @organization = service.organization
+    @days_remaining = service.tls_days_remaining
+    @status_url = status_url_for(@organization)
+
+    subject = if service.tls_expired?
+      "[#{@organization.name}] #{@service.name} — TLS certificate has expired"
+    else
+      "[#{@organization.name}] #{@service.name} — TLS certificate expires in #{@days_remaining} #{'day'.pluralize(@days_remaining)}"
+    end
+
+    mail(to: recipients, subject: subject)
+  end
+
   private
 
   include ActionView::Helpers::DateHelper

@@ -88,7 +88,7 @@ class ServicesController < ApplicationController
     params.require(:service).permit(
       :name, :description, :url, :http_method, :headers, :request_body,
       :expected_body_match, :expected_status_code, :timeout_seconds,
-      :check_interval_seconds, :position, :status
+      :check_interval_seconds, :position, :status, :verify_tls
     )
   end
 end

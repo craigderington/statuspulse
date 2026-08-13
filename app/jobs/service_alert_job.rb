@@ -27,10 +27,10 @@ class ServiceAlertJob < ApplicationJob
     recipients = organization.users.pluck(:email)
     return if recipients.empty?
 
-    mail = if kind == "down"
-      ServiceAlertMailer.service_down(service, recipients, error_message)
-    else
-      ServiceAlertMailer.service_recovered(service, recipients, started_at)
+    mail = case kind
+    when "down"          then ServiceAlertMailer.service_down(service, recipients, error_message)
+    when "tls_expiring"  then ServiceAlertMailer.certificate_expiring(service, recipients)
+    else                      ServiceAlertMailer.service_recovered(service, recipients, started_at)
     end
 
     mail.deliver_now
