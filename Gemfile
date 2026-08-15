@@ -6,7 +6,7 @@ gem "rails", "~> 8.1.3", ">= 8.1.3.1"
 gem "propshaft"
 # Use postgresql or sqlite3 as database driver
 gem "pg", "~> 1.1"
-gem "sqlite3", "~> 2.0"
+gem "sqlite3", "~> 2.9"
 # Use the Puma web server [https://github.com/puma/puma]
 gem "puma", ">= 5.0"
 # Use JavaScript with ESM import maps [https://github.com/rails/importmap-rails]
