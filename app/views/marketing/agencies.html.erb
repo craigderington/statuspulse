@@ -1,0 +1,93 @@
+<% content_for :title, "Uptime Monitoring for Agencies | StatusPulse" %>
+<% content_for :description, "Monitor every client from one dashboard, keep workspaces isolated, publish client status pages, and send SLA-ready uptime reports." %>
+
+<aside class="mk-railstrip" aria-hidden="true" data-controller="rail">
+  <span class="mk-railstrip__mark">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+      <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+    </svg>
+  </span>
+  <div class="mk-railstrip__bars" data-rail-target="bars"></div>
+  <span class="mk-railstrip__label">Agency uptime</span>
+</aside>
+
+<div class="mk-shell">
+<header class="mk-nav mk-wrap">
+  <a href="<%= root_path %>" class="mk-nav__brand"><span class="mk-nav__mark"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg></span><span class="mk-nav__word">StatusPulse</span></a>
+  <nav class="mk-nav__links">
+    <a href="<%= multi_tenant_uptime_monitoring_path %>">Workspaces</a>
+    <a href="<%= client_uptime_reports_path %>">Reports</a>
+    <a href="<%= org_public_status_path(org_slug: "statuspulse") %>">Demo status</a>
+    <a href="<%= login_path %>" class="mk-nav__signin">Sign in</a>
+    <a href="<%= signup_path %>" class="mk-btn mk-btn--sm">Create workspace</a>
+  </nav>
+</header>
+
+<main>
+  <section class="mk-hero mk-wrap">
+    <div class="mk-hero__copy">
+      <p class="mk-eyebrow">Uptime monitoring for agencies</p>
+      <h1 class="mk-h1">Uptime monitoring for agencies.<br><span class="mk-h1__outline">Every client visible.</span></h1>
+      <p class="mk-lede">StatusPulse gives agencies one console for client sites and APIs: isolated workspaces, real HTTP checks, public client status URLs, incident history, and SLA-ready reports.</p>
+      <div class="mk-hero__actions">
+        <a href="<%= signup_path %>" class="mk-btn">Create a workspace</a>
+        <a href="<%= org_public_status_path(org_slug: "statuspulse") %>" class="mk-btn mk-btn--ghost">View status page demo</a>
+      </div>
+      <p class="mk-hero__note">Self-hostable. Runs on Postgres. No agent to install on client infrastructure.</p>
+    </div>
+
+    <div class="mk-report" aria-hidden="true">
+      <div class="mk-report__head"><span class="mk-report__client">Client portfolio</span><span class="mk-report__range">Agency view</span></div>
+      <div class="mk-report__tiles">
+        <div class="mk-tile"><span class="mk-tile__label">Workspaces</span><span class="mk-tile__value">18</span></div>
+        <div class="mk-tile"><span class="mk-tile__label">30d uptime</span><span class="mk-tile__value">99.91<i>%</i></span></div>
+        <div class="mk-tile"><span class="mk-tile__label">P90 latency</span><span class="mk-tile__value">312<i>ms</i></span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="mk-section mk-wrap">
+    <div class="mk-section__head">
+      <div class="mk-ticks" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
+      <p class="mk-eyebrow">Agency problem</p>
+      <h2 class="mk-h2">Generic uptime tools make client work messy.</h2>
+      <p class="mk-body">One account per client creates login sprawl. One shared account blurs ownership. Raw monitor logs do not answer the question clients ask after an outage: what failed, when, and how long did it last?</p>
+    </div>
+    <div class="mk-grid mk-grid--3">
+      <article class="mk-card"><h3 class="mk-h3">One workspace per client</h3><p class="mk-body">Endpoints, incidents, users, reports, and maintenance windows stay scoped to the organization they belong to.</p></article>
+      <article class="mk-card"><h3 class="mk-h3">One console for the team</h3><p class="mk-body">Agency operators can watch many client workspaces without pretending every client is the same system.</p></article>
+      <article class="mk-card"><h3 class="mk-h3">One public status URL</h3><p class="mk-body">Each workspace publishes to <code class="mk-code">/status/&lt;client&gt;</code>, so client stakeholders have a page to check during incidents.</p></article>
+    </div>
+  </section>
+
+  <section class="mk-section mk-wrap">
+    <div class="mk-section__head">
+      <p class="mk-eyebrow">Workflow</p>
+      <h2 class="mk-h2">Create a client workspace, add checks, publish status.</h2>
+      <p class="mk-body">StatusPulse follows the way agencies already operate: configure the client once, monitor the real endpoints, then report uptime in language the client can read.</p>
+    </div>
+    <div class="mk-grid mk-grid--3">
+      <article class="mk-card"><h3 class="mk-h3">Real HTTP checks</h3><p class="mk-body">Use GET, POST, PUT, PATCH, DELETE, HEAD, and OPTIONS with headers, request bodies, expected status codes, and response text assertions.</p></article>
+      <article class="mk-card"><h3 class="mk-h3">Incident paper trail</h3><p class="mk-body">Record investigating, identified, monitoring, and resolved updates with timestamps and affected services.</p></article>
+      <article class="mk-card"><h3 class="mk-h3">SLA-ready reporting</h3><p class="mk-body">Show 7, 30, and 90-day uptime, P90 latency, averages, and weekly digest summaries per workspace.</p></article>
+    </div>
+  </section>
+
+  <section class="mk-cta mk-wrap">
+    <h2 class="mk-h2">Start with one client. Add the rest.</h2>
+    <p class="mk-body">Create the first workspace, point it at an endpoint, and publish a status URL when you are ready.</p>
+    <a href="<%= signup_path %>" class="mk-btn mk-btn--lg">Create a workspace</a>
+  </section>
+</main>
+
+<footer class="mk-footer mk-wrap">
+  <span class="mk-footer__word">StatusPulse</span>
+  <nav class="mk-footer__links">
+    <a href="<%= root_path %>">Home</a>
+    <a href="<%= multi_tenant_uptime_monitoring_path %>">Workspaces</a>
+    <a href="<%= client_uptime_reports_path %>">Reports</a>
+    <a href="<%= org_public_status_path(org_slug: "statuspulse") %>">Status</a>
+    <a href="https://github.com/craigderington/statuspulse" rel="noopener">Source</a>
+  </nav>
+</footer>
+</div>

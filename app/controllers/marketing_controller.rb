@@ -9,6 +9,15 @@ class MarketingController < ApplicationController
     @sample_workspaces = SAMPLE_WORKSPACES
   end
 
+  def agencies
+  end
+
+  def multi_tenant
+  end
+
+  def reports
+  end
+
   # Illustrative content for the hero wall. Fictional client names, clearly a
   # product mock: nothing here is presented as a real customer or a real metric.
   SAMPLE_WORKSPACES = [

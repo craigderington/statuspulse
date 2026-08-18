@@ -5,6 +5,21 @@
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
+  <url>
+    <loc><%= uptime_monitoring_for_agencies_url %></loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc><%= multi_tenant_uptime_monitoring_url %></loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc><%= client_uptime_reports_url %></loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
 <%# /signup is intentionally absent: robots.txt disallows it, and listing a
     disallowed URL in a sitemap is a contradiction Search Console reports as an
     error. The landing page is the entry point; it links to sign-up. %>

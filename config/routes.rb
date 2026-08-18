@@ -2,6 +2,9 @@ Rails.application.routes.draw do
   # The landing page is the public face; signed-in operators are redirected
   # straight to the dashboard by MarketingController.
   root "marketing#index"
+  get "uptime-monitoring-for-agencies", to: "marketing#agencies", as: :uptime_monitoring_for_agencies
+  get "multi-tenant-uptime-monitoring", to: "marketing#multi_tenant", as: :multi_tenant_uptime_monitoring
+  get "client-uptime-reports", to: "marketing#reports", as: :client_uptime_reports
   get "dashboard", to: "dashboard#index", as: :dashboard
 
   # Authentication
@@ -70,6 +73,6 @@ Rails.application.routes.draw do
 
   # PWA manifest and service worker, rendered from app/views/pwa/. These views
   # shipped with the app but were never routed, so the manifest was dead code.
-  get "manifest" => "rails/pwa#manifest", as: :pwa_manifest
-  get "service-worker" => "rails/pwa#service_worker", as: :pwa_service_worker
+  get "manifest" => "pwa#manifest", as: :pwa_manifest
+  get "service-worker" => "pwa#service_worker", as: :pwa_service_worker
 end

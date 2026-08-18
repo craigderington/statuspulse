@@ -1,9 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <title>System Status — StatusPulse</title>
+    <% status_name = @organization ? "#{@organization.name} Status" : "System Status" %>
+    <% page_title = "#{status_name} — StatusPulse" %>
+    <% page_description = "Live uptime, incidents, and service health for #{status_name}." %>
+    <% canonical_url = request.original_url.split("?").first.sub("://www.", "://") %>
+    <% social_image_url = "#{request.base_url}/og/statuspulse-card.png" %>
+    <title><%= page_title %></title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <meta name="description" content="Live system uptime and incident status portal.">
+    <meta name="description" content="<%= page_description %>">
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
 
@@ -12,7 +17,29 @@
     <% if @organization && !@organization.status_page_indexable? %>
       <meta name="robots" content="noindex, nofollow">
     <% end %>
-    <link rel="canonical" href="<%= request.original_url.split("?").first.sub("://www.", "://") %>">
+    <link rel="canonical" href="<%= canonical_url %>">
+
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="StatusPulse">
+    <meta property="og:title" content="<%= page_title %>">
+    <meta property="og:description" content="<%= page_description %>">
+    <meta property="og:url" content="<%= canonical_url %>">
+    <meta property="og:image" content="<%= social_image_url %>">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="<%= page_title %>">
+    <meta name="twitter:description" content="<%= page_description %>">
+    <meta name="twitter:image" content="<%= social_image_url %>">
+    <script type="application/ld+json">
+<%= raw json_escape(JSON.pretty_generate({
+  "@context" => "https://schema.org",
+  "@type" => "WebPage",
+  "name" => page_title,
+  "url" => canonical_url,
+  "description" => page_description
+})) %>
+    </script>
 
     <link rel="icon" href="/favicon.ico" sizes="any">
     <link rel="icon" href="/icon.svg" type="image/svg+xml">

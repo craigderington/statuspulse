@@ -38,10 +38,12 @@ class StatusPageTenancyTest < ActionDispatch::IntegrationTest
     assert_not_includes response.body, @first_service.name
   end
 
-  test "bare /status serves the explicitly configured platform organization" do
+  test "bare /status redirects to the explicitly configured platform organization" do
     with_platform_slug(@second.slug) do
       get public_status_url
 
+      assert_redirected_to org_public_status_url(org_slug: @second.slug)
+      follow_redirect!
       assert_response :success
       assert_includes response.body, @second_service.name
       assert_not_includes response.body, @first_service.name

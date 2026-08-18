@@ -44,7 +44,7 @@ class ApplicationController < ActionController::Base
 
   def public_action?
     %w[
-      sessions registrations status_page marketing sitemaps
+      sessions registrations status_page marketing sitemaps pwa
       two_factor two_factor_enrolments
     ].include?(controller_name)
   end

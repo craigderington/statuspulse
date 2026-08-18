@@ -2,12 +2,14 @@ class StatusPageController < ApplicationController
   layout "status_page"
 
   def show
-    @organization = resolve_organization
+    if params[:org_slug].blank?
+      organization = resolve_platform_organization
+      raise ActiveRecord::RecordNotFound if organization.nil?
 
-    # No degrading to "every service on the platform". A status page without a
-    # tenant is not a status page; rendering one unscoped would publish every
-    # tenant's services, incidents and URLs on a public page.
-    raise ActiveRecord::RecordNotFound if @organization.nil?
+      return redirect_to org_public_status_path(org_slug: organization.slug), status: :moved_permanently
+    end
+
+    @organization = Organization.find_by!(slug: params[:org_slug])
 
     @services = @organization.services.ordered
     @active_incidents = @organization.incidents.active
@@ -19,12 +21,7 @@ class StatusPageController < ApplicationController
 
   private
 
-  # /status/<slug> names its tenant. Bare /status resolves to the platform's own
-  # status page, named explicitly by PLATFORM_STATUS_SLUG rather than inferred
-  # from row order.
-  def resolve_organization
-    return Organization.find_by!(slug: params[:org_slug]) if params[:org_slug].present?
-
+  def resolve_platform_organization
     platform_slug = ENV["PLATFORM_STATUS_SLUG"].presence
     platform_slug && Organization.find_by(slug: platform_slug)
   end

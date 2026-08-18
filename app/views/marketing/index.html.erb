@@ -34,12 +34,12 @@
       <h1 class="mk-h1">Every client&rsquo;s uptime.<br><span class="mk-h1__outline">One console.</span></h1>
       <p class="mk-lede">
         Each client gets an isolated workspace, its own endpoints and incident history,
-        and a public status page at its own address. You watch all of them from a single
-        dashboard.
+        and a public status URL at <code class="mk-code">/status/&lt;client&gt;</code>. You watch all
+        of them from a single dashboard.
       </p>
       <div class="mk-hero__actions">
         <a href="<%= signup_path %>" class="mk-btn">Create a workspace</a>
-        <a href="<%= public_status_path %>" class="mk-btn mk-btn--ghost">See a live status page</a>
+        <a href="<%= org_public_status_path(org_slug: "statuspulse") %>" class="mk-btn mk-btn--ghost">See a live status page</a>
       </div>
       <p class="mk-hero__note">Self-hostable. Runs on Postgres. No agent to install on anything.</p>
     </div>
@@ -89,7 +89,7 @@
         <p class="mk-body">Admins configure endpoints and triage incidents. Members watch and report. Membership is per workspace.</p>
       </article>
       <article class="mk-card">
-        <h3 class="mk-h3">Its own address</h3>
+        <h3 class="mk-h3">Its own status URL</h3>
         <p class="mk-body">Every workspace publishes to <code class="mk-code">/status/&lt;client&gt;</code> — a page you can hand a client without exposing anything else.</p>
       </article>
       <article class="mk-card">
@@ -202,13 +202,13 @@ Content-Type: application/json
     <div class="mk-section__head">
       <div class="mk-ticks" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
       <p class="mk-eyebrow">Public &middot; per client</p>
-      <h2 class="mk-h2">A status page for each client, at its own address.</h2>
+      <h2 class="mk-h2">A status page for each client, at <code class="mk-code">/status/&lt;client&gt;</code>.</h2>
       <p class="mk-body">
         When something breaks, a client&rsquo;s customers go looking. Give them a page to
         find: current state per service, the check history, and the incident timeline —
         updating live, without a refresh.
       </p>
-      <a href="<%= public_status_path %>" class="mk-btn mk-btn--ghost">Open a live status page</a>
+      <a href="<%= org_public_status_path(org_slug: "statuspulse") %>" class="mk-btn mk-btn--ghost">Open a live status page</a>
     </div>
   </section>
 
@@ -222,7 +222,10 @@ Content-Type: application/json
 <footer class="mk-footer mk-wrap">
   <span class="mk-footer__word">StatusPulse</span>
   <nav class="mk-footer__links">
-    <a href="<%= public_status_path %>">Status</a>
+    <a href="<%= org_public_status_path(org_slug: "statuspulse") %>">Status</a>
+    <a href="<%= uptime_monitoring_for_agencies_path %>">Agencies</a>
+    <a href="<%= multi_tenant_uptime_monitoring_path %>">Workspaces</a>
+    <a href="<%= client_uptime_reports_path %>">Reports</a>
     <a href="<%= login_path %>">Sign in</a>
     <a href="<%= signup_path %>">Create workspace</a>
     <a href="https://github.com/craigderington/statuspulse" rel="noopener">Source</a>

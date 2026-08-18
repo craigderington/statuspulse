@@ -1,0 +1,86 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-labelledby="title desc">
+  <title id="title">StatusPulse social preview card</title>
+  <desc id="desc">Every client's uptime in one console. Multi-tenant uptime monitoring for agencies and MSPs.</desc>
+  <defs>
+    <pattern id="grid" width="46" height="46" patternUnits="userSpaceOnUse">
+      <path d="M46 0H0V46" fill="none" stroke="#e8ecf2" stroke-opacity="0.055" stroke-width="1"/>
+    </pattern>
+    <filter id="softShadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="18" stdDeviation="24" flood-color="#000000" flood-opacity="0.42"/>
+    </filter>
+  </defs>
+
+  <rect width="1200" height="630" fill="#07090c"/>
+  <rect width="1200" height="630" fill="url(#grid)"/>
+
+  <rect x="0" y="0" width="58" height="630" fill="#040609" fill-opacity="0.82"/>
+  <line x1="58" y1="0" x2="58" y2="630" stroke="#e8ecf2" stroke-opacity="0.16"/>
+  <g transform="translate(24 28)" stroke="#e8ecf2" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" fill="none">
+    <polyline points="0 9 6 9 10 0 18 26 22 9 30 9"/>
+  </g>
+  <g transform="translate(24 84)">
+    <rect width="10" height="15" fill="#2ec27e" opacity="0.72" rx="1"/>
+    <rect y="21" width="10" height="34" fill="#2ec27e" opacity="0.48" rx="1"/>
+    <rect y="61" width="10" height="24" fill="#2ec27e" opacity="0.62" rx="1"/>
+    <rect y="91" width="10" height="42" fill="#2ec27e" opacity="0.5" rx="1"/>
+    <rect y="139" width="10" height="18" fill="#e5a13a" opacity="0.9" rx="1"/>
+    <rect y="163" width="10" height="36" fill="#2ec27e" opacity="0.58" rx="1"/>
+    <rect y="205" width="10" height="31" fill="#2ec27e" opacity="0.46" rx="1"/>
+    <rect y="242" width="10" height="48" fill="#2ec27e" opacity="0.54" rx="1"/>
+    <rect y="296" width="10" height="12" fill="#e5484d" opacity="0.92" rx="1"/>
+    <rect y="314" width="10" height="40" fill="#2ec27e" opacity="0.5" rx="1"/>
+    <rect y="360" width="10" height="58" fill="#2ec27e" opacity="0.6" rx="1"/>
+    <rect y="424" width="10" height="70" fill="#2ec27e" opacity="0.66" rx="1"/>
+  </g>
+  <text x="30" y="598" transform="rotate(-90 30 598)" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="11" letter-spacing="5" fill="#768291">CONTINUOUSLY CHECKED</text>
+
+  <g transform="translate(118 74)">
+    <g stroke="#e8ecf2" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" fill="none">
+      <polyline points="0 12 9 12 15 0 27 38 34 12 48 12"/>
+    </g>
+    <text x="66" y="19" font-family="Arial Black, Archivo, system-ui, sans-serif" font-size="19" letter-spacing="2.6" fill="#e8ecf2">STATUSPULSE</text>
+  </g>
+
+  <g transform="translate(118 151)">
+    <text font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="15" letter-spacing="4" fill="#768291">MULTI-TENANT UPTIME MONITORING</text>
+    <text y="82" font-family="Arial Black, Archivo, system-ui, sans-serif" font-size="66" font-weight="900" letter-spacing="-2.5" fill="#e8ecf2">EVERY CLIENT'S</text>
+    <text y="151" font-family="Arial Black, Archivo, system-ui, sans-serif" font-size="66" font-weight="900" letter-spacing="-2.5" fill="#e8ecf2">UPTIME.</text>
+    <text y="220" font-family="Arial Black, Archivo, system-ui, sans-serif" font-size="66" font-weight="900" letter-spacing="-2.5" fill="transparent" stroke="#e8ecf2" stroke-width="1.35">ONE CONSOLE.</text>
+    <text y="274" font-family="Inter, system-ui, sans-serif" font-size="24" fill="#8f98a6">Isolated client workspaces, public status URLs,</text>
+    <text y="308" font-family="Inter, system-ui, sans-serif" font-size="24" fill="#8f98a6">real HTTP checks, incidents, and SLA reports.</text>
+  </g>
+
+  <g transform="translate(720 142)" filter="url(#softShadow)">
+    <rect width="360" height="292" fill="#0b0e13" stroke="#e8ecf2" stroke-opacity="0.15" rx="4"/>
+    <rect x="0" y="0" width="360" height="48" fill="#07090c" stroke="#e8ecf2" stroke-opacity="0.15" rx="4"/>
+    <text x="22" y="30" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="12" letter-spacing="2" fill="#e8ecf2">CLIENT STATUS</text>
+    <text x="229" y="30" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="11" letter-spacing="2" fill="#768291">LIVE</text>
+    <circle cx="326" cy="24" r="7" fill="#2ec27e"/>
+
+    <g transform="translate(22 78)">
+      <circle cx="9" cy="9" r="7" fill="#2ec27e"/>
+      <text x="28" y="16" font-family="Arial Black, Archivo, system-ui, sans-serif" font-size="22" letter-spacing="-0.3" fill="#e8ecf2">OPERATIONAL</text>
+      <text x="0" y="53" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="12" letter-spacing="2" fill="#768291">/STATUS/NORTHWIND</text>
+    </g>
+
+    <g transform="translate(22 162)">
+      <rect width="78" height="78" fill="#07090c" stroke="#e8ecf2" stroke-opacity="0.12"/>
+      <text x="12" y="28" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="10" letter-spacing="1.4" fill="#768291">30D</text>
+      <text x="12" y="57" font-family="Arial Black, Archivo, system-ui, sans-serif" font-size="22" fill="#e8ecf2">99.91</text>
+      <rect x="91" width="78" height="78" fill="#07090c" stroke="#e8ecf2" stroke-opacity="0.12"/>
+      <text x="103" y="28" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="10" letter-spacing="1.4" fill="#768291">P90</text>
+      <text x="103" y="57" font-family="Arial Black, Archivo, system-ui, sans-serif" font-size="22" fill="#e8ecf2">312</text>
+      <rect x="182" width="78" height="78" fill="#07090c" stroke="#e8ecf2" stroke-opacity="0.12"/>
+      <text x="194" y="28" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="10" letter-spacing="1.4" fill="#768291">INC</text>
+      <text x="194" y="57" font-family="Arial Black, Archivo, system-ui, sans-serif" font-size="22" fill="#e8ecf2">0</text>
+    </g>
+  </g>
+
+  <g transform="translate(118 540)">
+    <rect width="196" height="36" fill="none" stroke="#e8ecf2" stroke-opacity="0.18" rx="2"/>
+    <text x="18" y="23" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="12" letter-spacing="2.3" fill="#e8ecf2">/status/&lt;client&gt;</text>
+    <text x="236" y="23" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="12" letter-spacing="2.3" fill="#8f98a6">HTTP CHECKS</text>
+    <text x="396" y="23" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="12" letter-spacing="2.3" fill="#8f98a6">SLA REPORTS</text>
+    <text x="566" y="23" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="12" letter-spacing="2.3" fill="#8f98a6">INCIDENT HISTORY</text>
+  </g>
+</svg>

@@ -13,6 +13,6 @@ Disallow: /dashboard
 Disallow: /services
 Disallow: /incidents
 Disallow: /reports
-Disallow: /up
+Disallow: /up$
 
 Sitemap: https://statuspulse.org/sitemap.xml

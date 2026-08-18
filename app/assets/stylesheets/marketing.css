@@ -27,7 +27,7 @@
 
   --mk-ink: #e8ecf2;
   --mk-ink-dim: #8f98a6;
-  --mk-ink-faint: #5b6472;
+  --mk-ink-faint: #768291;
 
   /* Signal only. Never used as decoration. */
   --mk-up: #2ec27e;
@@ -253,6 +253,7 @@ p.mk-body {
   gap: 0.6rem;
   text-decoration: none;
   color: var(--mk-ink);
+  min-height: 44px;
 }
 
 .mk-nav__mark {
@@ -622,6 +623,10 @@ p.mk-body {
   text-transform: uppercase;
   color: var(--mk-ink-faint);
   text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  min-width: 44px;
+  min-height: 44px;
 }
 
 .mk-footer__links a:hover { color: var(--mk-ink); }
