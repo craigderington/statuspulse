@@ -23,9 +23,14 @@ class RegistrationsController < ApplicationController
       # inherits whatever the session already held — including a pending
       # sign-in for a *different* account, which let one identity's proof be
       # attributed to another. It also closes session fixation at signup.
-      reset_session
-      session[:user_id] = @user.id
-      redirect_to dashboard_path, notice: "Account created! Welcome to StatusPulse."
+      if two_factor_required?
+        begin_pending_authentication(@user)
+        redirect_to two_factor_setup_path, notice: "Account created. Set up two-factor authentication to continue."
+      else
+        begin_pending_authentication(@user)
+        complete_authentication(@user)
+        redirect_to dashboard_path, notice: "Account created! Welcome to StatusPulse."
+      end
     else
       organization.destroy rescue nil
       render :new, status: :unprocessable_entity

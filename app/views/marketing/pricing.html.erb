@@ -1,0 +1,46 @@
+<% content_for :title, "StatusPulse Pricing | No Software Subscription Fee" %>
+<% content_for :description, "StatusPulse currently has no software subscription fee. Create a hosted workspace at no charge or self-host the Rails application and pay only your infrastructure costs." %>
+
+<div class="mk-shell">
+  <%= render "page_header" %>
+  <main>
+    <section class="mk-hero mk-wrap">
+      <div class="mk-hero__copy">
+        <p class="mk-eyebrow">Pricing</p>
+        <h1 class="mk-h1">No software subscription fee.<br> <span class="mk-h1__outline">No mystery tier.</span></h1>
+        <p class="mk-lede">StatusPulse does not currently charge for the software. Create a workspace on statuspulse.org without entering payment details, or run the application on infrastructure you control.</p>
+        <div class="mk-hero__actions">
+          <a href="<%= signup_path %>" class="mk-btn">Create a workspace</a>
+          <a href="https://github.com/craigderington/statuspulse" class="mk-btn mk-btn--ghost" rel="noopener">View source</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="mk-section mk-wrap">
+      <div class="mk-grid mk-grid--2">
+        <article class="mk-card">
+          <p class="mk-eyebrow">Hosted workspace</p>
+          <h2 class="mk-h2">$0 <span class="mk-price__unit">USD today</span></h2>
+          <p class="mk-body">Create one organization workspace with users, endpoint checks, incidents, maintenance windows, reports, alerts, weekly digests, and a public status URL.</p>
+          <p class="mk-body">There is no billing integration in the current product and no card is requested at sign-up. If that changes, this page will change before a fee is introduced.</p>
+        </article>
+        <article class="mk-card">
+          <p class="mk-eyebrow">Self-hosted</p>
+          <h2 class="mk-h2">Your infrastructure</h2>
+          <p class="mk-body">Run StatusPulse with Rails, PostgreSQL, background workers, and a reverse proxy. Your costs depend on the compute, storage, email delivery, backups, and operational support you choose.</p>
+          <p class="mk-body">The public repository includes Docker Compose and an Apache deployment runbook. Review the repository before relying on it; the README references an MIT license, but a license file is not currently present.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="mk-section mk-wrap">
+      <div class="mk-section__head"><p class="mk-eyebrow">Included now</p><h2 class="mk-h2">The product does not hide core monitoring behind tiers.</h2></div>
+      <div class="mk-grid mk-grid--3">
+        <article class="mk-card"><h3 class="mk-h3">HTTP monitoring</h3><p class="mk-body">Seven HTTP methods, headers, request bodies, response assertions, intervals, timeouts, TLS-expiry checks, and manual checks.</p></article>
+        <article class="mk-card"><h3 class="mk-h3">Operations</h3><p class="mk-body">Tenant-scoped users, incidents, maintenance windows, public status pages, email and webhook alerts, and two-factor authentication.</p></article>
+        <article class="mk-card"><h3 class="mk-h3">Reporting</h3><p class="mk-body">Up to 90 days of retained check history, uptime percentages, average and P90 latency, failure counts, and weekly email digests.</p></article>
+      </div>
+    </section>
+  </main>
+  <%= render "site_footer" %>
+</div>

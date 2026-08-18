@@ -49,6 +49,83 @@ class SeoTest < ActionDispatch::IntegrationTest
     assert_includes response.body, "http://www.example.com/uptime-monitoring-for-agencies"
     assert_includes response.body, "http://www.example.com/multi-tenant-uptime-monitoring"
     assert_includes response.body, "http://www.example.com/client-uptime-reports"
+    [ pricing_url, about_url, contact_url, privacy_url, terms_url ].each do |url|
+      assert_includes response.body, url
+    end
+  end
+
+  test "safe requests with a trailing slash permanently redirect to the slashless canonical URL" do
+    get "/multi-tenant-uptime-monitoring/", params: { source: "audit" }
+
+    assert_response :moved_permanently
+    assert_equal "http://www.example.com/multi-tenant-uptime-monitoring?source=audit", response.headers.fetch("Location")
+
+    head "/privacy/"
+    assert_response :moved_permanently
+    assert_equal "http://www.example.com/privacy", response.headers.fetch("Location")
+  end
+
+  test "the root URL is not redirected by trailing slash canonicalization" do
+    get "/"
+
+    assert_response :success
+  end
+
+  test "application schema identifies the publisher, features, source identity, and free offer" do
+    get root_url
+
+    schema = JSON.parse(css_select("script[type='application/ld+json']").first.text)
+    graph = schema.fetch("@graph")
+    application = graph.find { |item| item["@type"] == "WebApplication" }
+    organization = graph.find { |item| item["@type"] == "Organization" }
+
+    assert_operator application.fetch("featureList").length, :>=, 5
+    assert_equal "0", application.dig("offers", "price")
+    assert_equal pricing_url.sub("www.", ""), application.dig("offers", "url")
+    assert_includes organization.fetch("sameAs"), "https://github.com/craigderington/statuspulse"
+  end
+
+  test "indexable content pages have unique titles, descriptions, and slashless canonicals" do
+    paths = [
+      "/", "/uptime-monitoring-for-agencies", "/multi-tenant-uptime-monitoring",
+      "/client-uptime-reports", "/pricing", "/about", "/contact", "/privacy", "/terms",
+      "/status/#{@listed.slug}"
+    ]
+    titles = []
+    descriptions = []
+
+    paths.each do |path|
+      get path
+
+      assert_response :success
+      title = css_select("title").first.text.strip
+      description = css_select("meta[name='description']").first["content"]
+      canonical = css_select("link[rel='canonical']").first["href"]
+      titles << title
+      descriptions << description
+
+      assert_operator description.length, :>=, 130, "description too short for #{path}"
+      assert_operator description.length, :<=, 170, "description too long for #{path}"
+      assert_not canonical.end_with?("/"), "non-root canonical has trailing slash: #{canonical}" unless path == "/"
+    end
+
+    assert_equal titles.length, titles.uniq.length, "indexable titles must be unique"
+    assert_equal descriptions.length, descriptions.uniq.length, "indexable descriptions must be unique"
+  end
+
+  test "product screenshots are valid, non-trivial PNG assets" do
+    {
+      "dashboard.png" => [ 1280, 1236 ],
+      "reports.png" => [ 1280, 837 ],
+      "status-page.png" => [ 1280, 1551 ]
+    }.each do |filename, dimensions|
+      path = Rails.root.join("public/product", filename)
+      bytes = path.binread
+
+      assert_equal "\x89PNG\r\n\x1a\n".b, bytes.byteslice(0, 8)
+      assert_equal dimensions, bytes.byteslice(16, 8).unpack("NN")
+      assert_operator bytes.bytesize, :>, 50_000
+    end
   end
 
   test "the web manifest is routed and served as JSON" do

@@ -2,7 +2,7 @@ class Incident < ApplicationRecord
   STATUSES = %w[investigating identified monitoring resolved].freeze
   SEVERITIES = %w[degraded partial_outage major_outage].freeze
 
-  belongs_to :organization, optional: true
+  belongs_to :organization
   has_many :incident_services, dependent: :destroy
   has_many :services, through: :incident_services
   has_many :incident_updates, dependent: :destroy
@@ -10,6 +10,7 @@ class Incident < ApplicationRecord
   validates :title, presence: true
   validates :status, inclusion: { in: STATUSES }
   validates :severity, inclusion: { in: SEVERITIES }
+  validates :organization, presence: true
 
   scope :active, -> { where.not(status: "resolved").order(created_at: :desc) }
   scope :resolved, -> { where(status: "resolved").order(resolved_at: :desc) }

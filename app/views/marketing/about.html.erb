@@ -1,0 +1,30 @@
+<% content_for :title, "About StatusPulse | Tenant-Isolated Uptime Monitoring" %>
+<% content_for :description, "Learn how StatusPulse uses tenant-scoped Rails models, PostgreSQL, real HTTP checks, incident timelines, and public status pages to monitor client services." %>
+
+<div class="mk-shell">
+  <%= render "page_header" %>
+  <main>
+    <section class="mk-hero mk-wrap">
+      <div class="mk-hero__copy">
+        <p class="mk-eyebrow">About StatusPulse</p>
+        <h1 class="mk-h1">Uptime evidence.<br> <span class="mk-h1__outline">Bound to the right client.</span></h1>
+        <p class="mk-lede">StatusPulse is a Ruby on Rails monitoring application built around organization-scoped workspaces. It checks real HTTP endpoints, records what happened, and publishes service health without mixing one tenant&rsquo;s operational data with another&rsquo;s.</p>
+      </div>
+    </section>
+
+    <section class="mk-section mk-wrap">
+      <div class="mk-section__head"><p class="mk-eyebrow">Why it exists</p><h2 class="mk-h2">A monitor should explain an outage, not merely announce one.</h2></div>
+      <div class="mk-grid mk-grid--3">
+        <article class="mk-card"><h3 class="mk-h3">Check the real request</h3><p class="mk-body">Configure the method, headers, body, expected status, required response text, interval, and timeout instead of reducing every service to a homepage GET.</p></article>
+        <article class="mk-card"><h3 class="mk-h3">Keep the timeline</h3><p class="mk-body">Successful and failed checks feed uptime and latency reporting. Incident updates preserve investigating, identified, monitoring, and resolved milestones.</p></article>
+        <article class="mk-card"><h3 class="mk-h3">Communicate publicly</h3><p class="mk-body">Each organization has a public status path with live service state, 30-day uptime, check history, active advisories, and resolved incident history.</p></article>
+      </div>
+    </section>
+
+    <section class="mk-section mk-wrap">
+      <div class="mk-section__head"><p class="mk-eyebrow">Implementation</p><h2 class="mk-h2">An inspectable Rails and PostgreSQL stack.</h2><p class="mk-body">The application uses Rails 8, Hotwire, PostgreSQL, Solid Queue, Solid Cache, and Solid Cable. The production deployment runs behind Apache with TLS, security headers, loopback-only container ports, recurring monitoring jobs, and offsite database backups. The source repository and deployment documentation are public so operators can inspect how those claims are implemented.</p></div>
+      <a href="https://github.com/craigderington/statuspulse" class="mk-btn mk-btn--ghost" rel="me noopener">Inspect the source repository</a>
+    </section>
+  </main>
+  <%= render "site_footer" %>
+</div>

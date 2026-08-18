@@ -1,9 +1,11 @@
 # Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
 one:
+  organization: one
   incident: one
   service: one
 
 two:
+  organization: two
   incident: two
   service: two

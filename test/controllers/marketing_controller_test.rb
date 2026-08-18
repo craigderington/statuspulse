@@ -1,6 +1,14 @@
 require "test_helper"
 
 class MarketingControllerTest < ActionDispatch::IntegrationTest
+  TRUST_PAGES = {
+    "/pricing" => /Pricing/,
+    "/about" => /About StatusPulse/,
+    "/contact" => /Contact StatusPulse/,
+    "/privacy" => /Privacy Notice/,
+    "/terms" => /Terms of Use/
+  }.freeze
+
   test "the landing page is reachable without signing in" do
     get root_url
 
@@ -90,5 +98,59 @@ class MarketingControllerTest < ActionDispatch::IntegrationTest
     assert_select "a[href=?]", signup_path
     assert_no_match(/white-?label/i, response.body)
     assert_no_match(/custom domain/i, response.body)
+  end
+
+  test "trust and support pages are public, canonical, and substantive" do
+    TRUST_PAGES.each do |url, title_pattern|
+      get url
+
+      assert_response :success
+      assert_select "title", title_pattern
+      assert_select "h1", count: 1
+      assert_select "link[rel=canonical][href=?]", "http://example.com#{url}"
+      assert_select "meta[name=description]" do |nodes|
+        length = nodes.first["content"].length
+        assert_operator length, :>=, 130, "description too short for #{url}: #{length}"
+        assert_operator length, :<=, 170, "description too long for #{url}: #{length}"
+      end
+      assert_select "a[href=?]", privacy_path
+      assert_select "a[href=?]", terms_path
+      assert_operator response.body.scan(/\b[\w’'-]+\b/).length, :>=, 180
+    end
+  end
+
+  test "pricing is explicit about current cost and licensing uncertainty" do
+    get pricing_url
+
+    assert_response :success
+    assert_select "body", /\$0/
+    assert_select "body", /no billing integration/i
+    assert_select "body", /license file is not currently present/i
+  end
+
+  test "marketing pages contain real product screenshots with useful dimensions and alt text" do
+    {
+      root_url => "/product/status-page.png",
+      uptime_monitoring_for_agencies_url => "/product/dashboard.png",
+      multi_tenant_uptime_monitoring_url => "/product/status-page.png",
+      client_uptime_reports_url => "/product/reports.png"
+    }.each do |url, image_path|
+      get url
+
+      assert_response :success
+      assert_select "img[src=?][width][height][alt]", image_path, count: 1
+    end
+  end
+
+  test "landing page publishes visible FAQ content and matching FAQPage data" do
+    get root_url
+
+    assert_response :success
+    assert_select "#faq h3", count: 4
+    schemas = css_select("script[type='application/ld+json']").map { |node| JSON.parse(node.text) }
+    faq = schemas.find { |schema| schema["@type"] == "FAQPage" }
+    assert_not_nil faq
+    assert_equal 4, faq.fetch("mainEntity").length
+    assert_equal css_select("#faq h3").map(&:text), faq.fetch("mainEntity").map { |item| item.fetch("name") }
   end
 end

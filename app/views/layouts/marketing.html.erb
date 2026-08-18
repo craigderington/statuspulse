@@ -2,8 +2,11 @@
 <html lang="en">
   <head>
     <% page_title = content_for(:title) || "StatusPulse — Tenant-isolated uptime monitoring" %>
-    <% page_description = content_for(:description) || "Give each client an isolated workspace with its own endpoints, incident history, reports, users, and public status page." %>
+    <% page_description = content_for(:description) || "Monitor client websites and APIs from tenant-isolated workspaces with configurable HTTP checks, incident timelines, SLA reports, and public status pages." %>
     <% canonical_url = request.original_url.split("?").first.sub("://www.", "://") %>
+    <% canonical_host = request.host.sub(/\Awww\./, "") %>
+    <% canonical_root_url = root_url(host: canonical_host, protocol: request.protocol, port: request.optional_port) %>
+    <% canonical_pricing_url = pricing_url(host: canonical_host, protocol: request.protocol, port: request.optional_port) %>
     <% social_image_url = "#{request.base_url}/og/statuspulse-card.png" %>
     <title><%= page_title %></title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
@@ -29,15 +32,51 @@
     <script type="application/ld+json">
 <%= raw json_escape(JSON.pretty_generate({
   "@context" => "https://schema.org",
-  "@type" => "WebApplication",
-  "name" => "StatusPulse",
-  "url" => root_url,
-  "description" => page_description,
-  "applicationCategory" => "MonitoringApplication",
-  "operatingSystem" => "Web",
-  "isAccessibleForFree" => true
+  "@graph" => [
+    {
+      "@type" => "Organization",
+      "@id" => "#{canonical_root_url}#organization",
+      "name" => "StatusPulse",
+      "url" => canonical_root_url,
+      "sameAs" => [ "https://github.com/craigderington/statuspulse" ]
+    },
+    {
+      "@type" => "WebSite",
+      "@id" => "#{canonical_root_url}#website",
+      "name" => "StatusPulse",
+      "url" => canonical_root_url,
+      "publisher" => { "@id" => "#{canonical_root_url}#organization" }
+    },
+    {
+      "@type" => "WebApplication",
+      "@id" => "#{canonical_root_url}#application",
+      "name" => "StatusPulse",
+      "url" => canonical_root_url,
+      "description" => page_description,
+      "applicationCategory" => "BusinessApplication",
+      "operatingSystem" => "Web",
+      "isAccessibleForFree" => true,
+      "featureList" => [
+        "Tenant-isolated monitoring workspaces",
+        "Configurable HTTP endpoint checks",
+        "Public status pages",
+        "Incident timelines",
+        "SLA uptime and P90 latency reports",
+        "Weekly email digests"
+      ],
+      "offers" => {
+        "@type" => "Offer",
+        "price" => "0",
+        "priceCurrency" => "USD",
+        "url" => canonical_pricing_url,
+        "description" => "No software subscription fee is currently charged. Self-hosting infrastructure and third-party services are separate."
+      },
+      "publisher" => { "@id" => "#{canonical_root_url}#organization" }
+    }
+  ]
 })) %>
     </script>
+    <%= yield :head %>
 
     <link rel="icon" href="/favicon.ico" sizes="any">
     <link rel="icon" href="/icon.svg" type="image/svg+xml">

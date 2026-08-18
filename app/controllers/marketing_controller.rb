@@ -18,6 +18,21 @@ class MarketingController < ApplicationController
   def reports
   end
 
+  def pricing
+  end
+
+  def about
+  end
+
+  def contact
+  end
+
+  def privacy
+  end
+
+  def terms
+  end
+
   # Illustrative content for the hero wall. Fictional client names, clearly a
   # product mock: nothing here is presented as a real customer or a real metric.
   SAMPLE_WORKSPACES = [

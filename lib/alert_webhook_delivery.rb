@@ -1,8 +1,7 @@
 require "net/http"
 require "uri"
 require "json"
-require "ipaddr"
-require "resolv"
+require_relative "outbound_http_destination"
 
 # Posts an alert to a customer-supplied webhook URL.
 #
@@ -21,19 +20,6 @@ class AlertWebhookDelivery
   # Cloud metadata, loopback, private and link-local space. A webhook pointed
   # here is either a mistake or an attempt to make the server talk to something
   # only it can reach.
-  BLOCKED_RANGES = [
-    IPAddr.new("0.0.0.0/8"),
-    IPAddr.new("10.0.0.0/8"),
-    IPAddr.new("100.64.0.0/10"),
-    IPAddr.new("127.0.0.0/8"),
-    IPAddr.new("169.254.0.0/16"),
-    IPAddr.new("172.16.0.0/12"),
-    IPAddr.new("192.168.0.0/16"),
-    IPAddr.new("::1/128"),
-    IPAddr.new("fc00::/7"),
-    IPAddr.new("fe80::/10")
-  ].freeze
-
   # Form-time validation. Deliberately does NO name resolution: a model
   # validation that performs DNS is slow, fails when DNS does, and would block
   # saving unrelated settings — including turning alerts off — whenever the
@@ -42,21 +28,9 @@ class AlertWebhookDelivery
   #
   # Literal addresses are still rejected here, since that costs nothing.
   def self.validate_format!(raw)
-    uri = URI.parse(raw.to_s)
-
-    raise UnsafeDestination, "must use https" unless uri.is_a?(URI::HTTPS)
-    raise UnsafeDestination, "must include a host" if uri.host.blank?
-
-    host = uri.host.delete_prefix("[").delete_suffix("]")
-    literal = (IPAddr.new(host) rescue nil)
-
-    if literal && BLOCKED_RANGES.any? { |range| range.include?(literal) }
-      raise UnsafeDestination, "must not point at a private or reserved address"
-    end
-
-    uri
-  rescue URI::InvalidURIError
-    raise UnsafeDestination, "is not a valid URL"
+    OutboundHttpDestination.validate_format!(raw, https_only: true)
+  rescue OutboundHttpDestination::UnsafeDestination => e
+    raise UnsafeDestination, e.message
   end
 
   def initialize(organization)
@@ -95,7 +69,7 @@ class AlertWebhookDelivery
   private
 
   def perform(uri, request)
-    address = resolved_address(uri.host)
+    destination = resolved_destination(uri)
 
     # Connect to the address that was validated, while keeping the hostname for
     # SNI and certificate verification. Without pinning, a host can resolve to a
@@ -104,7 +78,7 @@ class AlertWebhookDelivery
     Net::HTTP.start(
       uri.host, uri.port,
       use_ssl: uri.scheme == "https",
-      ipaddr: address.to_s,
+      ipaddr: destination.address.to_s,
       open_timeout: TIMEOUT,
       read_timeout: TIMEOUT,
       verify_mode: OpenSSL::SSL::VERIFY_PEER
@@ -112,44 +86,13 @@ class AlertWebhookDelivery
   end
 
   def validated_uri(raw)
-    uri = URI.parse(raw.to_s)
-
-    unless uri.is_a?(URI::HTTPS)
-      raise UnsafeDestination, "webhook URL must use https"
-    end
-
-    raise UnsafeDestination, "webhook URL has no host" if uri.host.blank?
-
-    resolved_address(uri.host)
-    uri
-  rescue URI::InvalidURIError
-    raise UnsafeDestination, "webhook URL is not a valid URL"
+    resolved_destination(raw).uri
   end
 
-  def resolved_address(host)
-    # URI#host keeps the brackets on an IPv6 literal, which then fails to
-    # resolve and gets blocked for the wrong reason. Strip them so a literal is
-    # classified as the address it is.
-    host = host.to_s.delete_prefix("[").delete_suffix("]")
-
-    literal = (IPAddr.new(host) rescue nil)
-    return guard_address(literal) if literal
-
-    addresses = Resolv.getaddresses(host)
-    raise UnsafeDestination, "webhook host does not resolve" if addresses.empty?
-
-    address = addresses.map { |a| IPAddr.new(a) rescue nil }.compact.first
-    raise UnsafeDestination, "webhook host does not resolve" if address.nil?
-
-    guard_address(address)
-  end
-
-  def guard_address(address)
-    if BLOCKED_RANGES.any? { |range| range.include?(address) }
-      raise UnsafeDestination, "webhook host resolves to a private or reserved address"
-    end
-
-    address
+  def resolved_destination(raw)
+    OutboundHttpDestination.resolve!(raw.to_s, https_only: true)
+  rescue OutboundHttpDestination::UnsafeDestination => e
+    raise UnsafeDestination, "webhook URL #{e.message}"
   end
 
   def event_name(kind)

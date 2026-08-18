@@ -1,6 +1,7 @@
 # Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
 one:
+  organization: one
   name: MyString
   description: MyText
   url: MyString
@@ -14,6 +15,7 @@ one:
   position: 1
 
 two:
+  organization: two
   name: MyString
   description: MyText
   url: MyString

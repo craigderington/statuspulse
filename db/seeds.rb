@@ -148,13 +148,13 @@ services_data.each do |attrs|
     30.times do |i|
       is_success = (service.status != "outage") && (rand > 0.05)
       latency = case service.status
-                when "degraded" then rand(2600..4200)
-                when "outage" then rand(5000..8000)
-                else rand(45..220)
-                end
+      when "degraded" then rand(2600..4200)
+      when "outage" then rand(5000..8000)
+      else rand(45..220)
+      end
 
       service.check_logs.create!(
-        status_code: is_success ? service.expected_status_code : [500, 502, 504, 0].sample,
+        status_code: is_success ? service.expected_status_code : [ 500, 502, 504, 0 ].sample,
         response_time_ms: latency,
         success: is_success,
         error_message: is_success ? nil : "Connection timeout / HTTP 502 Bad Gateway",

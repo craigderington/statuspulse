@@ -5,6 +5,11 @@ Rails.application.routes.draw do
   get "uptime-monitoring-for-agencies", to: "marketing#agencies", as: :uptime_monitoring_for_agencies
   get "multi-tenant-uptime-monitoring", to: "marketing#multi_tenant", as: :multi_tenant_uptime_monitoring
   get "client-uptime-reports", to: "marketing#reports", as: :client_uptime_reports
+  get "pricing", to: "marketing#pricing", as: :pricing
+  get "about", to: "marketing#about", as: :about
+  get "contact", to: "marketing#contact", as: :contact
+  get "privacy", to: "marketing#privacy", as: :privacy
+  get "terms", to: "marketing#terms", as: :terms
   get "dashboard", to: "dashboard#index", as: :dashboard
 
   # Authentication
@@ -26,7 +31,7 @@ Rails.application.routes.draw do
   post "two-factor/recovery-codes", to: "two_factor_enrolments#confirm_recovery_codes", as: :confirm_two_factor_recovery_codes
 
   # SLA & Analytics Reports
-  resources :reports, only: [:index] do
+  resources :reports, only: [ :index ] do
     collection do
       post :send_test_email
     end
@@ -55,7 +60,7 @@ Rails.application.routes.draw do
   end
 
   resources :incidents do
-    resources :incident_updates, only: [:create]
+    resources :incident_updates, only: [ :create ]
   end
 
   resources :maintenance_windows

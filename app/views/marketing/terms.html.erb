@@ -1,0 +1,24 @@
+<% content_for :title, "StatusPulse Terms of Use | Hosted Monitoring Service" %>
+<% content_for :description, "Read the terms for the hosted StatusPulse monitoring service, including authorized endpoint checks, account security, public status content, and availability limits." %>
+
+<div class="mk-shell">
+  <%= render "page_header" %>
+  <main class="mk-legal mk-wrap">
+    <p class="mk-eyebrow">Effective August 18, 2026</p>
+    <h1 class="mk-h1">Terms of use</h1>
+    <p class="mk-lede">These terms apply to the hosted service at statuspulse.org. They are not a software license for the source repository. The repository README currently refers to an MIT license, but no license file is present; review the repository before copying or redistributing code.</p>
+
+    <section><h2 class="mk-h2">Using the service</h2><p class="mk-body">You may use StatusPulse to monitor systems you own or are authorized to test. You are responsible for the URLs, methods, credentials, headers, bodies, assertions, intervals, users, incident updates, status-page content, email recipients, and webhook destinations configured in your workspace. Do not use the service to probe third-party systems without permission, overwhelm endpoints, distribute malicious requests, evade access controls, or violate applicable law.</p></section>
+
+    <section><h2 class="mk-h2">Accounts and workspace boundaries</h2><p class="mk-body">Provide accurate account information and protect your password, two-factor device, recovery codes, and active sessions. A user belongs to one organization workspace. Administrators can change monitoring and alert configuration for that workspace and are responsible for granting appropriate access to its users. Report suspected account compromise promptly through the private contact options described on the contact page.</p></section>
+
+    <section><h2 class="mk-h2">Public status pages and communications</h2><p class="mk-body">Status pages are public by design. Do not publish confidential service names, internal architecture, personal information, credentials, or sensitive incident details. Search-indexing controls influence compliant crawlers but do not make a status page private. Weekly digests go to workspace users, alerts may go to configured email or webhook destinations, and monitoring requests go to the configured endpoints.</p></section>
+
+    <section><h2 class="mk-h2">Availability, reports, and retention</h2><p class="mk-body">Monitoring results depend on network conditions, the configured interval and timeout, endpoint behavior, worker availability, and the hosted infrastructure. StatusPulse reports are operational measurements, not a warranty, audit, or independent certification of SLA compliance. Check history is retained for up to 90 days on the hosted deployment. Maintenance, security response, provider outages, or technical failures may interrupt the service.</p></section>
+
+    <section><h2 class="mk-h2">Fees and changes</h2><p class="mk-body">The hosted service currently has no software subscription fee and does not collect payment details. Future features or service levels may be priced differently, but the pricing page will be updated before a charge is introduced. Features, limits, security controls, providers, and these terms may change as the service evolves; the effective date above identifies this version.</p></section>
+
+    <section><h2 class="mk-h2">No guarantee and responsibility</h2><p class="mk-body">The service is provided on an as-available basis without a guaranteed support response or service-level commitment. You remain responsible for operating your systems, responding to incidents, maintaining independent observability where appropriate, and deciding whether StatusPulse measurements are sufficient for your needs. Nothing on the marketing pages is professional legal, compliance, or insurance advice.</p><p class="mk-body"><a href="<%= contact_path %>" class="mk-inline-link">Questions about these terms</a></p></section>
+  </main>
+  <%= render "site_footer" %>
+</div>

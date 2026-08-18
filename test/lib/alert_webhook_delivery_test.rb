@@ -53,7 +53,7 @@ class AlertWebhookDeliveryTest < ActiveSupport::TestCase
   end
 
   test "allows an ordinary public https endpoint" do
-    assert_equal :allowed, validate("https://example.com/hook")
+    assert_equal :allowed, validate("https://93.184.216.34/hook")
   end
 
   test "the signature covers the timestamp as well as the body" do
@@ -78,12 +78,12 @@ class AlertWebhookDeliveryTest < ActiveSupport::TestCase
 
   test "form validation rejects unsafe schemes and literal private addresses" do
     [
-      ["http://example.com/hook", /must use https/],
-      ["file:///etc/passwd", /must use https/],
-      ["https://127.0.0.1/hook", /private or reserved/],
-      ["https://169.254.169.254/", /private or reserved/],
-      ["https://[::1]/hook", /private or reserved/],
-      ["not a url", /not a valid URL/]
+      [ "http://example.com/hook", /must use https/ ],
+      [ "file:///etc/passwd", /must use https/ ],
+      [ "https://127.0.0.1/hook", /private or reserved/ ],
+      [ "https://169.254.169.254/", /private or reserved/ ],
+      [ "https://[::1]/hook", /private or reserved/ ],
+      [ "not a url", /not a valid URL/ ]
     ].each do |url, pattern|
       error = assert_raises(AlertWebhookDelivery::UnsafeDestination, "#{url} must be rejected") do
         AlertWebhookDelivery.validate_format!(url)

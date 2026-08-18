@@ -1057,3 +1057,47 @@ input[type="checkbox"] {
 .tls-row:last-child { border-bottom: none; }
 .tls-row__label { color: var(--text-muted); font-family: var(--font-data); font-size: 0.72rem; letter-spacing: 0.12em; text-transform: uppercase; }
 .tls-row__value { font-family: var(--font-data); font-variant-numeric: tabular-nums; }
+
+/* Public status-page wayfinding. These links intentionally stay restrained so
+   tenant service health remains the primary content. */
+.status-public-nav {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 1.25rem 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  border-bottom: 1px solid var(--border-soft);
+}
+
+.status-public-nav__brand,
+.status-public-nav__links a,
+.status-public-cta a,
+.status-public-footer a {
+  color: var(--text-primary);
+  text-decoration: none;
+}
+
+.status-public-nav__brand { display: inline-flex; align-items: center; gap: 0.6rem; font-weight: 700; }
+.status-public-nav__links { display: flex; align-items: center; gap: 1.2rem; font-size: 0.85rem; }
+.status-public-nav__links a:last-child { color: var(--accent-cyan); }
+
+.status-public-cta {
+  margin-top: 3rem;
+  padding: 1.5rem;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  background: var(--bg-card);
+  text-align: center;
+}
+
+.status-public-cta p { color: var(--text-secondary); margin: 0.45rem 0 1rem; }
+.status-public-cta a { display: inline-flex; color: var(--accent-cyan); font-weight: 700; }
+.status-public-footer { display: flex; justify-content: center; flex-wrap: wrap; gap: 1.1rem; margin-top: 0.75rem; font-size: 0.78rem; }
+.status-public-footer a { color: var(--text-muted); }
+
+@media (max-width: 640px) {
+  .status-public-nav { padding-inline: 1rem; }
+  .status-public-nav__links a:first-child { display: none; }
+}

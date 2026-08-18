@@ -1,6 +1,7 @@
 require "net/http"
 require "uri"
 require "json"
+require Rails.root.join("lib/outbound_http_destination")
 
 class Service < ApplicationRecord
   HTTP_METHODS = %w[GET POST PUT HEAD PATCH DELETE OPTIONS].freeze
@@ -17,6 +18,8 @@ class Service < ApplicationRecord
   validates :expected_status_code, numericality: { only_integer: true, greater_than_or_equal_to: 100, less_than: 600 }
   validates :timeout_seconds, numericality: { only_integer: true, greater_than: 0, less_than_or_equal_to: 60 }
   validates :status, inclusion: { in: STATUSES }
+  validates :organization, presence: true
+  validate :url_is_safe_monitor_destination
 
   # Streams are scoped per organization. A single global stream name would
   # broadcast every tenant's service telemetry — names, URLs, latency, status —
@@ -123,10 +126,13 @@ class Service < ApplicationRecord
   end
 
   def perform_check!
-    uri = URI.parse(url)
+    destination = resolved_destination
+    uri = destination.uri
     start_time = Process.clock_gettime(Process::CLOCK_MONOTONIC)
 
-    http = Net::HTTP.new(uri.host, uri.port)
+    # Connect to the address that was validated while retaining the hostname
+    # for TLS SNI and certificate verification. This closes DNS rebinding.
+    http = build_http(uri, destination.address)
     http.use_ssl = (uri.scheme == "https")
     http.open_timeout = timeout_seconds
     http.read_timeout = timeout_seconds
@@ -317,6 +323,24 @@ class Service < ApplicationRecord
 
   private
 
+  def resolved_destination
+    OutboundHttpDestination.resolve!(url)
+  end
+
+  def build_http(uri, address)
+    Net::HTTP.new(uri.host, uri.port).tap { |http| http.ipaddr = address.to_s }
+  end
+
+  # Saving does not perform DNS, so an endpoint outage never prevents an admin
+  # from editing or pausing a monitor. Resolution is authoritative at delivery.
+  def url_is_safe_monitor_destination
+    return if url.blank?
+
+    OutboundHttpDestination.validate_format!(url)
+  rescue OutboundHttpDestination::UnsafeDestination => e
+    errors.add(:url, e.message)
+  end
+
   def raise_alert!(error_message)
     return unless alertable?
 
@@ -335,8 +359,7 @@ class Service < ApplicationRecord
     ServiceAlertJob.perform_later(id, "recovered", nil, downtime_started&.iso8601)
   end
 
-  # An orphaned service has no workspace to notify, and a workspace can turn
-  # alerting off entirely.
+  # A workspace can turn alerting off entirely.
   def alertable?
     organization.present? && organization.alerts_enabled?
   end

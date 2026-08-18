@@ -15,6 +15,7 @@
 #   17 3 * * * /opt/statuspulse/script/backup.sh >> /var/backups/statuspulse/backup.log 2>&1
 
 set -euo pipefail
+umask 077
 
 APP_DIR="${APP_DIR:-/opt/statuspulse}"
 DEST="${BACKUP_DIR:-/var/backups/statuspulse}"
@@ -30,29 +31,33 @@ fail() { log "ERROR: $*"; exit 1; }
 
 STAMP="$(date -u +%Y%m%d-%H%M%S)"
 ARCHIVE="$DEST/statuspulse-$STAMP.sql.gz"
+PARTIAL="$ARCHIVE.partial"
 
-mkdir -p "$DEST"
+install -d -m 0700 "$DEST"
 
 # ---- dump -------------------------------------------------------------------
 
 log "dumping cluster"
 docker compose -f "$COMPOSE_FILE" exec -T db \
-  pg_dumpall -U postgres | gzip > "$ARCHIVE"
+  pg_dumpall -U postgres | gzip > "$PARTIAL"
 
 # A dump that fails midway still leaves a valid gzip of a truncated file, so
 # check the content rather than the exit status alone.
-gzip -t "$ARCHIVE" || fail "archive is not valid gzip: $ARCHIVE"
-SIZE=$(stat -c %s "$ARCHIVE")
-[ "$SIZE" -gt 1000 ] || fail "archive is implausibly small (${SIZE} bytes): $ARCHIVE"
+gzip -t "$PARTIAL" || fail "archive is not valid gzip: $PARTIAL"
+SIZE=$(stat -c %s "$PARTIAL")
+[ "$SIZE" -gt 1000 ] || fail "archive is implausibly small (${SIZE} bytes): $PARTIAL"
 # pipefail is disabled for this check only. `grep -q` exits at the first match
 # and closes the pipe, so gunzip dies of SIGPIPE (141) — and under pipefail that
 # reads as failure. The header is on line 2, so the more valid the archive the
 # faster it "failed". Reading a bounded head also avoids decompressing the whole
 # file just to inspect its first line.
 set +o pipefail
-gunzip -c "$ARCHIVE" 2>/dev/null | head -c 65536 | grep -q "PostgreSQL database cluster dump" \
-  || fail "archive does not look like a pg_dumpall: $ARCHIVE"
+gunzip -c "$PARTIAL" 2>/dev/null | head -c 65536 | grep -q "PostgreSQL database cluster dump" \
+  || fail "archive does not look like a pg_dumpall: $PARTIAL"
 set -o pipefail
+
+chmod 0600 "$PARTIAL"
+mv "$PARTIAL" "$ARCHIVE"
 
 log "dumped $(numfmt --to=iec "$SIZE" 2>/dev/null || echo "${SIZE}B") to $ARCHIVE"
 

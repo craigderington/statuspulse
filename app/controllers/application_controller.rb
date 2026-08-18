@@ -1,11 +1,28 @@
 class ApplicationController < ActionController::Base
   include Authentication
 
+  before_action :redirect_trailing_slash
   before_action :discard_conflicting_pending_session
   before_action :set_current_context
   before_action :require_login
 
   private
+
+  # Rails recognizes most collection routes with or without a final slash. Keep
+  # one public URL for crawlers and links rather than serving two 200 responses
+  # with competing self-canonicals. Only redirect safe methods; mutating requests
+  # must never be replayed as GET because their path happened to end in a slash.
+  def redirect_trailing_slash
+    return unless request.get? || request.head?
+    raw_path = request.original_fullpath.split("?", 2).first
+    return if raw_path == "/" || !raw_path.end_with?("/")
+
+    # Collapse multiple leading slashes so a hostile path can never turn the
+    # relative Location into a protocol-relative redirect to another host.
+    location = "/#{raw_path.sub(/\A\/+/, "").delete_suffix("/")}"
+    location = "#{location}?#{request.query_string}" if request.query_string.present?
+    redirect_to location, status: :moved_permanently
+  end
 
   # A session cannot simultaneously be signed in and mid-sign-in as somebody
   # else. Holding both is the precondition for grafting one identity's proof
@@ -53,4 +70,10 @@ class ApplicationController < ActionController::Base
     Current.organization
   end
   helper_method :current_organization
+
+  def require_admin
+    return if Current.user&.admin?
+
+    redirect_to dashboard_path, alert: "Only workspace administrators can perform that action."
+  end
 end

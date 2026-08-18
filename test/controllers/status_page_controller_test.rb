@@ -31,4 +31,14 @@ class StatusPageControllerTest < ActionDispatch::IntegrationTest
     assert_no_match %r{</script><script>alert\(1\)</script>}, response.body
     assert_includes response.body, "\\u003c/script\\u003e\\u003cscript\\u003ealert(1)\\u003c/script\\u003e"
   end
+
+  test "public status pages provide product, signup, privacy, terms, and contact wayfinding" do
+    get org_public_status_url(org_slug: @org.slug)
+
+    assert_response :success
+    [ root_path, signup_path, privacy_path, terms_path, contact_path ].each do |path|
+      assert_select "a[href=?]", path
+    end
+    assert_select ".status-public-cta a[href=?]", uptime_monitoring_for_agencies_path
+  end
 end

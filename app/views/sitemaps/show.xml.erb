@@ -20,6 +20,13 @@
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
+  <% [ pricing_url, about_url, contact_url, privacy_url, terms_url ].each do |url| %>
+  <url>
+    <loc><%= url %></loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <% end %>
 <%# /signup is intentionally absent: robots.txt disallows it, and listing a
     disallowed URL in a sitemap is a contradiction Search Console reports as an
     error. The landing page is the entry point; it links to sign-up. %>

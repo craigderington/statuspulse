@@ -101,13 +101,9 @@ class ServiceAlertingTest < ActiveSupport::TestCase
       "alerting state must not be set when nothing was sent, or recovery would be missed too"
   end
 
-  test "an orphaned service does not attempt to notify anyone" do
-    @service.update_columns(organization_id: nil)
-    @service.reload
-
-    assert_no_enqueued_jobs(only: ServiceAlertJob) do
-      fail!
-      fail!
+  test "the database prevents orphaned services" do
+    assert_raises(ActiveRecord::NotNullViolation) do
+      @service.update_columns(organization_id: nil)
     end
   end
 

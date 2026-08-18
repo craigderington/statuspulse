@@ -631,6 +631,45 @@ p.mk-body {
 
 .mk-footer__links a:hover { color: var(--mk-ink); }
 
+/* ---------- product media + long-form pages ---------- */
+
+.mk-product-shot {
+  margin: 0;
+  border: 1px solid var(--mk-rule);
+  background: var(--mk-panel);
+  box-shadow: 0 28px 80px rgba(0, 0, 0, 0.28);
+}
+
+.mk-product-shot img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.mk-product-shot figcaption {
+  padding: 0.9rem 1rem;
+  border-top: 1px solid var(--mk-rule);
+  font-family: var(--mk-data);
+  font-size: 0.68rem;
+  line-height: 1.6;
+  letter-spacing: 0.08em;
+  color: var(--mk-ink-faint);
+}
+
+.mk-legal {
+  max-width: 58rem;
+  padding-top: clamp(4rem, 9vw, 7rem);
+  padding-bottom: clamp(4rem, 9vw, 7rem);
+}
+
+.mk-legal > .mk-lede { margin: 1.5rem 0 3rem; }
+.mk-legal section { padding: 2rem 0; border-top: 1px solid var(--mk-rule); }
+.mk-legal section .mk-h2 { font-size: clamp(1.35rem, 3vw, 2rem); margin-bottom: 1rem; }
+.mk-legal section .mk-body + .mk-body { margin-top: 1rem; }
+
+.mk-inline-link { color: var(--mk-ink); text-underline-offset: 0.2em; }
+.mk-price__unit { font-family: var(--mk-data); font-size: 0.34em; letter-spacing: 0.08em; color: var(--mk-ink-faint); }
+
 /* ---------- responsive ---------- */
 
 @media (max-width: 940px) {

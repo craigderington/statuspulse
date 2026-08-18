@@ -1,9 +1,11 @@
 class IncidentsController < ApplicationController
-  before_action :set_incident, only: [:show, :edit, :update, :destroy]
+  before_action :set_incident, only: [ :show, :edit, :update, :destroy ]
+  before_action :require_admin, except: [ :index, :show ]
+  before_action :set_available_services, only: [ :new, :create, :edit, :update ]
 
   def index
-    @active_incidents = Incident.active
-    @resolved_incidents = Incident.resolved
+    @active_incidents = current_organization.incidents.active
+    @resolved_incidents = current_organization.incidents.resolved
   end
 
   def show
@@ -12,16 +14,13 @@ class IncidentsController < ApplicationController
   end
 
   def new
-    @incident = Incident.new(severity: "degraded", status: "investigating")
+    @incident = current_organization.incidents.new(severity: "degraded", status: "investigating")
   end
 
   def create
-    @incident = Incident.new(incident_params)
+    @incident = current_organization.incidents.new(incident_params)
 
-    if @incident.save
-      if params[:service_ids].present?
-        @incident.service_ids = params[:service_ids]
-      end
+    if save_with_services(@incident)
       redirect_to @incident, notice: "Incident logged successfully."
     else
       render :new, status: :unprocessable_entity
@@ -32,10 +31,8 @@ class IncidentsController < ApplicationController
   end
 
   def update
-    if @incident.update(incident_params)
-      if params[:service_ids].present?
-        @incident.service_ids = params[:service_ids]
-      end
+    @incident.assign_attributes(incident_params)
+    if save_with_services(@incident)
       redirect_to @incident, notice: "Incident updated."
     else
       render :edit, status: :unprocessable_entity
@@ -50,10 +47,29 @@ class IncidentsController < ApplicationController
   private
 
   def set_incident
-    @incident = Incident.find(params[:id])
+    @incident = current_organization.incidents.find(params[:id])
   end
 
   def incident_params
     params.require(:incident).permit(:title, :description, :status, :severity)
+  end
+
+
+  def set_available_services
+    @available_services = current_organization.services.ordered
+  end
+
+  def save_with_services(incident)
+    requested_ids = Array(params[:service_ids]).reject(&:blank?).map(&:to_s).uniq
+    services = current_organization.services.where(id: requested_ids).to_a
+    raise ActiveRecord::RecordNotFound if services.length != requested_ids.length
+
+    incident.transaction do
+      incident.save!
+      incident.services = services
+    end
+    true
+  rescue ActiveRecord::RecordInvalid
+    false
   end
 end

@@ -167,6 +167,23 @@ curl -i http://statuspulse.org/.well-known/acme-challenge/nonexistent
 
 The first response must be a 301 to `https://statuspulse.org/...`; the challenge request may be 404 but must not redirect to HTTPS.
 
+The vhost also rejects WordPress, PHP, and PHP-administration scanner paths at
+Apache rather than forwarding them to Rails. Verify both cleartext and TLS
+behavior after installing or changing the vhost:
+
+```bash
+curl -sS -o /dev/null -w '%{http_code}\n' http://statuspulse.org/wp-admin/
+curl -sS -o /dev/null -w '%{http_code}\n' https://statuspulse.org/wp-login.php
+curl -sS -o /dev/null -w '%{http_code}\n' https://statuspulse.org/index.PHP
+curl -sS -o /dev/null -w '%{http_code}\n' https://statuspulse.org/phpmyadmin/
+curl -sS -o /dev/null -w '%{http_code}\n' https://statuspulse.org/wp-json/
+curl -sS -o /dev/null -w '%{http_code}\n' https://www.statuspulse.org/xmlrpc.php
+```
+
+Every command must print `404`. A normal unknown Rails path should also remain
+404, while ordinary HTTP application paths must continue to return the canonical
+301 and ACME challenge paths must remain exempt from that redirect.
+
 ## 7. Obtain and test the Let's Encrypt certificate
 
 Request one certificate covering both the canonical and redirect hostnames:

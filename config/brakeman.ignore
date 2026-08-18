@@ -1,0 +1,10 @@
+{
+  "ignored_warnings": [
+    {
+      "fingerprint": "9dade31462f110b9e3c437fec4c07df3dc142d60aec2d9b622c1be75d671d731",
+      "note": "The JSON-LD payload is generated with JSON.generate, escaped with json_escape, and covered by status-page tests that use hostile organization names. It is safe script data, not executable HTML."
+    }
+  ],
+  "updated": "2026-08-18 16:20:00 +0000",
+  "brakeman_version": "8.0.6"
+}

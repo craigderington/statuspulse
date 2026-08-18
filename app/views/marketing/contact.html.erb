@@ -1,0 +1,25 @@
+<% content_for :title, "Contact StatusPulse | Support and Security Reports" %>
+<% content_for :description, "Contact StatusPulse through the public GitHub repository for product questions, reproducible bug reports, deployment help, or responsible security reports." %>
+
+<div class="mk-shell">
+  <%= render "page_header" %>
+  <main>
+    <section class="mk-hero mk-wrap">
+      <div class="mk-hero__copy">
+        <p class="mk-eyebrow">Contact</p>
+        <h1 class="mk-h1">Questions need context.<br> <span class="mk-h1__outline">Send the useful details.</span></h1>
+        <p class="mk-lede">StatusPulse currently handles public product questions and support through its GitHub repository. There is no published support phone number or guaranteed-response support plan.</p>
+        <div class="mk-hero__actions"><a href="https://github.com/craigderington/statuspulse/issues" class="mk-btn" rel="noopener">Open a GitHub issue</a><a href="https://github.com/craigderington/statuspulse" class="mk-btn mk-btn--ghost" rel="me noopener">View repository</a></div>
+      </div>
+    </section>
+
+    <section class="mk-section mk-wrap">
+      <div class="mk-grid mk-grid--3">
+        <article class="mk-card"><h2 class="mk-h3">Product or deployment question</h2><p class="mk-body">Describe what you are trying to achieve, the route or feature involved, and whether you use statuspulse.org or a self-hosted deployment.</p></article>
+        <article class="mk-card"><h2 class="mk-h3">Bug report</h2><p class="mk-body">Include expected behavior, actual behavior, reproduction steps, relevant versions, and sanitized logs. Never post passwords, API keys, TOTP secrets, request headers, or private endpoint data.</p></article>
+        <article class="mk-card"><h2 class="mk-h3">Security report</h2><p class="mk-body">Do not publish exploitable details in a public issue. Use the repository owner&rsquo;s private contact options on GitHub and provide the minimum information needed to reproduce the problem safely.</p></article>
+      </div>
+    </section>
+  </main>
+  <%= render "site_footer" %>
+</div>

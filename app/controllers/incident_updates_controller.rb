@@ -1,6 +1,8 @@
 class IncidentUpdatesController < ApplicationController
+  before_action :require_admin
+
   def create
-    @incident = Incident.find(params[:incident_id])
+    @incident = current_organization.incidents.find(params[:incident_id])
     @update = @incident.incident_updates.new(update_params)
 
     if @update.save

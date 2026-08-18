@@ -1,5 +1,6 @@
 class ServicesController < ApplicationController
-  before_action :set_service, only: [:show, :edit, :update, :destroy, :check_now, :pause, :resume]
+  before_action :set_service, only: [ :show, :edit, :update, :destroy, :check_now, :pause, :resume ]
+  before_action :require_admin, except: [ :index, :show ]
 
   def index
     @services = scope_services.ordered
@@ -77,7 +78,7 @@ class ServicesController < ApplicationController
   private
 
   def scope_services
-    current_organization ? current_organization.services : Service.all
+    current_organization.services
   end
 
   def set_service

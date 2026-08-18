@@ -25,6 +25,8 @@ class ReportsPeriodTest < ActionDispatch::IntegrationTest
 
     assert_response :success
     assert_select "[data-period-clamped]", count: 0
+    assert_select "nav[aria-label='Reporting period'] a", count: 3
+    assert_select "a[aria-current='page'][href=?]", reports_path(days: 7), text: "7 days"
   end
 
   test "the default period is unchanged and unclamped" do

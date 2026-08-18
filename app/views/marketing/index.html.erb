@@ -31,7 +31,7 @@
   <section class="mk-hero mk-wrap">
     <div class="mk-hero__copy">
       <p class="mk-eyebrow">Multi-tenant uptime monitoring</p>
-      <h1 class="mk-h1">Client uptime monitoring.<br><span class="mk-h1__outline">Workspace by workspace.</span></h1>
+      <h1 class="mk-h1">Client uptime monitoring.<br> <span class="mk-h1__outline">Workspace by workspace.</span></h1>
       <p class="mk-lede">
         Each client gets an isolated workspace, its own endpoints and incident history,
         and a public status URL at <code class="mk-code">/status/&lt;client&gt;</code>. Operators sign
@@ -69,6 +69,14 @@
       </div>
       <p class="mk-wall__caption">Illustrative workspaces. Names and figures are examples, not customers.</p>
     </div>
+  </section>
+
+  <section class="mk-section mk-wrap">
+    <div class="mk-section__head"><p class="mk-eyebrow">Public status, rendered</p><h2 class="mk-h2">This is the product, not a stock dashboard.</h2><p class="mk-body">Status pages render service state, uptime figures, history bars, certificate warnings, and incidents from workspace records. The separate live demo is backed by scheduled HTTP checks.</p></div>
+    <figure class="mk-product-shot">
+      <img src="/product/status-page.png" width="1280" height="1551" alt="StatusPulse public status page showing three operational HTTP services, uptime history bars, and 30-day uptime" loading="lazy">
+      <figcaption>Actual StatusPulse status-page UI rendered with illustrative Northwind Logistics test data. Use the demo status link for current live measurements.</figcaption>
+    </figure>
   </section>
 
   <section class="mk-section mk-wrap" id="workspaces">
@@ -217,18 +225,40 @@ Content-Type: application/json
     <p class="mk-body">Create a workspace, point it at an endpoint, and watch the first check land.</p>
     <a href="<%= signup_path %>" class="mk-btn mk-btn--lg">Create a workspace</a>
   </section>
+
+  <section class="mk-section mk-wrap" id="faq">
+    <div class="mk-section__head">
+      <p class="mk-eyebrow">Questions</p>
+      <h2 class="mk-h2">StatusPulse, without the sales fog.</h2>
+      <p class="mk-body">The practical details agencies and self-hosters usually need before creating a workspace.</p>
+    </div>
+    <div class="mk-grid mk-grid--2">
+      <article class="mk-card"><h3 class="mk-h3">Can one user switch between client workspaces?</h3><p class="mk-body">No. A user belongs to one workspace, which keeps each client dashboard and its operational data separate.</p></article>
+      <article class="mk-card"><h3 class="mk-h3">What can an HTTP check validate?</h3><p class="mk-body">Checks support seven HTTP methods, custom headers, request bodies for POST, PUT, and PATCH, expected status codes, response-text assertions, intervals, and timeouts.</p></article>
+      <article class="mk-card"><h3 class="mk-h3">How long is check history retained?</h3><p class="mk-body">The hosted deployment retains check logs for 90 days, matching the longest reporting window. Other workspace records are stored separately.</p></article>
+      <article class="mk-card"><h3 class="mk-h3">What does StatusPulse cost?</h3><p class="mk-body">There is currently no software subscription charge. Self-hosters pay for their own infrastructure and any third-party services they choose.</p></article>
+    </div>
+  </section>
 </main>
 
-<footer class="mk-footer mk-wrap">
-  <span class="mk-footer__word">StatusPulse</span>
-  <nav class="mk-footer__links">
-    <a href="<%= public_status_path %>">Status</a>
-    <a href="<%= uptime_monitoring_for_agencies_path %>">Agencies</a>
-    <a href="<%= multi_tenant_uptime_monitoring_path %>">Workspaces</a>
-    <a href="<%= client_uptime_reports_path %>">Reports</a>
-    <a href="<%= login_path %>">Sign in</a>
-    <a href="<%= signup_path %>">Create workspace</a>
-    <a href="https://github.com/craigderington/statuspulse" rel="noopener">Source</a>
-  </nav>
-</footer>
+<% content_for :head do %>
+  <script type="application/ld+json">
+<%= raw json_escape(JSON.pretty_generate({
+  "@context" => "https://schema.org",
+  "@type" => "FAQPage",
+  "mainEntity" => [
+    [ "Can one user switch between client workspaces?", "No. A user belongs to one workspace, which keeps each client dashboard and its operational data separate." ],
+    [ "What can an HTTP check validate?", "Checks support seven HTTP methods, custom headers, request bodies for POST, PUT, and PATCH, expected status codes, response-text assertions, intervals, and timeouts." ],
+    [ "How long is check history retained?", "The hosted deployment retains check logs for 90 days, matching the longest reporting window. Other workspace records are stored separately." ],
+    [ "What does StatusPulse cost?", "There is currently no software subscription charge. Self-hosters pay for their own infrastructure and any third-party services they choose." ]
+  ].map { |question, answer| {
+    "@type" => "Question",
+    "name" => question,
+    "acceptedAnswer" => { "@type" => "Answer", "text" => answer }
+  } }
+})) %>
+  </script>
+<% end %>
+
+<%= render "site_footer" %>
 </div>

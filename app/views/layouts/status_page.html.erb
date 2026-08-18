@@ -3,7 +3,7 @@
   <head>
     <% status_name = @organization ? "#{@organization.name} Status" : "System Status" %>
     <% page_title = "#{status_name} — StatusPulse" %>
-    <% page_description = "Live uptime, incidents, and service health for #{status_name}." %>
+    <% page_description = "View live service health, 30-day uptime history, active incident updates, recent resolutions, and TLS certificate warnings for #{status_name}." %>
     <% canonical_url = request.original_url.split("?").first.sub("://www.", "://") %>
     <% social_image_url = "#{request.base_url}/og/statuspulse-card.png" %>
     <title><%= page_title %></title>
@@ -51,10 +51,31 @@
     <%= javascript_importmap_tags %>
   </head>
   <body>
+    <header class="status-public-nav">
+      <a href="<%= root_path %>" class="status-public-nav__brand" aria-label="StatusPulse home">
+        <span class="brand-icon" style="width: 32px; height: 32px;" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg></span>
+        StatusPulse
+      </a>
+      <nav class="status-public-nav__links" aria-label="Status page navigation">
+        <a href="<%= root_path %>">Product</a>
+        <a href="<%= signup_path %>">Create workspace</a>
+      </nav>
+    </header>
     <div class="status-page-layout">
       <%= yield %>
+      <aside class="status-public-cta" aria-label="StatusPulse product">
+        <strong>Need a status page for your services?</strong>
+        <p>Monitor HTTP endpoints, keep an incident timeline, and publish live service health.</p>
+        <a href="<%= uptime_monitoring_for_agencies_path %>">Explore StatusPulse monitoring</a>
+      </aside>
       <footer class="footer" style="border:none; margin-top: 3rem;">
         <p>Powered by <strong style="color: var(--text-primary);">StatusPulse</strong> Uptime Monitor</p>
+        <nav class="status-public-footer" aria-label="StatusPulse footer">
+          <a href="<%= root_path %>">Home</a>
+          <a href="<%= privacy_path %>">Privacy</a>
+          <a href="<%= terms_path %>">Terms</a>
+          <a href="<%= contact_path %>">Contact</a>
+        </nav>
       </footer>
     </div>
   </body>

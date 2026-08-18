@@ -1,5 +1,5 @@
 <% content_for :title, "Uptime Monitoring for Agencies | StatusPulse" %>
-<% content_for :description, "Give each client a separate uptime-monitoring workspace, public status page, incident history, and SLA-ready reports." %>
+<% content_for :description, "Give each agency client a separate uptime-monitoring workspace with real HTTP checks, a public status page, incident history, users, and SLA reports." %>
 
 <aside class="mk-railstrip" aria-hidden="true" data-controller="rail">
   <span class="mk-railstrip__mark">
@@ -27,7 +27,7 @@
   <section class="mk-hero mk-wrap">
     <div class="mk-hero__copy">
       <p class="mk-eyebrow">Uptime monitoring for agencies</p>
-      <h1 class="mk-h1">Uptime monitoring for agencies.<br><span class="mk-h1__outline">Every client visible.</span></h1>
+      <h1 class="mk-h1">Uptime monitoring for agencies.<br> <span class="mk-h1__outline">Every client separate.</span></h1>
       <p class="mk-lede">StatusPulse gives each client a separate workspace for sites and APIs: real HTTP checks, a public status URL, incident history, users, and SLA reporting.</p>
       <div class="mk-hero__actions">
         <a href="<%= signup_path %>" class="mk-btn">Create a workspace</a>
@@ -39,7 +39,7 @@
     <div class="mk-report" aria-hidden="true">
       <div class="mk-report__head"><span class="mk-report__client">Northwind Logistics</span><span class="mk-report__range">Example workspace</span></div>
       <div class="mk-report__tiles">
-        <div class="mk-tile"><span class="mk-tile__label">Workspaces</span><span class="mk-tile__value">18</span></div>
+        <div class="mk-tile"><span class="mk-tile__label">Endpoints</span><span class="mk-tile__value">18</span></div>
         <div class="mk-tile"><span class="mk-tile__label">30d uptime</span><span class="mk-tile__value">99.91<i>%</i></span></div>
         <div class="mk-tile"><span class="mk-tile__label">P90 latency</span><span class="mk-tile__value">312<i>ms</i></span></div>
       </div>
@@ -58,6 +58,11 @@
       <article class="mk-card"><h3 class="mk-h3">A separate client dashboard</h3><p class="mk-body">Users sign in to their assigned workspace, so an operator never lands in another client&rsquo;s dashboard.</p></article>
       <article class="mk-card"><h3 class="mk-h3">One public status URL</h3><p class="mk-body">Each workspace publishes to <code class="mk-code">/status/&lt;client&gt;</code>, so client stakeholders have a page to check during incidents.</p></article>
     </div>
+  </section>
+
+  <section class="mk-section mk-wrap">
+    <div class="mk-section__head"><p class="mk-eyebrow">What clients see</p><h2 class="mk-h2">A public health view with measured history.</h2></div>
+    <figure class="mk-product-shot"><img src="/product/dashboard.png" width="1280" height="1236" alt="StatusPulse workspace dashboard with three monitored endpoints, uptime metrics, latency, and check-history strips" loading="lazy"><figcaption>Actual StatusPulse dashboard rendered with illustrative Northwind Logistics test data. Names and figures are examples, not customer results.</figcaption></figure>
   </section>
 
   <section class="mk-section mk-wrap">
@@ -80,14 +85,5 @@
   </section>
 </main>
 
-<footer class="mk-footer mk-wrap">
-  <span class="mk-footer__word">StatusPulse</span>
-  <nav class="mk-footer__links">
-    <a href="<%= root_path %>">Home</a>
-    <a href="<%= multi_tenant_uptime_monitoring_path %>">Workspaces</a>
-    <a href="<%= client_uptime_reports_path %>">Reports</a>
-    <a href="<%= public_status_path %>">Status</a>
-    <a href="https://github.com/craigderington/statuspulse" rel="noopener">Source</a>
-  </nav>
-</footer>
+<%= render "site_footer" %>
 </div>

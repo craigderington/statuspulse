@@ -11,7 +11,7 @@ class WeeklyDigestMailerTest < ActionMailer::TestCase
       email.deliver_now
     end
 
-    assert_equal ["user@mailertest.com"], email.to
+    assert_equal [ "user@mailertest.com" ], email.to
     assert_includes email.subject, "Weekly Uptime Digest"
   end
 end

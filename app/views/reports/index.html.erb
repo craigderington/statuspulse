@@ -4,6 +4,13 @@
     <p style="color: var(--text-secondary); font-size: 0.95rem; margin-top: 0.25rem;">
       Detailed SLA compliance uptime, P90 response latency distribution, and failure analysis for <%= current_organization.name %>.
     </p>
+    <nav aria-label="Reporting period" style="display: flex; gap: 0.5rem; margin-top: 1rem;">
+      <% [ 7, 30, 90 ].each do |days| %>
+        <%= link_to "#{days} days", reports_path(days: days),
+              class: "btn #{days == @period_days ? 'btn-primary' : 'btn-secondary'}",
+              aria: { current: ("page" if days == @period_days) } %>
+      <% end %>
+    </nav>
     <%# Say so rather than silently answering a different question than the one
         asked: beyond retention the logs are gone, and a figure computed from
         what survived would be flattered by the failures that were purged. %>

@@ -1,0 +1,24 @@
+<% content_for :title, "StatusPulse Privacy Notice | Monitoring and Account Data" %>
+<% content_for :description, "Read what the hosted StatusPulse service stores, why monitoring requests need endpoint data, how check logs and backups are retained, and which processors are involved." %>
+
+<div class="mk-shell">
+  <%= render "page_header" %>
+  <main class="mk-legal mk-wrap">
+    <p class="mk-eyebrow">Effective August 18, 2026</p>
+    <h1 class="mk-h1">Privacy notice</h1>
+    <p class="mk-lede">This notice describes the hosted service at statuspulse.org. A self-hosted operator controls its own deployment, database, logs, email provider, webhook destinations, backups, and retention choices.</p>
+
+    <section><h2 class="mk-h2">Information the hosted service stores</h2><p class="mk-body">Account records include your name, email address, organization, role, password digest, session-related state, and—if enabled—encrypted two-factor secret plus hashed recovery codes. Workspace records can include monitored URLs, HTTP methods, headers, request bodies, expected responses, check intervals, incident content, maintenance windows, alert settings, webhook configuration, and public status-page content.</p><p class="mk-body">Check results record timestamps, success or failure, HTTP status, response time, and error details needed for uptime histories and reports. Do not place secrets in names, descriptions, incident text, or other fields that do not require them.</p></section>
+
+    <section><h2 class="mk-h2">Why this information is used</h2><p class="mk-body">StatusPulse uses the information to authenticate users, enforce workspace boundaries, send configured monitoring requests, calculate uptime and latency, display dashboards and status pages, deliver alerts and weekly digests, investigate failures, protect accounts, and operate backups. The application does not include advertising pixels or third-party analytics code.</p></section>
+
+    <section><h2 class="mk-h2">Requests to monitored services</h2><p class="mk-body">The service sends the URL, headers, and body that an authorized workspace user configures to the selected endpoint. Those requests necessarily disclose the configured request data and the StatusPulse monitor user agent to the endpoint operator. Only monitor systems you are authorized to test, and use narrowly scoped credentials.</p></section>
+
+    <section><h2 class="mk-h2">Service providers and public data</h2><p class="mk-body">The documented production deployment uses Amazon Web Services infrastructure and Amazon S3 for encrypted offsite database backups. Configured email is delivered through Mailgun. Webhook alerts are sent to destinations selected by workspace administrators. Public status pages intentionally expose the organization name, service names and descriptions, current health, uptime history, certificate warnings, and incident updates; administrators can opt a status page out of search indexing, but anyone with its URL can still request it.</p></section>
+
+    <section><h2 class="mk-h2">Retention and security</h2><p class="mk-body">Hosted check logs are removed after 90 days. Deployment documentation specifies 14 days of local database backups and 90 days of encrypted offsite backups. Account, workspace, service, incident, and configuration records otherwise remain in the active database while the workspace is operated. Passwords are stored as BCrypt digests; TOTP secrets are encrypted at rest; recovery codes are stored as digests; TLS terminates at Apache; and application containers are bound to loopback behind the reverse proxy. No system can promise absolute security.</p></section>
+
+    <section><h2 class="mk-h2">Cookies, choices, and questions</h2><p class="mk-body">StatusPulse uses an essential session cookie for authentication and request continuity. It does not include a marketing-cookie consent system because the application does not set advertising or analytics cookies. Workspace administrators can change status-page indexing and alert settings in the product. For privacy questions or a request concerning hosted account data, use the private contact options associated with the repository owner; do not place personal or secret data in a public issue.</p><p class="mk-body"><a href="<%= contact_path %>" class="mk-inline-link">Contact StatusPulse</a></p></section>
+  </main>
+  <%= render "site_footer" %>
+</div>

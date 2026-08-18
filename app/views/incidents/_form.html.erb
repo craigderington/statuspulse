@@ -39,7 +39,7 @@
   <div class="form-group">
     <label class="form-label">Affected Services</label>
     <div style="display: flex; flex-wrap: wrap; gap: 0.75rem; background: rgba(9,13,22,0.6); padding: 1rem; border-radius: var(--radius-sm); border: 1px solid var(--border-color);">
-      <% Service.ordered.each do |service| %>
+      <% @available_services.each do |service| %>
         <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer; color: var(--text-primary); font-size: 0.9rem;">
           <input type="checkbox" name="service_ids[]" value="<%= service.id %>" <%= 'checked' if incident.services.include?(service) %> style="accent-color: var(--accent-primary);">
           <span><%= service.name %></span>
