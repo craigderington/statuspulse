@@ -1,5 +1,5 @@
 <% content_for :title, "Uptime Monitoring for Agencies | StatusPulse" %>
-<% content_for :description, "Monitor every client from one dashboard, keep workspaces isolated, publish client status pages, and send SLA-ready uptime reports." %>
+<% content_for :description, "Give each client a separate uptime-monitoring workspace, public status page, incident history, and SLA-ready reports." %>
 
 <aside class="mk-railstrip" aria-hidden="true" data-controller="rail">
   <span class="mk-railstrip__mark">
@@ -17,7 +17,7 @@
   <nav class="mk-nav__links">
     <a href="<%= multi_tenant_uptime_monitoring_path %>">Workspaces</a>
     <a href="<%= client_uptime_reports_path %>">Reports</a>
-    <a href="<%= org_public_status_path(org_slug: "statuspulse") %>">Demo status</a>
+    <a href="<%= public_status_path %>">Demo status</a>
     <a href="<%= login_path %>" class="mk-nav__signin">Sign in</a>
     <a href="<%= signup_path %>" class="mk-btn mk-btn--sm">Create workspace</a>
   </nav>
@@ -28,16 +28,16 @@
     <div class="mk-hero__copy">
       <p class="mk-eyebrow">Uptime monitoring for agencies</p>
       <h1 class="mk-h1">Uptime monitoring for agencies.<br><span class="mk-h1__outline">Every client visible.</span></h1>
-      <p class="mk-lede">StatusPulse gives agencies one console for client sites and APIs: isolated workspaces, real HTTP checks, public client status URLs, incident history, and SLA-ready reports.</p>
+      <p class="mk-lede">StatusPulse gives each client a separate workspace for sites and APIs: real HTTP checks, a public status URL, incident history, users, and SLA reporting.</p>
       <div class="mk-hero__actions">
         <a href="<%= signup_path %>" class="mk-btn">Create a workspace</a>
-        <a href="<%= org_public_status_path(org_slug: "statuspulse") %>" class="mk-btn mk-btn--ghost">View status page demo</a>
+        <a href="<%= public_status_path %>" class="mk-btn mk-btn--ghost">View status page demo</a>
       </div>
       <p class="mk-hero__note">Self-hostable. Runs on Postgres. No agent to install on client infrastructure.</p>
     </div>
 
     <div class="mk-report" aria-hidden="true">
-      <div class="mk-report__head"><span class="mk-report__client">Client portfolio</span><span class="mk-report__range">Agency view</span></div>
+      <div class="mk-report__head"><span class="mk-report__client">Northwind Logistics</span><span class="mk-report__range">Example workspace</span></div>
       <div class="mk-report__tiles">
         <div class="mk-tile"><span class="mk-tile__label">Workspaces</span><span class="mk-tile__value">18</span></div>
         <div class="mk-tile"><span class="mk-tile__label">30d uptime</span><span class="mk-tile__value">99.91<i>%</i></span></div>
@@ -55,7 +55,7 @@
     </div>
     <div class="mk-grid mk-grid--3">
       <article class="mk-card"><h3 class="mk-h3">One workspace per client</h3><p class="mk-body">Endpoints, incidents, users, reports, and maintenance windows stay scoped to the organization they belong to.</p></article>
-      <article class="mk-card"><h3 class="mk-h3">One console for the team</h3><p class="mk-body">Agency operators can watch many client workspaces without pretending every client is the same system.</p></article>
+      <article class="mk-card"><h3 class="mk-h3">A separate client dashboard</h3><p class="mk-body">Users sign in to their assigned workspace, so an operator never lands in another client&rsquo;s dashboard.</p></article>
       <article class="mk-card"><h3 class="mk-h3">One public status URL</h3><p class="mk-body">Each workspace publishes to <code class="mk-code">/status/&lt;client&gt;</code>, so client stakeholders have a page to check during incidents.</p></article>
     </div>
   </section>
@@ -74,8 +74,8 @@
   </section>
 
   <section class="mk-cta mk-wrap">
-    <h2 class="mk-h2">Start with one client. Add the rest.</h2>
-    <p class="mk-body">Create the first workspace, point it at an endpoint, and publish a status URL when you are ready.</p>
+    <h2 class="mk-h2">Start with one client workspace.</h2>
+    <p class="mk-body">Create its workspace, point it at an endpoint, and publish a status URL when you are ready.</p>
     <a href="<%= signup_path %>" class="mk-btn mk-btn--lg">Create a workspace</a>
   </section>
 </main>
@@ -86,7 +86,7 @@
     <a href="<%= root_path %>">Home</a>
     <a href="<%= multi_tenant_uptime_monitoring_path %>">Workspaces</a>
     <a href="<%= client_uptime_reports_path %>">Reports</a>
-    <a href="<%= org_public_status_path(org_slug: "statuspulse") %>">Status</a>
+    <a href="<%= public_status_path %>">Status</a>
     <a href="https://github.com/craigderington/statuspulse" rel="noopener">Source</a>
   </nav>
 </footer>

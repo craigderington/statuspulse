@@ -13,7 +13,7 @@
   <nav class="mk-nav__links">
     <a href="<%= uptime_monitoring_for_agencies_path %>">Agencies</a>
     <a href="<%= multi_tenant_uptime_monitoring_path %>">Workspaces</a>
-    <a href="<%= org_public_status_path(org_slug: "statuspulse") %>">Demo status</a>
+    <a href="<%= public_status_path %>">Demo status</a>
     <a href="<%= login_path %>" class="mk-nav__signin">Sign in</a>
     <a href="<%= signup_path %>" class="mk-btn mk-btn--sm">Create workspace</a>
   </nav>
@@ -27,7 +27,7 @@
       <p class="mk-lede">StatusPulse turns endpoint checks and incident history into reports agencies can use with clients: 7, 30, and 90-day uptime, P90 latency, averages, affected services, and weekly digest summaries.</p>
       <div class="mk-hero__actions">
         <a href="<%= signup_path %>" class="mk-btn">Create a workspace</a>
-        <a href="<%= org_public_status_path(org_slug: "statuspulse") %>" class="mk-btn mk-btn--ghost">View status page demo</a>
+        <a href="<%= public_status_path %>" class="mk-btn mk-btn--ghost">View status page demo</a>
       </div>
       <p class="mk-hero__note">Built for SLA conversations, incident reviews, and client portfolio operations.</p>
     </div>
@@ -83,7 +83,7 @@
     <a href="<%= root_path %>">Home</a>
     <a href="<%= uptime_monitoring_for_agencies_path %>">Agencies</a>
     <a href="<%= multi_tenant_uptime_monitoring_path %>">Workspaces</a>
-    <a href="<%= org_public_status_path(org_slug: "statuspulse") %>">Status</a>
+    <a href="<%= public_status_path %>">Status</a>
     <a href="https://github.com/craigderington/statuspulse" rel="noopener">Source</a>
   </nav>
 </footer>

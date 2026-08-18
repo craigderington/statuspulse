@@ -31,8 +31,10 @@ class SeoTest < ActionDispatch::IntegrationTest
 
     assert_response :success
     assert_select "meta[property='og:image'][content='http://www.example.com/og/statuspulse-card.png']"
+    assert_select "meta[property='og:image:alt']"
     assert_select "meta[name='twitter:card'][content='summary_large_image']"
     assert_select "meta[name='twitter:image'][content='http://www.example.com/og/statuspulse-card.png']"
+    assert_select "meta[name='twitter:image:alt']"
   end
 
   test "the sitemap lists public landing, SEO pages, and opted-in status pages only" do

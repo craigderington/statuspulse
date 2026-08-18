@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <% page_title = content_for(:title) || "StatusPulse — Multi-tenant uptime monitoring for agencies and MSPs" %>
-    <% page_description = content_for(:description) || "Give every client an isolated workspace, its own endpoints and incident history, and a public status page at its own /status/<client> URL — while you watch all of them from one dashboard." %>
+    <% page_title = content_for(:title) || "StatusPulse — Tenant-isolated uptime monitoring" %>
+    <% page_description = content_for(:description) || "Give each client an isolated workspace with its own endpoints, incident history, reports, users, and public status page." %>
     <% canonical_url = request.original_url.split("?").first.sub("://www.", "://") %>
     <% social_image_url = "#{request.base_url}/og/statuspulse-card.png" %>
     <title><%= page_title %></title>
@@ -18,12 +18,14 @@
     <meta property="og:description" content="<%= page_description %>">
     <meta property="og:url" content="<%= canonical_url %>">
     <meta property="og:image" content="<%= social_image_url %>">
+    <meta property="og:image:alt" content="StatusPulse tenant-isolated uptime monitoring">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="<%= page_title %>">
     <meta name="twitter:description" content="<%= page_description %>">
     <meta name="twitter:image" content="<%= social_image_url %>">
+    <meta name="twitter:image:alt" content="StatusPulse tenant-isolated uptime monitoring">
     <script type="application/ld+json">
 <%= raw json_escape(JSON.pretty_generate({
   "@context" => "https://schema.org",

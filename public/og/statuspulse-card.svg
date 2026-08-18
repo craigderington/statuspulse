@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-labelledby="title desc">
   <title id="title">StatusPulse social preview card</title>
-  <desc id="desc">Every client's uptime in one console. Multi-tenant uptime monitoring for agencies and MSPs.</desc>
+  <desc id="desc">Tenant-isolated uptime monitoring with client workspaces, status pages, and SLA reports.</desc>
   <defs>
     <pattern id="grid" width="46" height="46" patternUnits="userSpaceOnUse">
       <path d="M46 0H0V46" fill="none" stroke="#e8ecf2" stroke-opacity="0.055" stroke-width="1"/>
@@ -43,9 +43,9 @@
 
   <g transform="translate(118 151)">
     <text font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="15" letter-spacing="4" fill="#768291">MULTI-TENANT UPTIME MONITORING</text>
-    <text y="82" font-family="Arial Black, Archivo, system-ui, sans-serif" font-size="66" font-weight="900" letter-spacing="-2.5" fill="#e8ecf2">EVERY CLIENT'S</text>
-    <text y="151" font-family="Arial Black, Archivo, system-ui, sans-serif" font-size="66" font-weight="900" letter-spacing="-2.5" fill="#e8ecf2">UPTIME.</text>
-    <text y="220" font-family="Arial Black, Archivo, system-ui, sans-serif" font-size="66" font-weight="900" letter-spacing="-2.5" fill="transparent" stroke="#e8ecf2" stroke-width="1.35">ONE CONSOLE.</text>
+    <text y="82" font-family="Arial Black, Archivo, system-ui, sans-serif" font-size="66" font-weight="900" letter-spacing="-2.5" fill="#e8ecf2">CLIENT UPTIME.</text>
+    <text y="151" font-family="Arial Black, Archivo, system-ui, sans-serif" font-size="66" font-weight="900" letter-spacing="-2.5" fill="#e8ecf2">SEPARATE</text>
+    <text y="220" font-family="Arial Black, Archivo, system-ui, sans-serif" font-size="66" font-weight="900" letter-spacing="-2.5" fill="transparent" stroke="#e8ecf2" stroke-width="1.35">WORKSPACES.</text>
     <text y="274" font-family="Inter, system-ui, sans-serif" font-size="24" fill="#8f98a6">Isolated client workspaces, public status URLs,</text>
     <text y="308" font-family="Inter, system-ui, sans-serif" font-size="24" fill="#8f98a6">real HTTP checks, incidents, and SLA reports.</text>
   </g>

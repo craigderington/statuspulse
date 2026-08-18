@@ -1,5 +1,5 @@
 <% content_for :title, "Multi-Tenant Uptime Monitoring | StatusPulse" %>
-<% content_for :description, "Isolate endpoints, incidents, users, reports, and public status pages by client workspace while monitoring everything from one console." %>
+<% content_for :description, "Isolate endpoints, incidents, users, reports, maintenance windows, and public status pages in separate client workspaces." %>
 
 <aside class="mk-railstrip" aria-hidden="true" data-controller="rail">
   <span class="mk-railstrip__mark"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg></span>
@@ -13,7 +13,7 @@
   <nav class="mk-nav__links">
     <a href="<%= uptime_monitoring_for_agencies_path %>">Agencies</a>
     <a href="<%= client_uptime_reports_path %>">Reports</a>
-    <a href="<%= org_public_status_path(org_slug: "statuspulse") %>">Demo status</a>
+    <a href="<%= public_status_path %>">Demo status</a>
     <a href="<%= login_path %>" class="mk-nav__signin">Sign in</a>
     <a href="<%= signup_path %>" class="mk-btn mk-btn--sm">Create workspace</a>
   </nav>
@@ -29,7 +29,7 @@
         <a href="<%= signup_path %>" class="mk-btn">Create a workspace</a>
         <a href="<%= uptime_monitoring_for_agencies_path %>" class="mk-btn mk-btn--ghost">See agency workflow</a>
       </div>
-      <p class="mk-hero__note">Built for agencies and MSPs that manage more than one client environment.</p>
+      <p class="mk-hero__note">Built for self-hosters that need separate monitoring environments for separate clients.</p>
     </div>
 
     <div class="mk-console" aria-hidden="true">
@@ -66,18 +66,18 @@ workspace: meridian
     <div class="mk-section__head">
       <p class="mk-eyebrow">Why it matters</p>
       <h2 class="mk-h2">One shared monitor account does not scale cleanly.</h2>
-      <p class="mk-body">Client work introduces boundaries: different stakeholders, different services, different incident timelines, and different reports. StatusPulse keeps those boundaries visible while giving operators one place to work.</p>
+      <p class="mk-body">Client work introduces boundaries: different stakeholders, services, incident timelines, and reports. StatusPulse preserves those boundaries by assigning each user and operational record to one workspace.</p>
     </div>
     <div class="mk-grid mk-grid--3">
-      <article class="mk-card"><h3 class="mk-h3">Less account sprawl</h3><p class="mk-body">Create client workspaces without creating an entirely separate monitoring system for each client.</p></article>
+      <article class="mk-card"><h3 class="mk-h3">One hosted system</h3><p class="mk-body">Run separate client workspaces in one StatusPulse deployment while keeping user access and operational data tenant-scoped.</p></article>
       <article class="mk-card"><h3 class="mk-h3">Cleaner communication</h3><p class="mk-body">Give stakeholders a status URL for their workspace instead of exposing unrelated services.</p></article>
-      <article class="mk-card"><h3 class="mk-h3">Cleaner operations</h3><p class="mk-body">Operators can triage incidents and review reports with client context already attached.</p></article>
+      <article class="mk-card"><h3 class="mk-h3">Cleaner operations</h3><p class="mk-body">Within their assigned workspace, operators triage incidents and review reports with client context already attached.</p></article>
     </div>
   </section>
 
   <section class="mk-cta mk-wrap">
-    <h2 class="mk-h2">Monitor many clients without flattening them into one system.</h2>
-    <p class="mk-body">Start with one workspace, then add client environments as your portfolio grows.</p>
+    <h2 class="mk-h2">Keep each client in a separate workspace.</h2>
+    <p class="mk-body">Create a workspace with its first administrator, then configure that client&rsquo;s endpoints and public status page.</p>
     <a href="<%= signup_path %>" class="mk-btn mk-btn--lg">Create a workspace</a>
   </section>
 </main>
@@ -88,7 +88,7 @@ workspace: meridian
     <a href="<%= root_path %>">Home</a>
     <a href="<%= uptime_monitoring_for_agencies_path %>">Agencies</a>
     <a href="<%= client_uptime_reports_path %>">Reports</a>
-    <a href="<%= org_public_status_path(org_slug: "statuspulse") %>">Status</a>
+    <a href="<%= public_status_path %>">Status</a>
     <a href="https://github.com/craigderington/statuspulse" rel="noopener">Source</a>
   </nav>
 </footer>

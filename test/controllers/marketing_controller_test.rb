@@ -10,7 +10,7 @@ class MarketingControllerTest < ActionDispatch::IntegrationTest
   test "the landing page states the multi-tenant position" do
     get root_url
 
-    assert_select "h1", /one console/i
+    assert_select "h1", /workspace by workspace/i
     assert_select ".mk-lede", /isolated workspace/i
   end
 
@@ -18,7 +18,7 @@ class MarketingControllerTest < ActionDispatch::IntegrationTest
     get root_url
 
     assert_select "a[href=?]", signup_path
-    assert_select "a[href=?]", org_public_status_path(org_slug: "statuspulse")
+    assert_select "a[href=?]", public_status_path
   end
 
   test "the hero wall is labelled as illustrative rather than passed off as customers" do
@@ -33,8 +33,10 @@ class MarketingControllerTest < ActionDispatch::IntegrationTest
     assert_select "link[rel=canonical]"
     assert_select "meta[property='og:title']"
     assert_select "meta[property='og:image'][content='http://www.example.com/og/statuspulse-card.png']"
+    assert_select "meta[property='og:image:alt']"
     assert_select "meta[name='twitter:card'][content='summary_large_image']"
     assert_select "meta[name='twitter:image'][content='http://www.example.com/og/statuspulse-card.png']"
+    assert_select "meta[name='twitter:image:alt']"
     assert_select "meta[name=description]"
   end
 
@@ -47,7 +49,7 @@ class MarketingControllerTest < ActionDispatch::IntegrationTest
     assert_select "link[rel=canonical][href=?]", "http://example.com/uptime-monitoring-for-agencies"
     assert_select "h1", text: /Uptime monitoring for agencies/i, count: 1
     assert_select "a[href=?]", signup_path
-    assert_select "a[href=?]", org_public_status_path(org_slug: "statuspulse")
+    assert_select "a[href=?]", public_status_path
     assert_no_match(/white-?label/i, response.body)
     assert_no_match(/custom domain/i, response.body)
     assert_no_match(/subscriber notification/i, response.body)
@@ -64,6 +66,17 @@ class MarketingControllerTest < ActionDispatch::IntegrationTest
     assert_select ".mk-card", text: /Reports/i
     assert_no_match(/white-?label/i, response.body)
     assert_no_match(/custom domain/i, response.body)
+    assert_no_match(/one console|single dashboard/i, response.body)
+  end
+
+  test "marketing pages do not promise a cross-workspace operator console" do
+    [ root_url, uptime_monitoring_for_agencies_url, multi_tenant_uptime_monitoring_url ].each do |url|
+      get url
+
+      assert_response :success
+      assert_no_match(/one console|single dashboard|watch many client workspaces/i, response.body)
+      assert_select "a[href=?]", public_status_path
+    end
   end
 
   test "client uptime reports page explains SLA windows and P90 latency" do
