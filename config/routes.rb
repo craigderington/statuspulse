@@ -5,6 +5,7 @@ Rails.application.routes.draw do
   get "uptime-monitoring-for-agencies", to: "marketing#agencies", as: :uptime_monitoring_for_agencies
   get "multi-tenant-uptime-monitoring", to: "marketing#multi_tenant", as: :multi_tenant_uptime_monitoring
   get "client-uptime-reports", to: "marketing#reports", as: :client_uptime_reports
+  get "statuspage-alternative", to: "marketing#compare", as: :statuspage_alternative
   get "pricing", to: "marketing#pricing", as: :pricing
   get "about", to: "marketing#about", as: :about
   get "contact", to: "marketing#contact", as: :contact

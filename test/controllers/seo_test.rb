@@ -49,6 +49,7 @@ class SeoTest < ActionDispatch::IntegrationTest
     assert_includes response.body, "http://www.example.com/uptime-monitoring-for-agencies"
     assert_includes response.body, "http://www.example.com/multi-tenant-uptime-monitoring"
     assert_includes response.body, "http://www.example.com/client-uptime-reports"
+    assert_includes response.body, "http://www.example.com/statuspage-alternative"
     [ pricing_url, about_url, contact_url, privacy_url, terms_url ].each do |url|
       assert_includes response.body, url
     end
@@ -88,7 +89,7 @@ class SeoTest < ActionDispatch::IntegrationTest
   test "indexable content pages have unique titles, descriptions, and slashless canonicals" do
     paths = [
       "/", "/uptime-monitoring-for-agencies", "/multi-tenant-uptime-monitoring",
-      "/client-uptime-reports", "/pricing", "/about", "/contact", "/privacy", "/terms",
+      "/client-uptime-reports", "/statuspage-alternative", "/pricing", "/about", "/contact", "/privacy", "/terms",
       "/status/#{@listed.slug}"
     ]
     titles = []

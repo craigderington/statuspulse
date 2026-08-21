@@ -18,7 +18,7 @@ class MarketingControllerTest < ActionDispatch::IntegrationTest
   test "the landing page states the multi-tenant position" do
     get root_url
 
-    assert_select "h1", /workspace by workspace/i
+    assert_select "h1", /every client.*uptime.*one console/i
     assert_select ".mk-lede", /isolated workspace/i
   end
 
@@ -77,12 +77,12 @@ class MarketingControllerTest < ActionDispatch::IntegrationTest
     assert_no_match(/one console|single dashboard/i, response.body)
   end
 
-  test "marketing pages do not promise a cross-workspace operator console" do
-    [ root_url, uptime_monitoring_for_agencies_url, multi_tenant_uptime_monitoring_url ].each do |url|
+  test "marketing pages do not promise cross-workspace switching" do
+    [ root_url, uptime_monitoring_for_agencies_url, multi_tenant_uptime_monitoring_url, statuspage_alternative_url ].each do |url|
       get url
 
       assert_response :success
-      assert_no_match(/one console|single dashboard|watch many client workspaces/i, response.body)
+      assert_no_match(/single dashboard|watch many client workspaces/i, response.body)
       assert_select "a[href=?]", public_status_path
     end
   end
@@ -98,6 +98,39 @@ class MarketingControllerTest < ActionDispatch::IntegrationTest
     assert_select "a[href=?]", signup_path
     assert_no_match(/white-?label/i, response.body)
     assert_no_match(/custom domain/i, response.body)
+  end
+
+  test "statuspage alternative page positions StatusPulse for agency isolation" do
+    get "/statuspage-alternative"
+
+    assert_response :success
+    assert_select "title", /Statuspage Alternative for Agencies/
+    assert_select "meta[name=description]"
+    assert_select "link[rel=canonical][href=?]", "http://example.com/statuspage-alternative"
+    assert_select "h1", text: /Statuspage alternative for agencies/i, count: 1
+    assert_select "body", /UptimeRobot/
+    assert_select "body", /Atlassian Statuspage/
+    assert_select "body", /isolated workspace/i
+    assert_select "body", /self-hostable/i
+    assert_select "body", /Postgres/
+    assert_select ".mk-code", text: %r{/status/<client>}
+    assert_select "a[href=?]", signup_path
+    assert_select "a[href=?]", public_status_path
+    assert_no_match(/white-?label/i, response.body)
+    assert_no_match(/custom domain/i, response.body)
+    assert_no_match(/subscriber notification/i, response.body)
+  end
+
+  test "statuspage alternative page publishes visible FAQ content and matching FAQPage data" do
+    get "/statuspage-alternative"
+
+    assert_response :success
+    assert_select "#faq h3", count: 4
+    schemas = css_select("script[type='application/ld+json']").map { |node| JSON.parse(node.text) }
+    faq = schemas.find { |schema| schema["@type"] == "FAQPage" }
+    assert_not_nil faq
+    assert_equal 4, faq.fetch("mainEntity").length
+    assert_equal css_select("#faq h3").map(&:text), faq.fetch("mainEntity").map { |item| item.fetch("name") }
   end
 
   test "trust and support pages are public, canonical, and substantive" do
@@ -133,7 +166,8 @@ class MarketingControllerTest < ActionDispatch::IntegrationTest
       root_url => "/product/status-page.png",
       uptime_monitoring_for_agencies_url => "/product/dashboard.png",
       multi_tenant_uptime_monitoring_url => "/product/status-page.png",
-      client_uptime_reports_url => "/product/reports.png"
+      client_uptime_reports_url => "/product/reports.png",
+      statuspage_alternative_url => "/product/status-page.png"
     }.each do |url, image_path|
       get url
 

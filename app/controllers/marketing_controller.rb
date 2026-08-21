@@ -18,6 +18,9 @@ class MarketingController < ApplicationController
   def reports
   end
 
+  def compare
+  end
+
   def pricing
   end
 
